@@ -76,13 +76,9 @@ $query_builder = TRUE;
 
 $url = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.api.link.stream';
 $chk = explode('.', $url);
-//print_r($chk);echo '<br>';
-//print_r($chk[0]);echo '<br>';
+print_r($chk);echo '<br>';
+print_r($chk[0]);echo '<br>';
 if ($chk[0] == "localhost") {
-//    define('DB_HOST', 'localhost');
-//    define('DB_USER', 'root');
-//    define('DB_PASS', '');
-//    define('DB_TABLE', 'streamy');
     if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
     if (!defined('DB_USER'))
@@ -93,19 +89,28 @@ if ($chk[0] == "localhost") {
         define('DB_TABLE', 'streamy_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
-    //$db['default']['db_debug'] = TRUE;
 } elseif ($chk[0] == "link-dev") {
-    define('DB_HOST', 'db01.link.stream');
-    define('DB_USER', 'streamy_admin');
-    define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
-    define('DB_TABLE', 'streamy_dev');
-    define('DB_DEBUG', TRUE);
+    if (!defined('DB_HOST'))
+        define('DB_HOST', 'db01.link.stream');
+    if (!defined('DB_USER'))
+        define('DB_USER', 'streamy_admin');
+    if (!defined('DB_PASS'))
+        define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
+    if (!defined('DB_TABLE'))
+        define('DB_TABLE', 'streamy_dev');
+    if (!defined('DB_DEBUG'))
+        define('DB_DEBUG', TRUE);
 } else {
-    define('DB_HOST', 'db01.link.stream');
-    define('DB_USER', 'streamy_admin');
-    define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
-    define('DB_TABLE', 'streamy_dev');
-    define('DB_DEBUG', FALSE);
+   if (!defined('DB_HOST'))
+        define('DB_HOST', 'db01.link.stream');
+    if (!defined('DB_USER'))
+        define('DB_USER', 'streamy_admin');
+    if (!defined('DB_PASS'))
+        define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
+    if (!defined('DB_TABLE'))
+        define('DB_TABLE', 'streamy_dev');
+    if (!defined('DB_DEBUG'))
+        define('DB_DEBUG', FALSE);
 }
 
 $db['default'] = array(
