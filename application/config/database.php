@@ -76,8 +76,8 @@ $query_builder = TRUE;
 
 $url = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.api.link.stream';
 $chk = explode('.', $url);
-print_r($chk);echo '<br>';
-print_r($chk[0]);echo '<br>';
+//print_r($chk);echo '<br>';
+//print_r($chk[0]);echo '<br>';
 if ($chk[0] == "localhost") {
     if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
@@ -89,7 +89,7 @@ if ($chk[0] == "localhost") {
         define('DB_TABLE', 'streamy_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
-} elseif ($chk[0] == "link-dev") {
+} elseif ($chk[0] == "api-dev") {
     if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
     if (!defined('DB_USER'))

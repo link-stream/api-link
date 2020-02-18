@@ -43,7 +43,7 @@ $exp = explode(".", $host);
 //print_r($exp[0]);echo '<br>';
 if ($exp[0] == 'localhost') {
     define('ENV', 'dev');
-} elseif ($exp[0] == 'link-dev') {
+} elseif ($exp[0] == 'api-dev') {
     define('ENV', 'staging');
 } else {
     define('ENV', 'live');
