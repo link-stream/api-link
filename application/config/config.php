@@ -25,7 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   |
  */
 
-$host = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.link.stream';
+$host = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.api.link.stream';
 $protocol = 'http';
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
     $protocol = 'https';
