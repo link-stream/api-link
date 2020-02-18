@@ -1,0 +1,77 @@
+/*------------------------------------*\
+    #Testimonial
+\*------------------------------------*/
+.testimonial-panel {
+	margin-bottom: 30px;
+	text-align: center;
+	padding-top: 95px;
+
+	&:before {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		margin-left: -25px;
+		width: 50px;
+		height: 44px;
+		background: url('../images/icons/quotes.svg');
+		content: "";
+
+	}
+
+
+
+	.testimonial-body {
+		p {
+			font-size: 20px;
+			line-height: 34px;
+			font-weight: 400;
+			margin-bottom: 35px;
+		}
+	}
+
+	.testimonial-author {
+		h5 {
+			color: $color-theme;
+			font-size: 16px;
+			font-weight: 600;
+			line-height: 1;
+			margin-bottom: 0;
+			text-transform: capitalize;
+			text-align: center;
+		}
+	}
+
+}
+
+.carousel-dots {
+	.owl-dots {
+		text-align: center;
+
+		.owl-dot {
+			height: 8px;
+			width: 8px;
+			margin: 0 3px;
+
+			&:active,
+			&:focus {
+				outline: none;
+			}
+
+			span {
+				height: 8px;
+				width: 8px;
+				border-radius: 50%;
+				background-color: transparent;
+				border: 1px solid $color-theme;
+				display: block;
+			}
+
+			&.active {
+				span {
+					background-color: $color-theme;
+					border-color: $color-theme;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 62 (101010) - https://sketch.com -->
+    <title>32FED91F-ABEF-45C6-9663-97E96FEECE1F</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <path d="M12.4796876,5.86982691 L2.85468752,0.179592252 C2.07265626,-0.282517146 0.875,0.165920377 0.875,1.30888918 L0.875,12.6866241 C0.875,13.7120148 1.98789063,14.3299836 2.85468752,13.8159211 L12.4796876,8.12842077 C13.3382813,7.62256137 13.3410157,6.37568631 12.4796876,5.86982691 Z" id="path-1"></path>
+    </defs>
+    <g id="Asset-Artboard-Page" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-play-Solid/play">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+            <g id="Color-Color/Purple" mask="url(#mask-2)" fill="#FFFFFF">
+                <rect id="Purple" x="0" y="0" width="14" height="14"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

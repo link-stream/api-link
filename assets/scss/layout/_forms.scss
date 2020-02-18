@@ -1,0 +1,51 @@
+/*------------------------------------*\
+    #FORMS
+\*------------------------------------*/
+label {
+	font-weight: 300;
+	margin-bottom: 10px;
+	text-transform: capitalize
+}
+
+.form-control {
+	color: $color-body;
+	font-family: $font-body;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 60px;
+	height: 60px;
+	border: 1px solid e0e0e0;
+	background: transparent;
+	padding-left: 30px;
+	margin-bottom: 20px;
+	position: relative;
+	@include rounded(4px);
+	@include prefix(box-shadow, none, moz webkit);
+}
+
+.form-control:focus {
+	border-color: $color-theme;
+	@include prefix(box-shadow, none, moz webkit);
+}
+
+/* Placeholder */
+
+.form-control::-webkit-input-placeholder {
+	color: $color-body;
+}
+
+.form-control:-moz-placeholder {
+	color: $color-body;
+}
+
+.form-control::-moz-placeholder {
+	color: $color-body;
+}
+
+.form-control:-ms-input-placeholder {
+	color: $color-body;
+}
+
+.subscribe-alert {
+	margin-top: 1.5rem;
+}

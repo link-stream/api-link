@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="16px" viewBox="0 0 20 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 62 (101010) - https://sketch.com -->
+    <title>C01ECCEB-A222-4156-8C7B-C76EDF498CFA</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop---Add-a-Track---Upload" transform="translate(-53.000000, -621.000000)" fill-rule="nonzero">
+            <g id="Side-Nav" transform="translate(0.000000, 80.000000)">
+                <g id="Account" transform="translate(-1.000000, 517.000000)">
+                    <g transform="translate(33.000000, 20.000000)" id="icon-account">
+                        <g transform="translate(19.000000, 0.000000)">
+                            <g id="Icon" fill="#FFFFFF">
+                                <path d="M19,17 L11,17 L11,16 C11,14.67 13.67,14 15,14 C16.33,14 19,14.67 19,16 M15,9 C16.1045695,9 17,9.8954305 17,11 C17,12.1045695 16.1045695,13 15,13 C13.8954305,13 13,12.1045695 13,11 C13,9.8954305 13.8954305,9 15,9 M20,6 L12,6 L10,4 L4,4 C2.89,4 2,4.89 2,6 L2,18 C2,19.1045695 2.8954305,20 4,20 L20,20 C21.1045695,20 22,19.1045695 22,18 L22,8 C22,6.8954305 21.1045695,6 20,6 Z" id="Icon-Shape"></path>
+                            </g>
+                            <rect id="ViewBox" x="0" y="0" width="24" height="24"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

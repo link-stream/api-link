@@ -1,0 +1,446 @@
+<?php
+
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+//require APPPATH . 'libraries/RestController.php';
+use chriskacerguis\RestServer\RestController;
+
+require(APPPATH . 'libraries/RestController.php');
+
+class Users extends RestController {
+
+    private $error;
+    private $bucket;
+
+    public function __construct() {
+        parent::__construct();
+        $this->error = '';
+        $this->bucket = 'files.link.stream';
+        //Models
+        $this->load->model("User_model");
+        //Libraries
+        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
+    }
+
+//    public function _remap($method, $arguments = array()) {
+//        $requestMethod = strtolower($this->input->server('REQUEST_METHOD'));
+//
+//        if ($method == 'index') {
+//            $callMethod = strtolower($requestMethod);
+//        } else {
+//            //$callMethod = $requestMethod . ucfirst($method);
+//            $callMethod = ucfirst($method).'_'.$requestMethod;
+//        }
+//
+//        if (method_exists($this, $callMethod)) {
+//            return call_user_func_array(array($this, $callMethod), $arguments);
+//        }
+//
+//        throw new \BadMethodCallException("{$callMethod} does not exist!");
+//    }
+//     $this->response("Wrong email or password.", REST_Controller::HTTP_BAD_REQUEST);
+//     $this->response([
+//                    'status' => TRUE,
+//                    'message' => 'User login successful.',
+//                    'data' => $user
+//                ], REST_Controller::HTTP_OK);
+//                
+    //id
+    public function index_get($id = null) {
+        $data = array();
+        if (!empty($id)) {
+            $register_user = $this->User_model->fetch_user_by_id($id);
+            if (!empty($register_user)) {
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function index_post() {
+        $email = strip_tags($this->input->post('email'));
+        $user_name = strip_tags($this->input->post('user_name'));
+        $platform = strip_tags($this->input->post('platform'));
+        if ((!empty($email) || !empty($user_name)) && !empty($platform)) {
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+            if (empty($register_user)) {
+                $user = array();
+                $user['user_name'] = $user_name;
+                $user['first_name'] = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
+                $user['last_name'] = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
+                $user['display_name'] = (!empty($this->input->post('display_name'))) ? $this->input->post('display_name') : '';
+                $user['email'] = $email;
+                $user['email_confirmed'] = '1';
+                $user['password'] = (!empty($this->input->post('password'))) ? $this->general_library->encrypt_txt($this->input->post('password')) : '';
+                $user['status_id'] = '3';
+                $user['plan_id'] = '1';
+                $user['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
+                $user['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
+                $user['image'] = (!empty($this->input->post('image'))) ? $this->input->post('image') : '';
+                $user['banner'] = (!empty($this->input->post('banner'))) ? $this->input->post('banner') : '';
+                $user['about'] = (!empty($this->input->post('about'))) ? $this->input->post('about') : '';
+//            $user['youtube'] = (!empty($this->input->post('youtube'))) ? $this->input->post('youtube') : '';
+//            $user['facebook'] = (!empty($this->input->post('facebook'))) ? $this->input->post('facebook') : '';
+//            $user['instagram'] = (!empty($this->input->post('instagram'))) ? $this->input->post('instagram') : '';
+//            $user['twitter'] = (!empty($this->input->post('twitter'))) ? $this->input->post('twitter') : '';
+//            $user['soundcloud'] = (!empty($this->input->post('soundcloud'))) ? $this->input->post('soundcloud') : '';
+                $user['email_paypal'] = (!empty($this->input->post('email_paypal'))) ? $this->input->post('email_paypal') : '';
+                $user['platform'] = $platform;
+                $user['platform_id'] = (!empty($this->input->post('platform_id'))) ? $this->input->post('platform_id') : '';
+                $user['platform_token'] = (!empty($this->input->post('platform_token'))) ? $this->input->post('platform_token') : '';
+                $user['bio'] = (!empty($this->input->post('bio'))) ? $this->input->post('bio') : '';
+                $user['id'] = $this->User_model->insert_user($user);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been created successfully.', 'id' => $user['id']), RestController::HTTP_OK);
+            } else {
+                $this->error = 'The given email already exists.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide complete user info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function index_put($id = null) {
+        if (!empty($id)) {
+            $register_user = $this->User_model->fetch_user_by_id($id);
+            if (!empty($register_user)) {
+                $user = array();
+                if (!empty($this->put('user_name'))) {
+                    $user['user_name'] = $this->put('user_name');
+                }
+                if (!empty($this->put('first_name'))) {
+                    $user['first_name'] = $this->put('first_name');
+                }
+                if (!empty($this->put('last_name'))) {
+                    $user['last_name'] = $this->put('last_name');
+                }
+                if (!empty($this->put('display_name'))) {
+                    $user['display_name'] = $this->put('display_name');
+                }
+                if (!empty($this->put('email'))) {
+                    $user['email'] = $this->put('email');
+                }
+                if (!empty($this->put('email_confirmed'))) {
+                    $user['email_confirmed'] = $this->put('email_confirmed');
+                }
+                if (!empty($this->put('password'))) {
+                    $user['password'] = $this->general_library->encrypt_txt($this->put('password'));
+                }
+                if (!empty($this->put('status_id'))) {
+                    $user['status_id'] = $this->put('status_id');
+                }
+                if (!empty($this->put('plan_id'))) {
+                    $user['plan_id'] = $this->put('plan_id');
+                }
+                if (!empty($this->put('url'))) {
+                    $user['url'] = $this->put('url');
+                }
+                if (!empty($this->put('phone'))) {
+                    $user['phone'] = $this->put('phone');
+                }
+                if (!empty($this->put('image'))) {
+                    $user['image'] = $this->put('image');
+                }
+                if (!empty($this->put('banner'))) {
+                    $user['banner'] = $this->put('banner');
+                }
+                if (!empty($this->put('about'))) {
+                    $user['about'] = $this->put('about');
+                }
+                if (!empty($this->put('email_paypal'))) {
+                    $user['email_paypal'] = $this->put('email_paypal');
+                }
+                if (!empty($this->put('bio'))) {
+                    $user['bio'] = $this->put('bio');
+                }
+                if (!empty($user)) {
+                    $this->User_model->update_user($id, $user);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been updated successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    //params: type = username or email
+    public function availability_get($type = null, $value = null) {
+        $data = array();
+        if (empty($type)) {
+            $this->error = 'Type is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } elseif (empty($value)) {
+            $this->error = 'Value is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } elseif ($type != 'username' && $type != 'email') {
+            $this->error = 'Type ' . $type . ' is now allowed, only username or email are allowed as type';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } else {
+            if ($type == 'username') {
+                $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $value));
+            } else {
+                $register_user = $this->User_model->fetch_user_by_search(array('email' => $value));
+            }
+            if (empty($register_user)) {
+                $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+            } else {
+                $this->error = ucfirst($type) . ': ' . $value . ' is not available';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    //params = email, password
+    public function login_post() {
+        // Get the post data
+        $email = $this->input->post('email');
+        $password = $this->input->post('password');
+
+        // Validate the post data
+        if (!empty($email) && !empty($password)) {
+
+            // Check if any user exists with the given credentials
+            $password_e = $this->general_library->encrypt_txt($password);
+            //Check Email And User
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'password' => $password_e));
+            if (!empty($register_user)) {
+                if ($register_user['status_id'] == 1) {
+                    unset($register_user['password']);
+                    unset($register_user['email_confirmed']);
+                    unset($register_user['status_id']);
+                    unset($register_user['facebook']);
+                    unset($register_user['instagram']);
+                    unset($register_user['twitter']);
+                    unset($register_user['soundcloud']);
+                    unset($register_user['youtube']);
+                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
+                } else {
+                    $this->error = 'User in PENDING Status, please confirm your email';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->error = 'Email or Password Incorrect';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            // Set the response and exit
+            $this->error = 'Provide email and password.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function generate_username($user_name = null) {
+        $streamy_username = (!empty($user_name)) ? strtolower(str_replace(' ', '', $user_name)) : uniqid();
+        $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $streamy_username));
+        if (empty($register_user)) {
+            return $streamy_username;
+        } else {
+            $streamy_username = strtolower(str_replace(' ', '', $user_name)) . rand(0, 100);
+            $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $streamy_username));
+            if (empty($register_user)) {
+                return $streamy_username;
+            } else {
+                return $this->generate_username($streamy_username);
+            }
+        }
+    }
+
+    public function registration_post() {
+        // Get the post data
+        $email = strip_tags($this->input->post('email'));
+        $password = $this->input->post('password');
+        $user_name = strip_tags($this->input->post('user_name'));
+        if (!empty($email) && !empty($user_name) && !empty($password)) {
+            //Check Email And User
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+            if (empty($register_user)) {
+                $user_name = $this->generate_username($user_name);
+                $user = array();
+                $user['user_name'] = $user['display_name'] = $user['url'] = strtolower(str_replace(' ', '', $user_name));
+                $user['email'] = $email;
+                $user['password'] = $this->general_library->encrypt_txt($password);
+                $user['plan_id'] = '1';
+                $user['status_id'] = '3';
+                $user['platform'] = 'LinkStream';
+                $user['id'] = $this->User_model->insert_user($user);
+                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+                $this->register_email($user);
+                unset($user['password']);
+                //unset($register_user['email_confirmed']);
+                unset($user['status_id']);
+                // unset($register_user['facebook']);
+                // unset($register_user['instagram']);
+                //unset($register_user['twitter']);
+                // unset($register_user['soundcloud']);
+                // unset($register_user['youtube']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
+            } else {
+                $this->error = 'The given email already exists.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide complete user info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function register_email($user) {
+        //$var = $this->session->userdata;
+        // $email = $var['register-email'];
+        //$id = $var['register-id'];
+        //$user = $var['register-user'];
+        $email_e = $this->general_library->urlsafe_b64encode($user['email']);
+        $id_e = $this->general_library->urlsafe_b64encode($user['id']);
+        $user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
+        $url = base_url() . 'app/email_confirm/' . $email_e . '/' . $id_e . '/' . $user_e;
+        $body = $this->load->view('email/email_register', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
+        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinksStream", $body);
+    }
+
+    public function instagram_post() {
+        $user_id = strip_tags($this->input->post('user_id'));
+        $instagram_username = strip_tags($this->input->post('instagram_username'));
+        $access_token = strip_tags($this->input->post('access_token'));
+        $instagram_avatar = strip_tags($this->input->post('instagram_avatar_url'));
+        if (!empty($user_id) && !empty($instagram_username) && !empty($instagram_username)) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
+            if (empty($register_user)) {
+                //Create Account
+                $user = array();
+                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($instagram_username)) ? $this->generate_username($instagram_username) : $this->generate_username();
+                $user['email'] = '';
+                $user['plan_id'] = '1';
+                $user['platform'] = 'IG';
+                $user['platform_id'] = $user_id;
+                $user['platform_token'] = $access_token;
+                //$user['image'] = $instagram_avatar;
+                $user['image'] = '';
+                if (!empty($instagram_avatar)) {
+                    $content = file_get_contents($instagram_avatar);
+                    //
+                    $image_name = time() . '.png';
+                    // upload cropped image to server 
+                    $source = $this->get_temp_dir();
+                    file_put_contents($source . '/' . $image_name, $content);
+                    //SAVE S3
+                    $bucket = 'files.link.stream';
+                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    $dest_folder = 'Profile';
+                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $s3_source = $source . '/' . $image_name;
+                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    //$response['file_name'] = $image_name;
+                    unlink($source . '/' . $image_name);
+                    $user['image'] = $image_name;
+                }
+                $user['status_id'] = '3';
+                $user['id'] = $this->User_model->insert_user($user);
+                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
+            } else {
+                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
+                unset($register_user['password']);
+                unset($register_user['email_confirmed']);
+                unset($register_user['status_id']);
+                unset($register_user['facebook']);
+                unset($register_user['instagram']);
+                unset($register_user['twitter']);
+                unset($register_user['soundcloud']);
+                unset($register_user['youtube']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide complete user info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function google_post() {
+        //$this->output->set_content_type('application/json');
+        $token = $this->input->post('id_token');
+        if (empty($token)) {
+            $this->error = 'Missing token';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/tokeninfo?id_token=' . $token);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $token_info_json = curl_exec($ch);
+            curl_close($ch);
+            $token_info = json_decode($token_info_json);
+        } catch (Exception $e) {
+            $this->error = $e;
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+        if (isset($token_info->email, $token_info->aud) && $token_info->aud == GOOGLE_LOGIN_CLIENT_ID) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'Google', 'platform_id' => $token_info->sub));
+            if (empty($register_user)) {
+                //Create Account
+                $user = array();
+                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                $user['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
+                $user['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
+                $user['email'] = (!empty($token_info->email)) ? $token_info->email : '';
+                $user['plan_id'] = '1';
+                $user['platform'] = 'Google';
+                $user['platform_id'] = $token_info->sub;
+                $user['platform_token'] = $token;
+                $user['image'] = '';
+                if (!empty($token_info->picture)) {
+                    $content = file_get_contents($token_info->picture);
+                    //
+                    $image_name = time() . '.png';
+                    // upload cropped image to server 
+                    $source = $this->get_temp_dir();
+                    file_put_contents($source . '/' . $image_name, $content);
+                    //SAVE S3
+                    $bucket = 'files.link.stream';
+                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    $dest_folder = 'Profile';
+                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $s3_source = $source . '/' . $image_name;
+                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    //$response['file_name'] = $image_name;
+                    unlink($source . '/' . $image_name);
+                    $user['image'] = $image_name;
+                }
+                //$user['image'] = $token_info->picture;
+                $user['status_id'] = '3';
+                $user['email_confirmed'] = '1';
+                $user['id'] = $this->User_model->insert_user($user);
+                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
+            } else {
+                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
+                unset($register_user['password']);
+                unset($register_user['email_confirmed']);
+                unset($register_user['status_id']);
+                unset($register_user['facebook']);
+                unset($register_user['instagram']);
+                unset($register_user['twitter']);
+                unset($register_user['soundcloud']);
+                unset($register_user['youtube']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
+            }
+            return $this->output->set_output(json_encode(['success' => true]));
+        } else {
+            $this->error = 'Invalid token';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+}

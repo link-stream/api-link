@@ -1,0 +1,117 @@
+/*------------------------------------*\
+    #Footer
+\*------------------------------------*/
+footer {
+	background-color: $color-white;
+
+	.footer-top {
+		padding: 80px 0 65px 0;
+
+		.footer-logo {
+			margin-bottom: 36px;
+		}
+
+		.footer-info {
+			p {
+				color: $color-heading;
+				font-size: 18px;
+				margin-bottom: 16px;
+
+				&:last-of-type {
+					margin-bottom: 0;
+				}
+			}
+		}
+
+		.footer-menu {
+			text-align: right;
+
+			a {
+				font-size: 16px;
+				font-weight: 400;
+				color: $color-heading;
+				margin-right: 30px;
+				text-transform: capitalize;
+
+				&:last-of-type {
+					margin-right: 0;
+				}
+
+				&:hover {
+					color: $color-theme;
+				}
+			}
+		}
+
+		.footer-social {
+			text-align: right;
+
+			a {
+				font-size: 16px;
+				color: $color-heading;
+				margin-right: 20px;
+				display: inline-block;
+
+				&:hover {
+					color: $color-theme;
+				}
+
+				&:last-of-type {
+					margin-right: 0;
+				}
+
+			}
+		}
+	}
+
+	.footer-bottom {
+		hr {
+			border-top: 1px solid #eeeeee;
+			margin: 0
+		}
+
+		text-align: center;
+
+		.footer-copyright {
+			padding-top: 30px;
+			padding-bottom: 30px;
+			color: $color-body;
+			font-size: 16px;
+			font-weight: 400;
+			line-height: 19px;
+			text-transform: capitalize;
+		}
+
+
+	}
+
+}
+
+@media only screen and (max-width : 991px) {
+
+	footer {
+
+		padding-top: 60px;
+
+		.footer-top {
+			padding-top: 0;
+
+			.footer-menu {
+				text-align: center;
+				line-height: 30px;
+				margin-bottom: 20px;
+
+				a {
+					margin-right: 15px
+				}
+			}
+
+			.footer-social {
+				margin-top: 20px;
+				text-align: center;
+			}
+		}
+
+		text-align: center;
+	}
+}

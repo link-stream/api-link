@@ -1,0 +1,40 @@
+$color-theme: #664ffa;
+$color-hover: darken($color-theme, 10%);
+$color-body: #a0a0ba;
+$color-heading: #6262a0;
+$color-secondary: #e0e0e0;
+$color-white: #ffffff;
+$color-black: #000000;
+$color-gray: #fafaff;
+
+$baseline: 20px;
+
+$line-height-base: 1.5;
+$line-height-content: 1.8;
+$font-body: 'Roboto',
+sans-serif;
+$font-heading: 'Roboto',
+sans-serif;
+$font-secondary: 'Roboto',
+sans-serif;
+$decoration-base: none;
+
+$font-size-base: 13px;
+$font-size-h1: 52px;
+$font-size-h2: 42px;
+$font-size-h3: 38px;
+$font-size-h4: 32px;
+$font-size-h5: 24px;
+$font-size-h6: 18px;
+
+
+$background-base: no-repeat center center fixed;
+$background-size-base: cover;
+
+
+$awesome: fontawesome;
+
+
+$extraSmall: "only screen and (min-width : 320px)and (max-width : 767px)";
+$small: "only screen and (min-width : 768px) and (max-width : 991px)";
+$medium: "only screen and (min-width : 992px) and (max-width : 1200px)";

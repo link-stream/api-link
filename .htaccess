@@ -1,0 +1,25 @@
+DirectoryIndex index.php
+RewriteEngine on
+
+RewriteRule ^robots.txt$ robots.php [L]
+RewriteRule ^sitemap.xml$ sitemap.php [L]
+
+RewriteCond %{REQUEST_URI} !^/index.php$
+RewriteCond $1 !^(index\.php|(.*)\.swf|assets|upload|forums|images|css|downloads|jquery|js|robots\.txt|favicon\.ico|blog)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ ./index.php?$1 [L,QSA]
+
+
+#AuthType Basic
+#AuthName "Password Protected Area"
+##AuthUserFile /Applications/XAMPP/xamppfiles/htdocs/link.stream/.htpasswd
+#AuthUserFile /var/www/html/.htpasswd
+#Require valid-user
+
+#<If "%{SERVER_NAME} == 'link-dev.link.stream'">
+#    AuthType Basic
+#    AuthName "Password Protected Area"
+#    AuthUserFile /var/www/html/.htpasswd
+#    Require valid-user
+#</If>

@@ -1,0 +1,252 @@
+/*------------------------------------*\
+    #Hero
+\*------------------------------------*/
+.hero {
+	padding-top: 235px;
+	padding-bottom: 140px;
+	background-image: url(../images/background/bg-1.png);
+	background-repeat: no-repeat;
+
+	.row-content {
+		padding-top: 45px;
+	}
+
+	.hero-headline {
+		padding-top: 40px;
+		color: $color-heading;
+		font-size: 45px;
+		font-weight: 500;
+		line-height: 60px;
+		margin-bottom: 25px;
+	}
+
+	.hero-bio {
+		color: #ababc7;
+		font-family: $font-body;
+		font-size: 18px;
+		font-weight: 400;
+		line-height: 30px;
+		margin-bottom: 33px;
+	}
+
+}
+
+/* Hero Action */
+.hero-action {
+	.btn {
+		width: 190px;
+	}
+
+	form {
+		margin-bottom: 0;
+
+		.form-control {
+			width: 300px;
+			height: 55px;
+			line-height: 55px;
+			max-width: 100%;
+			margin-right: 30px;
+			margin-bottom: 0;
+			@include rounded(4px);
+			@include prefix (box-shadow, 0 3px 10px rgba(54, 54, 54, 0.11), moz webkit);
+		}
+	}
+}
+
+.video-button {
+	margin-left: 30px;
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 28px;
+
+	.popup-video {
+
+		color: $color-body;
+
+		.btn-player {
+			margin-left: 10px;
+			background-color: #ffffff;
+			color: #000;
+			text-align: center;
+			display: inline-block;
+			position: relative;
+			width: 40px;
+			height: 40px;
+			line-height: 36px;
+			border-radius: 50%;
+			border: 1px solid #cccced;
+
+
+		}
+
+		&:hover {
+			color: $color-theme;
+
+			.btn-player {
+				background-color: $color-theme;
+				border-color: $color-theme;
+			}
+
+		}
+
+	}
+}
+
+/* Slider Form */
+.hero-form {
+	padding: 50px 60px;
+	background: $color-white;
+	@include prefix(box-shadow, 0 10px 40px 0 rgba(32, 62, 84, 0.08), moz webkit);
+	@include rounded(4px);
+
+	h6 {
+		font-size: 20px;
+		font-weight: 500;
+		line-height: 1;
+		margin-bottom: 50px;
+		text-align: center;
+		text-transform: capitalize;
+	}
+
+	p {
+		font-size: 20px;
+		font-weight: 400;
+		margin-bottom: 50px;
+		text-align: center;
+	}
+
+	form {
+		label.holder {
+			font-size: 14px;
+			color: $color-theme;
+		}
+
+		.form-control {
+			height: 42px;
+			line-height: 40px;
+			@include rounded(4px);
+			border: solid 1px #e6e6f0;
+			background-color: #f7f6ff
+		}
+
+		.btn {
+			height: 50px;
+			line-height: 50px;
+		}
+	}
+
+	.form-notes {
+		text-align: center;
+		font-size: 12px;
+		font-weight: 400;
+		margin-top: 15px;
+
+		a {
+			color: $color-theme;
+			text-decoration: underline;
+
+			&:hover {
+				color: $color-heading;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width : 767px) {
+	.hero {
+		.hero-action {
+			.btn {
+				display: block;
+				margin: 15px auto;
+			}
+
+			.video-button {
+				margin-left: 0;
+			}
+
+			form {
+				text-align: center;
+
+				.form-control {
+					margin-bottom: 0;
+					margin-right: 0;
+					max-width: 280px;
+					margin: 15px 0;
+				}
+
+				.btn {
+					margin: 15px 0;
+				}
+			}
+		}
+
+		.hero-form {
+			padding: 30px;
+
+			form {
+				text-align: left;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width : 991px) {
+	.hero {
+		padding-top: 140px;
+		text-align: center;
+
+		.row-content {
+			padding-top: 0;
+		}
+
+		.hero-headline {
+			padding-top: 0;
+			font-size: 28px;
+			line-height: 33px;
+		}
+
+		.hero-bio {
+			font-size: 15px;
+			line-height: 26px;
+		}
+
+		.hero-img {
+			img {
+				margin-top: 40px;
+				max-width: 100%;
+				height: auto;
+			}
+		}
+
+		.hero-action {
+
+			form {
+				justify-content: center;
+			}
+		}
+	}
+}
+
+@media only screen and (min-width : 992px) and (max-width :1200px) {
+	.hero {
+		.row-content {
+			padding-top: 0;
+		}
+
+		.hero-headline {
+			padding-top: 0;
+			font-size: 36px;
+			line-height: 45px;
+		}
+
+		.hero-action {
+			form {
+
+				.form-control {
+					width: 230px
+				}
+			}
+		}
+	}
+
+}
