@@ -72,6 +72,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             <div id="body">
                 <p>The page you are looking at is a guide of the LinkStream API.</p>
+                <h3>Endpoints</h3>
+                <p><?= base_url() ?>v1/</p>                
+                <h3>Authentication</h3>
+                <p>The LinkStream API uses Basic HTTP authentication. Use your username and password provide by LinkStream.</p>   
+                <p>The LinkStream Api also requires that X-API-KEY be sent in the header. Use your X-API-KEY provide by LinkStream.</p>  
+                <p>The LinkStream Api also requires that Content-Type: application/x-www-form-urlencoded be sent in the header.</p>  
                 <hr>
                 <h3>Login:</h3>
                 <code>POST <?= base_url() ?>v1/users/login</code>
@@ -245,8 +251,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                 <hr>
+
+                <hr>
                 <h3>Google Login/Register:</h3>
                 <code>POST <?= base_url() ?>v1/users/google</code>
                 <h3>Parameters:</h3>
