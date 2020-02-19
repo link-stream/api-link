@@ -312,7 +312,7 @@ class Users extends RestController {
         $user_id = strip_tags($this->input->post('user_id'));
         $instagram_username = strip_tags($this->input->post('instagram_username'));
         $access_token = strip_tags($this->input->post('access_token'));
-        $instagram_avatar = strip_tags($this->input->post('instagram_avatar_url'));
+        //$instagram_avatar = strip_tags($this->input->post('instagram_avatar_url'));
         if (!empty($user_id) && !empty($instagram_username) && !empty($instagram_username)) {
             //Check User
             $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
@@ -326,6 +326,7 @@ class Users extends RestController {
                 $user['platform_id'] = $user_id;
                 $user['platform_token'] = $access_token;
                 //$user['image'] = $instagram_avatar;
+                $instagram_avatar = (!empty($instagram_username)) ? $this->instagram_get_photo($instagram_username) : '';
                 $user['image'] = '';
                 if (!empty($instagram_avatar)) {
                     $content = file_get_contents($instagram_avatar);
@@ -365,6 +366,14 @@ class Users extends RestController {
             $this->error = 'Provide complete user info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function instagram_get_photo($user_name) {
+        $getValues = file_get_contents('https://www.instagram.com/' . $user_name . '/?__a=1');
+        $jsonObj = json_decode($getValues, TRUE);
+        $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
+        //print_r($photoURL);
+        return $photoURL;
     }
 
     public function google_post() {
@@ -441,6 +450,17 @@ class Users extends RestController {
             $this->error = 'Invalid token';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function get_temp_dir() {
+        $cronDir = sys_get_temp_dir() . '';
+        if ($_SERVER['HTTP_HOST'] == 'localhost') {
+            $cronDir = FCPATH . 'tmp';
+        }
+        if (!is_dir($cronDir)) {
+            mkdir($cronDir, 0777, true);
+        }
+        return $cronDir;
     }
 
 }
