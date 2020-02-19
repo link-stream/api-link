@@ -86,7 +86,7 @@ class Home extends CI_Controller {
             }
         } else {
             $data = array();
-            $this->load->view($this->loc_path . '/index', $data);
+            $this->load->view($this->loc_path . '/welcome_message', $data);
         }
         //$this->load->view($this->loc_path . '/index');
     }
