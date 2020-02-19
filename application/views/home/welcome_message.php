@@ -78,8 +78,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <p><?= base_url() ?>v1/</p>                
                 <h3>Authentication</h3>
                 <p>The LinkStream API uses Basic HTTP authentication. Use your username and password provide by LinkStream.</p>   
-                <p>The LinkStream Api requires that X-API-KEY be sent in the header. Use your X-API-KEY provide by LinkStream.</p>  
-                <p>The LinkStream Api requires that Content-Type: application/x-www-form-urlencoded be sent in the header.</p>  
+                <p>The LinkStream API requires that X-API-KEY be sent in the header. Use your X-API-KEY provide by LinkStream.</p>  
+                <p>The LinkStream API requires that Content-Type: application/x-www-form-urlencoded be sent in the header.</p>  
                 <hr>
                 <h3>Login:</h3>
                 <code>POST <?= base_url() ?>v1/users/login</code>
