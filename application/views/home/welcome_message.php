@@ -5,7 +5,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <head>
         <meta charset="utf-8">
         <title>Welcome to LinkStream API</title>
-
+        <link rel="icon" href="<?= HTTP_ASSETS ?>images/favicon/streamy_favicon_color.png" type="image/png">
+        <link rel="apple-touch-icon" href="<?= HTTP_ASSETS ?>images/favicon/streamy_favicon_color.png">
+        <link rel="shortcut icon" href="<?= HTTP_ASSETS ?>images/favicon/streamy_favicon_color_BkH_icon.ico" type="image/x-icon">
         <style type="text/css">
 
             ::selection { background-color: #E13300; color: white; }
@@ -82,8 +84,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Login:</h3>
                 <code>POST <?= base_url() ?>v1/users/login</code>
                 <h3>Parameters:</h3>
-                <p>email</p>
-                <p>password</p>
+                <ul>
+                    <li>email</li>
+                    <li>password</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -120,9 +124,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Registration:</h3>
                 <code>POST <?= base_url() ?>v1/users/registration</code>
                 <h3>Parameters:</h3>
-                <p>email</p>
-                <p>password</p>
-                <p>user_name</p>
+                <ul>
+                    <li>email</li>
+                    <li>password</li>
+                    <li>user_name</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -150,8 +156,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Availability:</h3>
                 <code>GET <?= base_url() ?>v1/users/availability/{type}/{value}</code>
                 <h3>Parameters:</h3>
-                <p>Type = 'username or email'</p>
-                <p>Value = Example 'a@link.stream or paolofq'</p>
+                <ul>
+                    <li>Type = 'username or email'</li>
+                    <li>Value = Example 'a@link.stream or paolofq'</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -224,9 +232,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Instagram Login/Register:</h3>
                 <code>POST <?= base_url() ?>v1/users/instagram</code>
                 <h3>Parameters:</h3>
-                <p>user_id (Instagram ID - Example: 17841400070704000)</p>
-                <p>instagram_username</p>
-                <p>platform_token (Instagram Token ID - Example: IGQVJXS1o5cktiU2NhTEp1YTJJamVrempkSnVlMkJTb1NoekY0R1ZAWSXdHLVlXUzYxeHpGUmRDdWhfbDNET19rc2k3UXdYSTBpY09Ga)</p>
+                <ul>
+                    <li>user_id (Instagram ID - Example: 17841400070704000)</li>
+                    <li>instagram_username</li>
+                    <li>platform_token (Instagram Token ID - Example: IGQVJXS1o5cktiU2NhTEp1YTJJamVrempkSnVlMkJTb1NoekY0R1ZAWSXdHLVlXUzYxeHpGUmRDdWhfbDNET19rc2k3UXdYSTBpY09Ga)</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -256,7 +266,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Google Login/Register:</h3>
                 <code>POST <?= base_url() ?>v1/users/google</code>
                 <h3>Parameters:</h3>
-                <p>platform_token (Google Token ID - Example: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZWZlYTFmNjZlODdiYjM2YzJlYTA5ZDgzNzMzOGJkZDgxMDM1M2IiLCJ0eXAiOiJKV1QifQ)</p>
+                <ul>
+                    <li>platform_token (Google Token ID - Example: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZWZlYTFmNjZlODdiYjM2YzJlYTA5ZDgzNzMzOGJkZDgxMDM1M2IiLCJ0eXAiOiJKV1QifQ)</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -283,15 +295,50 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-
+                <hr>
+                <h3>Update User Info:</h3>
+                <code>PUT <?= base_url() ?>v1/users/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_name</li>
+                    <li>first_name</li>
+                    <li>last_name</li>
+                    <li>display_name</li>
+                    <li>email</li>
+                    <li>email_confirmed</li>
+                    <li>password</li>
+                    <li>status_id</li>
+                    <li>plan_id</li>
+                    <li>url</li>
+                    <li>phone</li>
+                    <li>image</li>
+                    <li>banner</li>
+                    <li>about</li>
+                    <li>email_paypal</li>
+                    <li>bio</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The user info has been updated successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>
                 <code>POST <?= base_url() ?>v1/users/example</code>
                 <h3>Parameters:</h3>
-                <p>a</p>
-                <p>b</p>
+                 <ul>
+                    <li></li>
+                    <li></li>
+                </ul>
                  <h3>Response Example:</h3>
                 <p>
                 <?php
