@@ -75,4 +75,20 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_user_status() {
+        $this->db->from('st_user_status');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+    
+    public function fetch_user_plan() {
+        $this->db->from('st_user_plan');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

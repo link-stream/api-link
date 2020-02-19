@@ -330,6 +330,69 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+
+                <hr>
+                <h3>Get plan information:</h3>
+                <code>GET <?= base_url() ?>v1/users/plan</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "plan": "Free Client",
+            "price": "0.00"
+        },
+        {
+            "id": "2",
+            "plan": "Pro Client",
+            "price": "4.95"
+        },
+        {
+            "id": "3",
+            "plan": "Pro Client - Free",
+            "price": "0.00"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Get status information:</h3>
+                <code>GET <?= base_url() ?>v1/users/status</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "status": "ACTIVE"
+        },
+        {
+            "id": "2",
+            "status": "INACTIVE"
+        },
+        {
+            "id": "3",
+            "status": "PENDING"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>

@@ -463,4 +463,14 @@ class Users extends RestController {
         return $cronDir;
     }
 
+    public function status_get() {
+        $status = $this->User_model->fetch_user_status();
+        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $status), RestController::HTTP_OK);
+    }
+
+    public function plan_get() {
+        $status = $this->User_model->fetch_user_plan();
+        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $status), RestController::HTTP_OK);
+    }
+
 }
