@@ -311,9 +311,9 @@ class Users extends RestController {
     public function instagram_post() {
         $user_id = strip_tags($this->input->post('user_id'));
         $instagram_username = strip_tags($this->input->post('instagram_username'));
-        $access_token = strip_tags($this->input->post('access_token'));
+        $access_token = strip_tags($this->input->post('platform_token'));
         //$instagram_avatar = strip_tags($this->input->post('instagram_avatar_url'));
-        if (!empty($user_id) && !empty($instagram_username) && !empty($instagram_username)) {
+        if (!empty($user_id) && !empty($instagram_username) && !empty($access_token)) {
             //Check User
             $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
             if (empty($register_user)) {
@@ -378,7 +378,7 @@ class Users extends RestController {
 
     public function google_post() {
         //$this->output->set_content_type('application/json');
-        $token = $this->input->post('id_token');
+        $token = $this->input->post('platform_token');
         if (empty($token)) {
             $this->error = 'Missing token';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
