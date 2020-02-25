@@ -233,8 +233,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <code>POST <?= base_url() ?>v1/users/instagram</code>
                 <h3>Parameters:</h3>
                 <ul>
-                    <li>user_id (Instagram ID - Example: 17841400070704000)</li>
-                    <li>instagram_username</li>
+                    <!--                    <li>user_id (Instagram ID - Example: 17841400070704000)</li>
+                                        <li>instagram_username</li>-->
                     <li>platform_token (Instagram Token ID - Example: IGQVJXS1o5cktiU2NhTEp1YTJJamVrempkSnVlMkJTb1NoekY0R1ZAWSXdHLVlXUzYxeHpGUmRDdWhfbDNET19rc2k3UXdYSTBpY09Ga)</li>
                 </ul>
                 <h3>Response Example:</h3>
