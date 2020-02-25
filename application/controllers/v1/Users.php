@@ -315,7 +315,8 @@ class Users extends RestController {
 //        //$instagram_avatar = strip_tags($this->input->post('instagram_avatar_url'));
 //        
         $code = $this->input->post('code');
-        $auth_response = $this->instagram_api->authorize($code);
+        $redirect_url = $this->input->post('redirect_url');
+        $auth_response = $this->instagram_api->authorize_2($code, $redirect_url);
         if (!empty($auth_response->error_type)) {
 //            print_r($auth_response->error_type);
 //            echo '<br>';

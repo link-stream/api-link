@@ -236,6 +236,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <!--                    <li>user_id (Instagram ID - Example: 17841400070704000)</li>
                                         <li>instagram_username</li>-->
                     <li>code (Instagram Code)</li>
+                    <li>redirect_url</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

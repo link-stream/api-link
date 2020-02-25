@@ -137,11 +137,15 @@ class Instagram_api {
      */
 
     function authorize($code) {
-
         $authorization_url = 'https://api.instagram.com/oauth/access_token';
-
         //return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);
         return $this->__apiCall($authorization_url, "app_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&app_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);
+    }
+
+    function authorize_2($code, $redirect_url) {
+        $authorization_url = 'https://api.instagram.com/oauth/access_token';
+        //return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);
+        return $this->__apiCall($authorization_url, "app_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&app_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $redirect_url . "&code=" . $code);
     }
 
     function getUserInfo($user_id, $fields, $access_token) {
@@ -151,15 +155,15 @@ class Instagram_api {
         //return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);
         return $this->__apiCall($authorization_url);
     }
-    
-     function getUserInfoMe($fields, $access_token) {
+
+    function getUserInfoMe($fields, $access_token) {
 
         $authorization_url = 'https://graph.instagram.com/me?fields=' . $fields . '&access_token=' . $access_token;
         //print_r($authorization_url);
         //return $this->__apiCall($authorization_url, "client_id=" . $this->codeigniter_instance->config->item('instagram_client_id') . "&client_secret=" . $this->codeigniter_instance->config->item('instagram_client_secret') . "&grant_type=authorization_code&redirect_uri=" . $this->codeigniter_instance->config->item('instagram_callback_url') . "&code=" . $code);
         return $this->__apiCall($authorization_url);
     }
-    
+
     function getUserMedia($fields, $access_token) {
 
         $authorization_url = 'https://graph.instagram.com/me/media?fields=' . $fields . '&access_token=' . $access_token;
