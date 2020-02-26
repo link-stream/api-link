@@ -7,7 +7,7 @@ $data['page'] = 'Dashboard';
 
 <body class="text-left">
     <div class="app-admin-wrap layout-sidebar-large">
-       Test: 12
+       Test: 14
     </div>
 
     <?php $this->load->view('app/_inc/footer', $data); ?>

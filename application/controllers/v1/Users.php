@@ -3,10 +3,10 @@
 //header('Access-Control-Allow-Origin: *');
 //header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 //header('Access-Control-Allow-Headers: *');
-//header('Access-Control-Allow-Credentials: true');
-header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
+////header('Access-Control-Allow-Credentials: true');
+//header('Access-Control-Allow-Origin: *');
+//header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+//header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
 
 
 
@@ -24,9 +24,9 @@ class Users extends RestController {
     private $bucket;
 
     public function __construct() {
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
+//        header('Access-Control-Allow-Origin: *');
+//        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+//        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
         parent::__construct();
         $this->error = '';
         $this->bucket = 'files.link.stream';
