@@ -1996,5 +1996,42 @@ class App extends CI_Controller {
         echo json_encode(array('status' => 'Success', 'genres' => $genres));
     }
 
+    public function test_api() {
+        $response = array();
+        $this->method = 'Contact';
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("X-API-KEY:F5CE12A3-27BD-4186-866C-D9D019E85076"));
+        curl_setopt($ch, CURLOPT_URL, 'https://api-dev.link.stream/v1/users/login');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, "linkstream:LinkStream@2020");
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, 'email=pa@link.stream&password=12345');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('email'=>'pa@link.stream','password'=>'12345'));
+        
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $object = json_decode($output);
+        print_r($object);
+//        if (!empty($object)) {
+//            $response['IsSuccess'] = true;
+//            $response['Data'] = json_decode($object, true);
+//            $response['Data']['vl'] = $id;
+//        } else {
+//            $response['IsSuccess'] = false;
+//            $response['Messages'] = 'Error connecting to the API';
+//        }
+//        return $response;
+    }
+    
+    public function test_api_js(){
+        $data = array();
+        $this->load->view($this->loc_path . 'api_test', $data);
+    }
+
     //END NEW FUNCTIONS 02/2020
 }
