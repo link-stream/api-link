@@ -25,6 +25,13 @@ RewriteRule ^(.*)$ ./index.php?$1 [L,QSA]
 #</If>
 
 # Apache config
-<FilesMatch ".(eot|ttf|otf|woff)">
+#<FilesMatch ".(eot|ttf|otf|woff)">
+#    Header set Access-Control-Allow-Origin "*"
+#</FilesMatch>
+
+<FilesMatch ".(ttf|otf|eot|woff|woff2)$">
+  <IfModule mod_headers.c>
+    Allow from all
     Header set Access-Control-Allow-Origin "*"
+  </IfModule>
 </FilesMatch>
