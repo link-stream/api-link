@@ -544,7 +544,7 @@ $config['rest_language'] = 'english';
   | will access it through a browser
   |
  */
-$config['check_cors'] = false;
+$config['check_cors'] = TRUE;
 
 /*
   |--------------------------------------------------------------------------
