@@ -16,6 +16,7 @@ class Users extends RestController {
     public function __construct() {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Access-Control-Allow-Headers: *');
         parent::__construct();
         $this->error = '';
         $this->bucket = 'files.link.stream';
