@@ -23,3 +23,8 @@ RewriteRule ^(.*)$ ./index.php?$1 [L,QSA]
 #    AuthUserFile /var/www/html/.htpasswd
 #    Require valid-user
 #</If>
+
+# Apache config
+<FilesMatch ".(eot|ttf|otf|woff)">
+    Header set Access-Control-Allow-Origin "*"
+</FilesMatch>
