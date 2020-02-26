@@ -24,19 +24,6 @@ RewriteRule ^(.*)$ ./index.php?$1 [L,QSA]
 #    Require valid-user
 #</If>
 
-# Apache config
-#<FilesMatch ".(eot|ttf|otf|woff)">
-#    Header set Access-Control-Allow-Origin "*"
-#</FilesMatch>
-
-#<FilesMatch ".(ttf|otf|eot|woff|woff2)$">
-#  <IfModule mod_headers.c>
-#    Allow from all
-#    Header set Access-Control-Allow-Origin "*"
-#  </IfModule>
-#</FilesMatch>
-
-
 <IfModule mod_headers.c>
   <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
     Header set Access-Control-Allow-Origin "*"
