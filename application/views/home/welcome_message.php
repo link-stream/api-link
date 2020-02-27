@@ -427,6 +427,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>Resend Email Confirm:</h3>
+                <code>POST <?= base_url() ?>v1/users/resend_email_confirm</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>

@@ -329,11 +329,30 @@ class Users extends RestController {
                     $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
                 }
             } else {
-                $this->error = 'User does not exist';
+                $this->error = 'User Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } else {
             $this->error = 'Provide complete info';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function resend_email_confirm_post() {
+        //$data = array();
+        $id = $this->input->post('user_id');
+        if (!empty($id)) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_id($id);
+            if (!empty($register_user)) {
+                $this->register_email($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

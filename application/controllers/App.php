@@ -1406,7 +1406,9 @@ class App extends CI_Controller {
     }
 
     public function email_test() {
-        $this->general_library->send_ses('Paul Ferra', 'paul@link.stream', 'Streamy', 'noreply@link.stream', 'Email Test', 'Email Test: Body');
+        $data = array();
+        $body = $this->load->view('app/email/confirm-email', $data, true);
+        $this->general_library->send_ses('Paul Ferra', 'paul@link.stream', 'Streamy', 'noreply@link.stream', 'Email Test', $body);
     }
 
     public function my_linkstream_add() {
@@ -2011,8 +2013,8 @@ class App extends CI_Controller {
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, "linkstream:LinkStream@2020");
         //curl_setopt($ch, CURLOPT_POSTFIELDS, 'email=pa@link.stream&password=12345');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array('email'=>'pa@link.stream','password'=>'12345'));
-        
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('email' => 'pa@link.stream', 'password' => '12345'));
+
         $output = curl_exec($ch);
         curl_close($ch);
         $object = json_decode($output);
@@ -2027,8 +2029,8 @@ class App extends CI_Controller {
 //        }
 //        return $response;
     }
-    
-    public function test_api_js(){
+
+    public function test_api_js() {
         $data = array();
         $this->load->view($this->loc_path . 'api_test', $data);
     }
