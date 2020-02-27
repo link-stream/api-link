@@ -23,10 +23,3 @@ RewriteRule ^(.*)$ ./index.php?$1 [L,QSA]
 #    AuthUserFile /var/www/html/.htpasswd
 #    Require valid-user
 #</If>
-
-<IfModule mod_headers.c>
-  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font.css|css|js)$">
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Headers: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  </FilesMatch>
-</IfModule>

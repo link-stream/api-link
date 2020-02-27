@@ -1,15 +1,5 @@
 <?php
 
-//header('Access-Control-Allow-Origin: *');
-//header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-//header('Access-Control-Allow-Headers: *');
-////header('Access-Control-Allow-Credentials: true');
-//header('Access-Control-Allow-Origin: *');
-//header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-//header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
-
-
-
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
@@ -24,9 +14,6 @@ class Users extends RestController {
     private $bucket;
 
     public function __construct() {
-//        header('Access-Control-Allow-Origin: *');
-//        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-//        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, X-Requested-Wit, Authorizationh");
         parent::__construct();
         $this->error = '';
         $this->bucket = 'files.link.stream';
@@ -315,10 +302,39 @@ class Users extends RestController {
         //$user = $var['register-user'];
         $email_e = $this->general_library->urlsafe_b64encode($user['email']);
         $id_e = $this->general_library->urlsafe_b64encode($user['id']);
-        $user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
-        $url = base_url() . 'app/email_confirm/' . $email_e . '/' . $id_e . '/' . $user_e;
+        //$user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
+        $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
+        $url = $base . '/email_confirm/' . $email_e . '/' . $id_e;
         $body = $this->load->view('email/email_register', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
-        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinksStream", $body);
+        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
+    }
+
+    public function email_confirm_post() {
+        //$data = array();
+        $email_e = $this->input->post('param_1');
+        $id_e = $this->input->post('param_2');
+        if (!empty($email_e) && !empty($id_e)) {
+            $email = $this->general_library->urlsafe_b64decode($email_e);
+            $id = $this->general_library->urlsafe_b64decode($id_e);
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
+            if (!empty($register_user)) {
+                if ($register_user['email_confirmed'] == '1') {
+                    $this->error = 'Email already confirmed previously';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } else {
+                    $this->User_model->update_user($register_user['id'], array('email_confirmed' => '1'));
+                    $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Confirmed Email'));
+                    $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+                }
+            } else {
+                $this->error = 'User does not exist';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide complete info';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
     public function instagram_post() {

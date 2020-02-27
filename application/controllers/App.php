@@ -1709,7 +1709,7 @@ class App extends CI_Controller {
 
     public function email_register() {
         $data = array();
-        $this->load->view('email/email_register', $data);
+        $this->load->view('app/email/confirm-email', $data);
     }
 
     public function send_sms() {
