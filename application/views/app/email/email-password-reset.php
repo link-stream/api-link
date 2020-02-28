@@ -144,7 +144,7 @@
                             <a href="https://www.instagram.com/_linkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
                         </div>
                         <div align="center" class="all-rights" style="margin-top: 18px">©2020 LinkStream LLC. All Rights Reserved.</div>
-                        <div align="center" class="all-rights">You are receiving this email because you opted in via our website. You can&nbsp; <a href="#">update your preferences</a> &nbsp;or <a href="#">unsubscribe</a> from this list.</div>
+                        <div align="center" class="all-rights">You are receiving this email because you opted in via our website.</div>
                     </div>   
                 </td>  
             </tr>
