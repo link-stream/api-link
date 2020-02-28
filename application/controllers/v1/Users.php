@@ -307,7 +307,7 @@ class Users extends RestController {
         //$user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
         $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
         $url = $base . '/email-confirm/' . $email_e . '/' . $id_e;
-        $body = $this->load->view('app/email/confirm-email', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
+        $body = $this->load->view('app/email/email-confirm', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
         //$body = $this->load->view('email/email_register', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
         $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
     }
