@@ -82,7 +82,7 @@ class User_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function fetch_user_plan() {
         $this->db->from('st_user_plan');
         $query = $this->db->get();

@@ -21,6 +21,8 @@ class Users extends RestController {
         $this->load->model("User_model");
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
+        //Helpers
+        $this->load->helper('email');
     }
 
 //    public function _remap($method, $arguments = array()) {
@@ -315,8 +317,10 @@ class Users extends RestController {
         $email_e = $this->input->post('param_1');
         $id_e = $this->input->post('param_2');
         if (!empty($email_e) && !empty($id_e)) {
-            $email = $this->general_library->urlsafe_b64decode($email_e);
-            $id = $this->general_library->urlsafe_b64decode($id_e);
+            $email_decode = $this->general_library->urlsafe_b64decode($email_e);
+            $email = (valid_email($email_decode)) ? $email_decode : 'N';
+            $id_decode = $this->general_library->urlsafe_b64decode($id_e);
+            $id = (!empty($id_decode)) ? $id_decode : 'N';
             //Check User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
             if (!empty($register_user)) {
@@ -588,6 +592,85 @@ class Users extends RestController {
     public function plan_get() {
         $status = $this->User_model->fetch_user_plan();
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $status), RestController::HTTP_OK);
+    }
+
+    public function forgot_password_post() {
+        //$data = array();
+        $email = $this->input->post('email');
+        if (!empty($email)) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+            if (!empty($register_user)) {
+                $this->forgot_password_email($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Email.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function forgot_password_email($user) {
+        $email_e = $this->general_library->urlsafe_b64encode($user['email']);
+        $id_e = $this->general_library->urlsafe_b64encode($user['id']);
+        $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s', strtotime('+10 minutes'))));
+        $date_e = $this->general_library->urlsafe_b64encode($date);
+        $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
+        $url = $base . '/reset-password/' . $email_e . '/' . $id_e . '/' . $date_e;
+        $body = $this->load->view('app/email/email-password-reset', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
+        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
+    }
+
+    //https://dev-link-vue.link.stream/reset-password/cGF1bEBsaW5rLnN0cmVhbQ../MzU./MjAyMC0wMi0yOCAyMjoxMTozMw..
+    public function email_forgot_confirm_post() {
+        //$data = array();
+        $email_e = $this->input->post('param_1');
+        $id_e = $this->input->post('param_2');
+        $date_e = $this->input->post('param_3');
+        if (!empty($email_e) && !empty($id_e) && !empty($date_e)) {
+            $email_decode = $this->general_library->urlsafe_b64decode($email_e);
+            $id_decode = $this->general_library->urlsafe_b64decode($id_e);
+            $id = (!empty($id_decode)) ? $id_decode : 'N';
+            $email = (valid_email($email_decode)) ? $email_decode : 'N';
+            $date = $this->general_library->urlsafe_b64decode($date_e);
+            //print_r('id' . $id);
+            //print_r('date' . $date);
+            //exit;
+            if ($date >= date("Y-m-d H:i:s")) {
+                //Check User
+                $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
+                if (!empty($register_user)) {
+                    $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+                } else {
+                    $this->error = 'User Not Found.';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->error = 'Your link has expired.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
+            if (!empty($register_user)) {
+                if ($register_user['email_confirmed'] == '1') {
+                    $this->error = 'Email already confirmed previously';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } else {
+                    $this->User_model->update_user($register_user['id'], array('email_confirmed' => '1'));
+                    $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Confirmed Email'));
+                    $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+                }
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide complete info';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
 }

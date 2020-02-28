@@ -446,6 +446,71 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Forgot Password:</h3>
+                <code>POST <?= base_url() ?>v1/users/forgot_password</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>email</li>
+                    <li></li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                    OR
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "false",
+    "env": "dev",
+    "error": "User Not Found."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+
+
+                <hr>
+                <h3>Email Forgot Confirm:</h3>
+                <code>POST <?= base_url() ?>v1/users/email_forgot_confirm</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>param_1</li>
+                    <li>param_2</li>
+                    <li>param_3</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                    OR
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "false",
+    "env": "dev",
+    "error": "Your link has expired."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
 
                 <!-- EXAMPLE 
                 <hr>
