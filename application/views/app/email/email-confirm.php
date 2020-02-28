@@ -43,7 +43,7 @@
             }
             .linkstream {	
                 height: 33px;	
-                width: 225px;	
+                width: 230px;	
                 color: #FFFFFF;	
                 font-family: Montserrat;	
                 font-size: 26.6px;	
@@ -104,7 +104,7 @@
             }
             .instagram-txt {
                 height: 26px;	
-                width: 187px;	
+                width: 210px;	
                 color: #333333;	
                 font-family: "Source Sans Pro";	
                 font-size: 16px;	

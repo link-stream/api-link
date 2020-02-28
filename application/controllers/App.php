@@ -1405,12 +1405,6 @@ class App extends CI_Controller {
         }
     }
 
-    public function email_test() {
-        $data = array();
-        $body = $this->load->view('app/email/confirm-email', $data, true);
-        $this->general_library->send_ses('Paul Ferra', 'paul@link.stream', 'Streamy', 'noreply@link.stream', 'Email Test', $body);
-    }
-
     public function my_linkstream_add() {
         if ($this->input->cookie($this->general_library->ses_name) != '') {
             $user = $this->general_library->get_cookie();
@@ -2036,4 +2030,16 @@ class App extends CI_Controller {
     }
 
     //END NEW FUNCTIONS 02/2020
+    //EMAIL TEST
+    public function email_template() {
+        $data = array();
+        $body = $this->load->view('app/email/email-template', $data, true);
+        $this->general_library->send_ses('Paul Ferra', 'paul@link.stream', 'Streamy', 'noreply@link.stream', 'Email Test', $body);
+    }
+
+    public function email_template_view() {
+        $data = array();
+        $this->load->view('app/email/email-template', $data);
+    }
+
 }

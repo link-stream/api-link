@@ -43,7 +43,7 @@
             }
             .linkstream {	
                 height: 33px;	
-                width: 225px;	
+                width: 230px;	
                 color: #FFFFFF;	
                 font-family: Montserrat;	
                 font-size: 26.6px;	
@@ -104,7 +104,7 @@
             }
             .instagram-txt {
                 height: 26px;	
-                width: 187px;	
+                width: 210px;	
                 color: #333333;	
                 font-family: "Source Sans Pro";	
                 font-size: 16px;	
@@ -133,7 +133,7 @@
         </div>
         <div align="center" class="sub-title">
             <h2>Making Your Streams Come True</h2>
-            <p class="content">LinkStream is going to bring social media and music together in 2020. Your password reset link would be available for 10 minutes. Please click the link below.</p>
+            <p class="content">Your password reset link will be available for 10 minutes. Please click on the link below.</p>
             <button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Reset</span></button></a>
         <div class="line"></div>
         <div class="instagram">

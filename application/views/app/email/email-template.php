@@ -43,7 +43,7 @@
             }
             .linkstream {	
                 height: 33px;	
-                width: 225px;	
+                width: 230px;	
                 color: #FFFFFF;	
                 font-family: Montserrat;	
                 font-size: 26.6px;	
@@ -104,7 +104,7 @@
             }
             .instagram-txt {
                 height: 26px;	
-                width: 187px;	
+                width: 210px;	
                 color: #333333;	
                 font-family: "Source Sans Pro";	
                 font-size: 16px;	
@@ -127,21 +127,21 @@
     <body>
         <div class="banner">
             <div align="center" class="logo-linkstream">
-                <img src="https://api-dev.link.stream//assets/images/logo/streamy_icon_RGB.png" alt="logo" class="stream-icon">
+                <img src="https://api-dev.link.stream/assets/images/logo/streamy_icon_RGB.png" alt="logo" class="stream-icon">
                 <span class="linkstream">LINKSTREAM</span>
             </div>            
         </div>
         <div align="center" class="sub-title">
             <h2>Making Your Streams Come True</h2>
             <p class="content">LinkStream is going to bring social media and music together in 2020. Thanks for registering, we are giving free Pro accounts to all early birds ;). Stay tuned in, we will notify you as soon as you can start your stream!</p>
-            <button class="btn-call"><span class="btn-text">CALL TO ACTION</span></button>
-            <div class="line"></div>
-            <div class="instagram">
-                <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
-                <span class="instagram-txt">Join the fam on Instagram!</span>
-            </div>
-            <div align="center" class="all-rights" style="margin-top: 18px">©2020 LinkStream LLC. All Rights Reserved.</div>
-            <div align="center" class="all-rights">You are receiving this email because you opted in via our website. You can&nbsp; <a href="#">update your preferences</a> &nbsp;or <a href="#">unsubscribe</a> from this list.</div>
-        </div>     
-    </body>
+            <button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Call to Action</span></button></a>
+        <div class="line"></div>
+        <div class="instagram">
+            <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
+            <a href="https://www.instagram.com/_linkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
+        </div>
+        <div align="center" class="all-rights" style="margin-top: 18px">©2020 LinkStream LLC. All Rights Reserved.</div>
+        <div align="center" class="all-rights">You are receiving this email because you opted in via our website. You can&nbsp; <a href="#">update your preferences</a> &nbsp;or <a href="#">unsubscribe</a> from this list.</div>
+    </div>     
+</body>
 </html>
