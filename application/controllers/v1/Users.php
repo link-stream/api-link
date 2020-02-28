@@ -626,7 +626,7 @@ class Users extends RestController {
     }
 
     //https://dev-link-vue.link.stream/reset-password/cGF1bEBsaW5rLnN0cmVhbQ../MzU.
-    public function email_forgot_confirm_post() {
+    public function password_reset_post() {
         //$data = array();
         $email_e = $this->input->post('param_1');
         $id_e = $this->input->post('param_2');

@@ -479,8 +479,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                 <hr>
-                <h3>Email Forgot Confirm:</h3>
-                <code>POST <?= base_url() ?>v1/users/email_forgot_confirm</code>
+                <h3>Password Reset:</h3>
+                <code>POST <?= base_url() ?>v1/users/password_reset</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>param_1</li>
