@@ -485,7 +485,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>param_1</li>
                     <li>param_2</li>
-                    <li>param_3</li>
+                    <li>new_password</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -503,7 +503,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "false",
     "env": "dev",
-    "error": "Your link has expired."
+    "error": "User Not Found."
 }');
                     echo '</pre>';
                     ?>
