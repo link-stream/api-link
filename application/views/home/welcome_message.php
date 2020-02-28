@@ -452,7 +452,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>email</li>
-                    <li></li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
