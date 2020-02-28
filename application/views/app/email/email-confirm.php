@@ -25,7 +25,7 @@
                 background: #000;
                 color: #fff;
                 height: 122px;
-                width: 100vw;  
+                __width: 100vw;   
                 display: flex;
                 justify-content: center;                      
             }
@@ -124,24 +124,30 @@
             }
         </style>
     </head>
-    <body>
-        <div class="banner">
-            <div align="center" class="logo-linkstream">
-                <img src="https://api-dev.link.stream/assets/images/logo/streamy_icon_RGB.png" alt="logo" class="stream-icon">
-                <span class="linkstream">LINKSTREAM</span>
-            </div>            
-        </div>
-        <div align="center" class="sub-title">
-            <h2>Confirm Email Address</h2>
-            <p class="content">Welcome to Streamy <?= (!empty($user) ? $user : '') ?>, Thanks for registering. Please confirm your email <?= (!empty($email) ? $email : '') ?> in the link below</p>
-            <button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Confirm Your Email</span></button></a>
-        <div class="line"></div>
-        <div class="instagram">
-            <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
-            <a href="https://www.instagram.com/_linkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
-        </div>
-        <div align="center" class="all-rights" style="margin-top: 18px">©<?= date('Y') ?> LinkStream LLC. All Rights Reserved.</div>
-        <div align="center" class="all-rights">You are receiving this email because you opted in via our website.</div>
-    </div>     
-</body>
+    <body style="margin: 0;padding: 0;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;min-width: 100% !important;">
+        <table border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate;mso-table-lspace: 0pt;mso-table-rspace: 0pt;width: 100%;">
+            <tr>
+                <td class="container" style="font-family: sans-serif;font-size: 14px;vertical-align: top;line-height: 20px;display: block;max-width: 620px;width: 620px;margin: 0 auto !important;">
+                    <div class="banner">
+                        <div align="center" class="logo-linkstream">
+                            <img src="https://api-dev.link.stream/assets/images/logo/streamy_icon_RGB.png" alt="logo" class="stream-icon">
+                            <span class="linkstream">LINKSTREAM</span>
+                        </div>            
+                    </div>
+                    <div align="center" class="sub-title">
+                        <h2>Confirm Email Address</h2>
+                        <p class="content">Welcome to Streamy <?= (!empty($user) ? $user : '') ?>, Thanks for registering. Please confirm your email <?= (!empty($email) ? $email : '') ?> in the link below</p>
+                        <button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Confirm Your Email</span></button></a>
+                        <div class="line"></div>
+                        <div class="instagram">
+                            <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
+                            <a href="https://www.instagram.com/_linkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
+                        </div>
+                        <div align="center" class="all-rights" style="margin-top: 18px">©<?= date('Y') ?> LinkStream LLC. All Rights Reserved.</div>
+                        <div align="center" class="all-rights">You are receiving this email because you opted in via our website.</div>
+                    </div>   
+                </td>  
+            </tr>
+        </table>
+    </body>
 </html>
