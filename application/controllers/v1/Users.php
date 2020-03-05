@@ -162,6 +162,12 @@ class Users extends RestController {
                 if (!empty($this->put('bio'))) {
                     $user['bio'] = $this->put('bio');
                 }
+                if (!empty($this->put('city'))) {
+                    $user['city'] = $this->put('city');
+                }
+                if (!empty($this->put('country'))) {
+                    $user['country'] = $this->put('country');
+                }
                 if (!empty($user)) {
                     $this->User_model->update_user($id, $user);
                 }

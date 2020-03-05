@@ -317,6 +317,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>about</li>
                     <li>email_paypal</li>
                     <li>bio</li>
+                    <li>city</li>
+                    <li>country</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
