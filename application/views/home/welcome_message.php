@@ -326,8 +326,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '<pre>';
                     print_r('{
     "status": "success",
-    "env": "dev",
-    "message": "The user info has been updated successfully."
+    "env": "staging",
+    "message": "The user info has been updated successfully.",
+    "data": {
+        "id": "36",
+        "user_name": "AAAA",
+        "first_name": "",
+        "last_name": "",
+        "display_name": "",
+        "email": "paoerterto@gmail.com",
+        "email_confirmed": "1",
+        "password": "",
+        "status_id": "3",
+        "plan_id": "1",
+        "created_at": "2020-02-18 16:35:04",
+        "url": "",
+        "phone": "",
+        "image": "AAA.png",
+        "banner": "c.jpeg",
+        "about": "",
+        "youtube": null,
+        "facebook": null,
+        "instagram": null,
+        "twitter": null,
+        "soundcloud": null,
+        "email_paypal": "",
+        "platform": "LinkStream",
+        "platform_id": "",
+        "platform_token": "",
+        "city": null,
+        "country": null,
+        "bio": ""
+    }
 }');
                     echo '</pre>';
                     ?>
