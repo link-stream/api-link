@@ -312,8 +312,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>plan_id</li>
                     <li>url</li>
                     <li>phone</li>
-                    <li>image</li>
-                    <li>banner</li>
+                    <li>image(base64_encode)</li>
+                    <li>banner(base64_encode)</li>
                     <li>about</li>
                     <li>email_paypal</li>
                     <li>bio</li>
