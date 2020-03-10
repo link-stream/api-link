@@ -172,7 +172,7 @@ class Users extends RestController {
                     preg_match("/^data:image\/(.*);base64/i", $banner, $match);
                     $ext = (!empty($match[1])) ? $match[1] : '.png';
                     $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
-                    $register_user['image'] = $image_name;
+                    $register_user['banner'] = $image_name;
                     //upload image to server 
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($banner));
