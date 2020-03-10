@@ -158,12 +158,12 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
-                    $bucket = 'files.link.stream';
+                    //$bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
                     $destination = $path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
-                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
                 }
                 if (!empty($this->put('banner'))) {
@@ -177,12 +177,12 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($banner));
                     //SAVE S3
-                    $bucket = 'files.link.stream';
+                    //$bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
                     $destination = $path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
-                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
                 }
                 if (!empty($this->put('about'))) {
@@ -444,12 +444,12 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, $content);
                     //SAVE S3
-                    $bucket = 'files.link.stream';
+                    //$bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
                     $destination = $path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
-                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     //$response['file_name'] = $image_name;
                     unlink($source . '/' . $image_name);
                     $user['image'] = $image_name;
@@ -495,12 +495,12 @@ class Users extends RestController {
 //                    $source = $this->get_temp_dir();
 //                    file_put_contents($source . '/' . $image_name, $content);
 //                    //SAVE S3
-//                    $bucket = 'files.link.stream';
+//                    //$bucket = 'files.link.stream';
 //                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
 //                    $dest_folder = 'Profile';
 //                    $destination = $path . $dest_folder . '/' . $image_name;
 //                    $s3_source = $source . '/' . $image_name;
-//                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+//                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
 //                    //$response['file_name'] = $image_name;
 //                    unlink($source . '/' . $image_name);
 //                    $user['image'] = $image_name;
@@ -576,12 +576,12 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, $content);
                     //SAVE S3
-                    $bucket = 'files.link.stream';
+                    //$bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
                     $destination = $path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
-                    $this->aws_s3->s3push($s3_source, $destination, $bucket);
+                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     //$response['file_name'] = $image_name;
                     unlink($source . '/' . $image_name);
                     $user['image'] = $image_name;
