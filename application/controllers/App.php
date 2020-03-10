@@ -2042,4 +2042,85 @@ class App extends CI_Controller {
         $this->load->view('app/email/email-template', $data);
     }
 
+    public function yt() {
+        //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
+        //exec($cmd . " 2>&1", $output);
+
+        //$url = "https://www.youtube.com/watch?v=BFaRWXEpFrs";
+        $url = 'https://www.youtube.com/watch?v=g4S3jUtqcyM';
+        //INFO
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
+        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        echo "</pre>";
+        $title = $output[0];
+        $id = $output[1];
+        $thumbnail_url = $output[2];
+
+        //GET VIDEO
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
+        //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
+        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        echo "</pre>";
+
+        echo 'Title: ' . $title;
+        echo '<br>';
+        echo 'ID: ' . $id;
+        echo '<br>';
+        echo 'Thumbnail Url: ' . $thumbnail_url;
+        echo '<br>';
+
+        //GET mp3
+        $video = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/' . $id . '.mp4';
+        $cmd = "/usr/local/Cellar/ffmpeg/4.2.2_2/bin/ffmpeg -i " . $video . " /Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/" . $id . ".mp3";
+        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        echo "</pre>";
+        echo 'Audio: ' . $id . ".mp3";
+        echo '<br>';
+        unlink($video);
+    }
+
+    public function sc() {
+//      $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
+        //exec($cmd . " 2>&1", $output);
+
+        $url = "https://soundcloud.com/iamstarinthesky/tracks";
+        //INFO
+        //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id ' . $url;
+        
+        exec($cmd, $output);
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";
+        $title = $output[0];
+        $id = $output[1];
+        $thumbnail_url = $output[2];
+        $filename = $output[3];
+        $final_filename = str_replace("/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/", "", $filename);
+        $format = $output[4];
+
+        //GET AUDIO
+//        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
+////        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
+//        exec($cmd, $output);
+////        echo "<pre>";
+////        print_r($output);
+////        echo "</pre>";
+
+        echo 'Title: ' . $title;
+        echo '<br>';
+        echo 'ID: ' . $id;
+        echo '<br>';
+        echo 'Thumbnail Url: ' . $thumbnail_url;
+        echo '<br>';
+        echo 'Audio: ' . $final_filename;
+        echo '<br>';
+    }
+
 }

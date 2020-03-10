@@ -149,12 +149,14 @@ class Users extends RestController {
                 }
                 if (!empty($this->put('image'))) {
                     //$register_user['image'] = $this->put("image");
-                    $image = base64_decode($this->put("image"));
-                    $image_name = md5(uniqid(rand(), true)) . '.png';
+                    $image = $this->put("image");
+                    preg_match("/^data:image\/(.*);base64/i", $image, $match);
+                    $ext = (!empty($match[1])) ? $match[1] : '.png';
+                    $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
                     $register_user['image'] = $image_name;
                     //upload image to server 
                     $source = $this->get_temp_dir();
-                    file_put_contents($source . '/' . $image_name, $image);
+                    file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
                     $bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
@@ -166,20 +168,22 @@ class Users extends RestController {
                 }
                 if (!empty($this->put('banner'))) {
                     //$register_user['banner'] = $this->put("banner");
-                    $banner = base64_decode($this->put("banner"));
-                    $banner_name = md5(uniqid(rand(), true)) . '.png';
-                    $register_user['banner'] = $banner_name;
+                    $banner = $this->put("banner");
+                    preg_match("/^data:image\/(.*);base64/i", $banner, $match);
+                    $ext = (!empty($match[1])) ? $match[1] : '.png';
+                    $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+                    $register_user['image'] = $image_name;
                     //upload image to server 
                     $source = $this->get_temp_dir();
-                    file_put_contents($source . '/' . $banner_name, $banner);
+                    file_put_contents($source . '/' . $image_name, file_get_contents($banner));
                     //SAVE S3
                     $bucket = 'files.link.stream';
                     $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
-                    $destination = $path . $dest_folder . '/' . $banner_name;
-                    $s3_source = $source . '/' . $banner_name;
+                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $bucket);
-                    unlink($source . '/' . $banner_name);
+                    unlink($source . '/' . $image_name);
                 }
                 if (!empty($this->put('about'))) {
                     $register_user['about'] = $this->put('about');
