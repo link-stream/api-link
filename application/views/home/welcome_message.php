@@ -157,8 +157,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <code>GET <?= base_url() ?>v1/users/availability/{type}/{value}</code>
                 <h3>Parameters:</h3>
                 <ul>
-                    <li>Type = 'username or email'</li>
-                    <li>Value = Example 'a@link.stream or paolofq'</li>
+                    <li>Type = 'username or email or url'</li>
+                    <li>Value = Example 'a@link.stream or paolofq or pferra'</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

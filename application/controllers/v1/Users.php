@@ -12,11 +12,13 @@ class Users extends RestController {
 
     private $error;
     private $bucket;
+    private $s3_path;
 
     public function __construct() {
         parent::__construct();
         $this->error = '';
         $this->bucket = 'files.link.stream';
+        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         //Models
         $this->load->model("User_model");
         //Libraries
@@ -159,9 +161,9 @@ class Users extends RestController {
                     file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
                     //$bucket = 'files.link.stream';
-                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
-                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
@@ -178,9 +180,9 @@ class Users extends RestController {
                     file_put_contents($source . '/' . $image_name, file_get_contents($banner));
                     //SAVE S3
                     //$bucket = 'files.link.stream';
-                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
-                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
@@ -223,14 +225,16 @@ class Users extends RestController {
         } elseif (empty($value)) {
             $this->error = 'Value is Required';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        } elseif ($type != 'username' && $type != 'email') {
+        } elseif ($type != 'username' && $type != 'email' && $type != 'url') {
             $this->error = 'Type ' . $type . ' is now allowed, only username or email are allowed as type';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } else {
             if ($type == 'username') {
                 $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $value));
-            } else {
+            } elseif ($type == 'email') {
                 $register_user = $this->User_model->fetch_user_by_search(array('email' => $value));
+            } else {
+                $register_user = $this->User_model->fetch_user_by_search(array('url' => $value));
             }
             if (empty($register_user)) {
                 $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
@@ -445,9 +449,9 @@ class Users extends RestController {
                     file_put_contents($source . '/' . $image_name, $content);
                     //SAVE S3
                     //$bucket = 'files.link.stream';
-                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
-                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     //$response['file_name'] = $image_name;
@@ -496,9 +500,9 @@ class Users extends RestController {
 //                    file_put_contents($source . '/' . $image_name, $content);
 //                    //SAVE S3
 //                    //$bucket = 'files.link.stream';
-//                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+//                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
 //                    $dest_folder = 'Profile';
-//                    $destination = $path . $dest_folder . '/' . $image_name;
+//                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
 //                    $s3_source = $source . '/' . $image_name;
 //                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
 //                    //$response['file_name'] = $image_name;
@@ -577,9 +581,9 @@ class Users extends RestController {
                     file_put_contents($source . '/' . $image_name, $content);
                     //SAVE S3
                     //$bucket = 'files.link.stream';
-                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
                     $dest_folder = 'Profile';
-                    $destination = $path . $dest_folder . '/' . $image_name;
+                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     //$response['file_name'] = $image_name;

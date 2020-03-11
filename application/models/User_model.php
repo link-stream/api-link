@@ -55,6 +55,9 @@ class User_model extends CI_Model {
         if (!empty($search['platform_id'])) {
             $this->db->where('platform_id', $search['platform_id']); //By Password
         }
+        if (!empty($search['url'])) {
+            $this->db->where('url', $search['url']); //By Password
+        }
         $query = $this->db->get();
         $result = $query->row_array();
         $query->free_result();
