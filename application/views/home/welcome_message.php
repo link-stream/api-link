@@ -875,7 +875,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
-
+ <hr>
                 <h3>Sort Videos:</h3>
                 <code>POST <?= base_url() ?>v1/videos/sort_videos</code>
                 <h3>Parameters:</h3>
