@@ -217,7 +217,7 @@ class Users extends RestController {
     }
 
     //params: type = username or email
-    public function availability_get($type = null, $value = null) {
+    public function availability_get($type = null, $value = null, $id = null) {
         $data = array();
         if (empty($type)) {
             $this->error = 'Type is Required';
@@ -234,7 +234,12 @@ class Users extends RestController {
             } elseif ($type == 'email') {
                 $register_user = $this->User_model->fetch_user_by_search(array('email' => $value));
             } else {
-                $register_user = $this->User_model->fetch_user_by_search(array('url' => $value));
+                if (!empty($id)) {
+                    $register_user = $this->User_model->fetch_user_url_availability($id, $value);
+                } else {
+                    $this->error = 'Provide User ID.';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
             }
             if (empty($register_user)) {
                 $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);

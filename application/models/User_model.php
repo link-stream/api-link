@@ -94,4 +94,14 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_user_url_availability($user_id, $url) {
+        $this->db->from('st_user');
+        $this->db->where('id <> ', $user_id);
+        $this->db->where('url', $url);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
