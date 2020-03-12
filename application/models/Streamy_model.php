@@ -147,4 +147,17 @@ class Streamy_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_related_audio_by_user_id($user_id, $deleted = false) {
+        $this->db->select('id, title');
+        $this->db->from('st_streamy');
+        $this->db->where('user_id', $user_id);
+        if (!$deleted) {
+            $this->db->where('status_id <> ', '3');
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

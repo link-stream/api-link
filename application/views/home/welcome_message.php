@@ -542,6 +542,255 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>Genre:</h3>
+                <code>GET <?= base_url() ?>v1/audios/genre</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "genre": "None"
+        },
+        {
+            "id": "2",
+            "genre": "Custom"
+        },
+        {
+            "id": "3",
+            "genre": "Hip-hop &amp; Rap"
+        },
+        {
+            "id": "4",
+            "genre": "Alternative Rock"
+        },
+        {
+            "id": "5",
+            "genre": "Ambient"
+        },
+        {
+            "id": "6",
+            "genre": "Classical"
+        },
+        {
+            "id": "7",
+            "genre": "Country"
+        },
+        {
+            "id": "8",
+            "genre": "Dance & EDM"
+        },
+        {
+            "id": "9",
+            "genre": "Dancehall"
+        },
+        {
+            "id": "10",
+            "genre": "Deep House"
+        },
+        {
+            "id": "11",
+            "genre": "Disco"
+        },
+        {
+            "id": "12",
+            "genre": "Drum"
+        },
+        {
+            "id": "13",
+            "genre": "Dubstep"
+        },
+        {
+            "id": "14",
+            "genre": "Electronic"
+        },
+        {
+            "id": "15",
+            "genre": "Folk & Singer-Songwriter"
+        },
+        {
+            "id": "16",
+            "genre": "House"
+        },
+        {
+            "id": "17",
+            "genre": "Indie"
+        },
+        {
+            "id": "18",
+            "genre": "Jazz & Blues"
+        },
+        {
+            "id": "19",
+            "genre": "Latin"
+        },
+        {
+            "id": "20",
+            "genre": "Metal"
+        },
+        {
+            "id": "21",
+            "genre": "Piano"
+        },
+        {
+            "id": "22",
+            "genre": "Pop"
+        },
+        {
+            "id": "23",
+            "genre": "R & B & Soul"
+        },
+        {
+            "id": "24",
+            "genre": "Reggae"
+        },
+        {
+            "id": "25",
+            "genre": "Reggaeton"
+        },
+        {
+            "id": "26",
+            "genre": "Rock"
+        },
+        {
+            "id": "27",
+            "genre": "Soundtrack"
+        },
+        {
+            "id": "28",
+            "genre": "Techno"
+        },
+        {
+            "id": "29",
+            "genre": "Trance"
+        },
+        {
+            "id": "30",
+            "genre": "Trap"
+        },
+        {
+            "id": "31",
+            "genre": "Triphop"
+        },
+        {
+            "id": "32",
+            "genre": "World"
+        },
+        {
+            "id": "33",
+            "genre": "Audiobooks"
+        },
+        {
+            "id": "34",
+            "genre": "Business"
+        },
+        {
+            "id": "35",
+            "genre": "Comedy"
+        },
+        {
+            "id": "36",
+            "genre": "Entertainment"
+        },
+        {
+            "id": "37",
+            "genre": "Learning"
+        },
+        {
+            "id": "38",
+            "genre": "News & Politics"
+        },
+        {
+            "id": "39",
+            "genre": "Religion & Spirituality"
+        },
+        {
+            "id": "40",
+            "genre": "Science"
+        },
+        {
+            "id": "41",
+            "genre": "Sports"
+        },
+        {
+            "id": "42",
+            "genre": "Storytelling"
+        },
+        {
+            "id": "43",
+            "genre": "Technology"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Related Track:</h3>
+                <code>GET <?= base_url() ?>v1/audios/related_track/{user_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "35",
+            "title": "Go Hard Prod Silo1"
+        },
+        {
+            "id": "39",
+            "title": "Beat It"
+        },
+        {
+            "id": "135",
+            "title": "Streamy"
+        },
+        {
+            "id": "136",
+            "title": "2pac feat Dr.Dre - California Love HD"
+        },
+        {
+            "id": "140",
+            "title": "The Box"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Visibility:</h3>
+                <code>GET <?= base_url() ?>v1/audios/visibility/{user_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "1": "Public",
+        "2": "Private",
+        "3": "Scheduled"
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
 
                 <!-- EXAMPLE 
                 <hr>
