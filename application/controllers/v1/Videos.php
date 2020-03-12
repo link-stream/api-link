@@ -144,4 +144,26 @@ class Videos extends RestController {
         }
     }
 
+    public function sort_videos_post() {
+//        echo json_encode(array(
+//        array('id' => '10', 'sort' => '1'),
+//        array('id' => '1', 'sort' => '2'),
+//        ));
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        if (!empty($list)) {
+            $videos = json_decode($list, true);
+            //print_r($videos);
+            foreach ($videos as $video) {
+                $id = $video['id'];
+                $sort = $video['sort'];
+                //echo $id . ' ' . $sort . '<br>';
+                $this->Video_model->update_video($id, array('sort' => $sort));
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the videos has been updated correctly'), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide list of  videos.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }

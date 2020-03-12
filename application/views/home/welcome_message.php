@@ -876,6 +876,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <h3>Sort Videos:</h3>
+                <code>POST <?= base_url() ?>v1/videos/sort_videos</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>list (JSON Array. Example: [{"id":"10","sort":"1"},{"id":"1","sort":"2"}])</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The information of the videos has been updated correctly"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
 
                 <!-- EXAMPLE 
                 <hr>
