@@ -50,9 +50,8 @@ class Users extends RestController {
 //                    'data' => $user
 //                ], REST_Controller::HTTP_OK);
 //                
-    //id
+
     public function index_get($id = null) {
-        $data = array();
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
@@ -218,7 +217,6 @@ class Users extends RestController {
 
     //params: type = username or email
     public function availability_get($type = null, $value = null, $id = null) {
-        $data = array();
         if (empty($type)) {
             $this->error = 'Type is Required';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -255,10 +253,8 @@ class Users extends RestController {
         // Get the post data
         $email = $this->input->post('email');
         $password = $this->input->post('password');
-
         // Validate the post data
         if (!empty($email) && !empty($password)) {
-
             // Check if any user exists with the given credentials
             $password_e = $this->general_library->encrypt_txt($password);
             //Check Email And User
@@ -390,7 +386,6 @@ class Users extends RestController {
     }
 
     public function resend_email_confirm_post() {
-        //$data = array();
         $id = $this->input->post('user_id');
         if (!empty($id)) {
             //Check User

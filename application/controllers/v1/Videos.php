@@ -20,6 +20,7 @@ class Videos extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         //Models
+        $this->load->model("User_model");
         $this->load->model("Video_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
@@ -28,15 +29,9 @@ class Videos extends RestController {
     }
 
     public function index_get($id = null) {
-        $data = array();
         if (!empty($id)) {
-            $register_user = $this->Link_model->fetch_user_by_id($id);
-            if (!empty($register_user)) {
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
-            } else {
-                $this->error = 'User Not Found.';
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-            }
+            $videos = $this->Video_model->fetch_video_by_user_id($id, false, 0, 0);
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $videos), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -44,47 +39,31 @@ class Videos extends RestController {
     }
 
     public function index_post() {
-        $email = strip_tags($this->input->post('email'));
-        $user_name = strip_tags($this->input->post('user_name'));
-        $platform = strip_tags($this->input->post('platform'));
-        if ((!empty($email) || !empty($user_name)) && !empty($platform)) {
-            $register_user = $this->Link_model->fetch_user_by_search(array('email' => $email));
-            if (empty($register_user)) {
-                $user = array();
-                $user['user_name'] = $user_name;
-                $user['first_name'] = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
-                $user['last_name'] = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
-                $user['display_name'] = (!empty($this->input->post('display_name'))) ? $this->input->post('display_name') : '';
-                $user['email'] = $email;
-                $user['email_confirmed'] = '1';
-                $user['password'] = (!empty($this->input->post('password'))) ? $this->general_library->encrypt_txt($this->input->post('password')) : '';
-                $user['status_id'] = '3';
-                $user['plan_id'] = '1';
-                $user['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
-                $user['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
-                $user['image'] = (!empty($this->input->post('image'))) ? $this->input->post('image') : '';
-                $user['banner'] = (!empty($this->input->post('banner'))) ? $this->input->post('banner') : '';
-                $user['about'] = (!empty($this->input->post('about'))) ? $this->input->post('about') : '';
-//            $user['youtube'] = (!empty($this->input->post('youtube'))) ? $this->input->post('youtube') : '';
-//            $user['facebook'] = (!empty($this->input->post('facebook'))) ? $this->input->post('facebook') : '';
-//            $user['instagram'] = (!empty($this->input->post('instagram'))) ? $this->input->post('instagram') : '';
-//            $user['twitter'] = (!empty($this->input->post('twitter'))) ? $this->input->post('twitter') : '';
-//            $user['soundcloud'] = (!empty($this->input->post('soundcloud'))) ? $this->input->post('soundcloud') : '';
-                $user['email_paypal'] = (!empty($this->input->post('email_paypal'))) ? $this->input->post('email_paypal') : '';
-                $user['platform'] = $platform;
-                $user['platform_id'] = (!empty($this->input->post('platform_id'))) ? $this->input->post('platform_id') : '';
-                $user['platform_token'] = (!empty($this->input->post('platform_token'))) ? $this->input->post('platform_token') : '';
-                $user['bio'] = (!empty($this->input->post('bio'))) ? $this->input->post('bio') : '';
-                $user['id'] = $this->Link_model->insert_user($user);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been created successfully.', 'id' => $user['id']), RestController::HTTP_OK);
-            } else {
-                $this->error = 'The given email already exists.';
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-            }
+        $video = array();
+        $video['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $video['status_id'] = '1';
+        $video['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
+        $video['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
+        if ((!empty($video['user_id']) || !empty($video['title'])) && !empty($video['url'])) {
+            //$video['coverart'] = (!empty($this->input->post('coverart'))) ? $this->input->post('coverart') : '';
+            $video['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
+            $video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+            $video['sort'] = $this->get_last_video_sort($video['user_id']);
+            $video['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
+            $video['related_track'] = (!empty($this->input->post('related_track'))) ? $this->input->post('related_track') : '';
+            $video['explicit_content'] = (!empty($this->input->post('explicit_content'))) ? $this->input->post('explicit_content') : '';
+            $video['id'] = $this->Video_model->insert_video($video);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The video has been created successfully.', 'id' => $video['id']), RestController::HTTP_OK);
         } else {
-            $this->error = 'Provide complete user info to add';
+            $this->error = 'Provide complete video info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function get_last_video_sort($user_id) {
+        $max = $this->Video_model->fetch_max_video_sort($user_id);
+        $sort = (empty($max)) ? '1' : ($max + 1);
+        return $sort;
     }
 
     public function index_put($id = null) {
