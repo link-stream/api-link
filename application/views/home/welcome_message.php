@@ -794,6 +794,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <hr>
                 <h3>Get Videos by User:</h3>
                 <code>GET <?= base_url() ?>v1/videos/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>?page={page}&page_size={page_size}</li>
+                </ul>
+                <h3>Example:</h3>
+                <ul>
+                    <li><?= base_url() ?>v1/videos/15?page=1&page_size=20</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php

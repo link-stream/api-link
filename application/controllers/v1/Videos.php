@@ -30,8 +30,19 @@ class Videos extends RestController {
 
     public function index_get($id = null) {
         if (!empty($id)) {
-            $videos = $this->Video_model->fetch_video_by_user_id($id, false, 0, 0);
-            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $videos), RestController::HTTP_OK);
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            //$limit = 0;
+            //$offset = 0;
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+                $limit = $page_size;
+                $videos = $this->Video_model->fetch_video_by_user_id($id, false, $limit, $offset);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $videos), RestController::HTTP_OK);
+            }
         } else {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
