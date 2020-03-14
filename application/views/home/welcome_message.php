@@ -875,7 +875,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
- <hr>
+                <hr>
                 <h3>Sort Videos:</h3>
                 <code>POST <?= base_url() ?>v1/videos/sort_videos</code>
                 <h3>Parameters:</h3>
@@ -890,6 +890,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "message": "The information of the videos has been updated correctly"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Track Type:</h3>
+                <code>GET <?= base_url() ?>v1/audios/track_type</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "track_type": "Song"
+        },
+        {
+            "id": "2",
+            "track_type": "Beat"
+        },
+        {
+            "id": "3",
+            "track_type": "Podcast"
+        },
+        {
+            "id": "4",
+            "track_type": "Audiobook"
+        }
+    ]
 }');
                     echo '</pre>';
                     ?>

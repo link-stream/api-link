@@ -32,6 +32,11 @@ class Audios extends RestController {
         $genres = $this->Streamy_model->fetch_genres();
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
     }
+    
+    public function track_type_get() {
+        $genres = $this->Streamy_model->fetch_track_types();
+        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
+    }
 
     public function related_track_get($user_id = null) {
         $data = array();

@@ -159,5 +159,13 @@ class Streamy_model extends CI_Model {
         $query->free_result();
         return $result;
     }
+    
+    public function fetch_track_types() {
+        $this->db->from('st_streamy_track_type');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
 
 }
