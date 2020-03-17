@@ -150,16 +150,17 @@ class Videos extends RestController {
 //        array('id' => '1', 'sort' => '2'),
 //        ));
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        //print_r($list);
         if (!empty($list)) {
             $videos = json_decode($list, true);
             //print_r($videos);
             foreach ($videos as $video) {
                 $id = $video['id'];
                 $sort = $video['sort'];
-                //echo $id . ' ' . $sort . '<br>';
+                echo $id . ' ' . $sort . '<br>';
                 $this->Video_model->update_video($id, array('sort' => $sort));
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the videos has been updated correctly'), RestController::HTTP_OK);
             }
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the videos has been updated correctly'), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide list of  videos.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
