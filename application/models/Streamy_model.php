@@ -159,9 +159,44 @@ class Streamy_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function fetch_track_types() {
         $this->db->from('st_streamy_track_type');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_streamys_by_user_id($user_id, $deleted = false, $limit = 0, $offset = 0) {
+        $this->db->from('st_streamy');
+        $this->db->where('user_id', $user_id);
+        if (!$deleted) {
+            $this->db->where('status_id <> ', '3');
+        }
+        $this->db->order_by('sort');
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_max_streamys_sort($user_id) {
+        $this->db->select('MAX(sort) as Max');
+        $this->db->from('st_streamy');
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        $row = $query->row();
+        $query->free_result();
+        return $row->Max;
+    }
+
+    public function fetch_related_links($id) {
+        $this->db->from('st_streamy_related_link');
+        $this->db->where('streamy_id', $id);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
