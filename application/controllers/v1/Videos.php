@@ -157,7 +157,7 @@ class Videos extends RestController {
             foreach ($videos as $video) {
                 $id = $video['id'];
                 $sort = $video['sort'];
-                echo $id . ' ' . $sort . '<br>';
+                //echo $id . ' ' . $sort . '<br>';
                 $this->Video_model->update_video($id, array('sort' => $sort));
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the videos has been updated correctly'), RestController::HTTP_OK);
