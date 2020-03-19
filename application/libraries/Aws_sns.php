@@ -7,8 +7,8 @@ class Aws_sns {
     public function __construct() {
         //require dirname(__FILE__) . '/aws_sns/aws-autoloader.php';
         include_once dirname(__FILE__) . '/aws_sns/aws-autoloader.php';
-        $this->aws_key = 'AKIAXBDC73PH3KDCPMFN';
-        $this->aws_secret = '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';
+        $this->aws_key = 'AKIAXBDC73PHUL3JUCGP';
+        $this->aws_secret = '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';
     }
 
     private function cleanPhone($phone) {

@@ -10,8 +10,8 @@ class Aws_pinpoint {
 
     public function __construct() {
         //include_once dirname(__FILE__) . '/aws/aws-autoloader.php';
-        $this->aws_key = 'AKIAXBDC73PH3KDCPMFN';
-        $this->aws_secret = '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';
+        $this->aws_key = 'AKIAXBDC73PHUL3JUCGP';
+        $this->aws_secret = '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';
         $this->pp = Aws\Pinpoint\PinpointClient::factory(array(
                     'credentials' => array(
                         'key' => $this->aws_key,
