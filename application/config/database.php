@@ -73,12 +73,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 $active_group = 'default';
 $query_builder = TRUE;
-
-$url = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.api.link.stream';
-$chk = explode('.', $url);
+//$url = (isset($_SERVER['HTTP_HOST'])) ? $_SERVER['HTTP_HOST'] : 'www.api.link.stream';
+//$chk = explode('.', $url);
 //print_r($chk);echo '<br>';
 //print_r($chk[0]);echo '<br>';
-if ($chk[0] == "localhost") {
+if (ENV == "dev") {
     if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
     if (!defined('DB_USER'))
@@ -89,7 +88,7 @@ if ($chk[0] == "localhost") {
         define('DB_TABLE', 'streamy_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
-} elseif ($chk[0] == "api-dev") {
+} elseif (ENV == "staging") {
     if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
     if (!defined('DB_USER'))
@@ -101,7 +100,7 @@ if ($chk[0] == "localhost") {
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
 } else {
-   if (!defined('DB_HOST'))
+    if (!defined('DB_HOST'))
         define('DB_HOST', 'db01.link.stream');
     if (!defined('DB_USER'))
         define('DB_USER', 'streamy_admin');

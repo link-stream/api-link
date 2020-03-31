@@ -209,7 +209,12 @@ $config['auth_library_function'] = '';
   | Array of usernames and passwords for login, if ldap is configured this is ignored
   |
  */
-$config['rest_valid_logins'] = ['linkstream' => 'LinkStream@2020'];
+
+if (ENV != 'live') {
+    $config['rest_valid_logins'] = ['linkstream' => 'LinkStreamDev@2020'];
+} else {
+    $config['rest_valid_logins'] = ['linkstream' => 'LinkStreamLive@2020'];
+}
 
 /*
   |--------------------------------------------------------------------------
