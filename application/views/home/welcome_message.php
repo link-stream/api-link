@@ -221,10 +221,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "platform": "LinkStream",
         "platform_id": null,
         "platform_token": null,
-        "bio": null
+        "bio": null,
+        "data_image":"",
+        "data_banner":""
     }
 }');
                     echo '</pre>';
+                    echo '* data_image and data_banner are base64_encode.'
                     ?>
                 </p>
 

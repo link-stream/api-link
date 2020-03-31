@@ -55,6 +55,14 @@ class Users extends RestController {
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
+                $image = $register_user['image'];
+                $banner = $register_user['banner'];
+                $dest_folder = 'Profile';
+                $path = $this->s3_path . $dest_folder;
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $image);
+                $register_user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                $data_banner = $this->aws_s3->s3_read($this->bucket, $path, $banner);
+                $register_user['data_banner'] = (!empty($data_banner)) ? base64_encode($data_banner) : '';
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
