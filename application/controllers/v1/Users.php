@@ -122,7 +122,7 @@ class Users extends RestController {
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
-                //$user = array();
+                $dest_folder = 'Profile';
                 if (!empty($this->put('user_name'))) {
                     $register_user['user_name'] = $this->put('user_name');
                 }
@@ -157,7 +157,6 @@ class Users extends RestController {
                     $register_user['phone'] = $this->put('phone');
                 }
                 if (!empty($this->put('image'))) {
-                    //$register_user['image'] = $this->put("image");
                     $image = $this->put("image");
                     preg_match("/^data:image\/(.*);base64/i", $image, $match);
                     $ext = (!empty($match[1])) ? $match[1] : '.png';
@@ -167,16 +166,13 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
-                    //$bucket = 'files.link.stream';
-                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-                    $dest_folder = 'Profile';
+                    //$dest_folder = 'Profile';
                     $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
                 }
                 if (!empty($this->put('banner'))) {
-                    //$register_user['banner'] = $this->put("banner");
                     $banner = $this->put("banner");
                     preg_match("/^data:image\/(.*);base64/i", $banner, $match);
                     $ext = (!empty($match[1])) ? $match[1] : '.png';
@@ -186,9 +182,7 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($banner));
                     //SAVE S3
-                    //$bucket = 'files.link.stream';
-                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-                    $dest_folder = 'Profile';
+                    //$dest_folder = 'Profile';
                     $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
@@ -209,9 +203,13 @@ class Users extends RestController {
                 if (!empty($this->put('country'))) {
                     $register_user['country'] = $this->put('country');
                 }
-                //if (!empty($user)) {
                 $this->User_model->update_user($id, $register_user);
-                //}
+                //$dest_folder = 'Profile';
+                $path = $this->s3_path . $dest_folder;
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
+                $register_user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                $data_banner = $this->aws_s3->s3_read($this->bucket, $path, $register_user['banner']);
+                $register_user['data_banner'] = (!empty($data_banner)) ? base64_encode($data_banner) : '';
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been updated successfully.', 'data' => $register_user), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
