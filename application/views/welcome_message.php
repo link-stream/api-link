@@ -360,7 +360,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "platform_token": "",
         "city": null,
         "country": null,
-        "bio": ""
+        "bio": "",
+        "data_image":"",
+        "data_banner":""
     }
 }');
                     echo '</pre>';
