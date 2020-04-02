@@ -970,7 +970,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>url</li>
                     <li>publish_at</li>
                     <li>image(base64_encode)</li>
-                    <li></li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -986,6 +985,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Update Link::</h3>
+                <code>PUT <?= base_url() ?>v1/links/{link_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <!--<li>user_id</li>-->
+                    <li>status_id</li>
+                    <li>title</li>
+                    <li>url</li>
+                    <li>publish_at</li>
+                    <li>image(base64_encode)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Link info has been updated successfully.",
+    "data": []
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
 
                 <!-- EXAMPLE 
