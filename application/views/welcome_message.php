@@ -1011,6 +1011,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Sort Links:</h3>
+                <code>POST <?= base_url() ?>v1/links/sort_links</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>list (JSON Array. Example: [{"id":"10","sort":"1"},{"id":"1","sort":"2"}])</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The information of the links has been updated correctly"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>
