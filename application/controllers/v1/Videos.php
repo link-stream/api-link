@@ -162,7 +162,7 @@ class Videos extends RestController {
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the videos has been updated correctly'), RestController::HTTP_OK);
         } else {
-            $this->error = 'Provide list of  videos.';
+            $this->error = 'Provide list of videos.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

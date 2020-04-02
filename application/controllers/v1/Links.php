@@ -185,4 +185,27 @@ class Links extends RestController {
         }
     }
 
+    public function sort_links_post() {
+//        echo json_encode(array(
+//        array('id' => '10', 'sort' => '1'),
+//        array('id' => '1', 'sort' => '2'),
+//        ));
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        //print_r($list);
+        if (!empty($list)) {
+            $links = json_decode($list, true);
+            //print_r($videos);
+            foreach ($links as $link) {
+                $id = $link['id'];
+                $sort = $link['sort'];
+                //echo $id . ' ' . $sort . '<br>';
+                $this->Link_model->update_link($id, array('sort' => $sort));
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the links has been updated correctly'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide list of links.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
