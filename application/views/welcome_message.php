@@ -550,7 +550,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Genre:</h3>
-                <code>GET <?= base_url() ?>v1/audios/genre</code>
+                <code>GET <?= base_url() ?>v1/common/genres</code>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -737,6 +737,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Visibility:</h3>
+                <code>GET <?= base_url() ?>v1/common/visibility/{user_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "1": "Public",
+        "2": "Private",
+        "3": "Scheduled"
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>TimeZones:</h3>
+                <code>GET <?= base_url() ?>v1/common/timezones</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "timezone": "(GMT-0800) Anchorage"
+        },
+        {
+            "id": "2",
+            "timezone": "(GMT-0800) Juneau"
+        }
+]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <hr>
                 <h3>Related Track:</h3>
@@ -776,25 +821,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-                <hr>
-                <h3>Visibility:</h3>
-                <code>GET <?= base_url() ?>v1/audios/visibility/{user_id}</code>
-                <h3>Response Example:</h3>
-                <p>
-                    <?php
-                    echo '<pre>';
-                    print_r('{
-    "status": "success",
-    "env": "dev",
-    "data": {
-        "1": "Public",
-        "2": "Private",
-        "3": "Scheduled"
-    }
-}');
-                    echo '</pre>';
-                    ?>
-                </p>
+
 
                 <hr>
                 <h3>Get Videos by User:</h3>

@@ -203,4 +203,13 @@ class Streamy_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_timezones() {
+        $this->db->select('id, timezone ');
+        $this->db->from('st_timezone');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

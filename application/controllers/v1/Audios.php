@@ -59,7 +59,8 @@ class Audios extends RestController {
         if (!empty($user_id)) {
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
-                $visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
+                //$visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
+                $visibility = array('1' => 'Public', '3' => 'Scheduled');
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
 //                if ($register_user['plan_id'] == '1') {
 //                    $visibility = array('1' => 'Public', '2' => 'Private');
