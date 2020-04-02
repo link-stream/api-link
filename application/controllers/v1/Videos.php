@@ -59,6 +59,7 @@ class Videos extends RestController {
             //$video['coverart'] = (!empty($this->input->post('coverart'))) ? $this->input->post('coverart') : '';
             $video['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
             $video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+            $video['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
             $video['sort'] = $this->get_last_video_sort($video['user_id']);
             $video['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
             $video['related_track'] = (!empty($this->input->post('related_track'))) ? $this->input->post('related_track') : '';
@@ -98,6 +99,9 @@ class Videos extends RestController {
                 }
                 if (!empty($this->put('publish_at'))) {
                     $video['publish_at'] = $this->put('publish_at');
+                }
+                if (!empty($this->put('timezone'))) {
+                    $video['timezone'] = $this->put('timezone');
                 }
                 if (!empty($this->put('sort'))) {
                     $video['sort'] = $this->put('sort');

@@ -858,6 +858,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <!--<li>coverart</li>-->
                     <li>public</li>
                     <li>publish_at</li>
+                    <li>timezone</li>
                     <li>sort</li>
                     <li>genre_id</li>
                     <li>related_track</li>
@@ -888,6 +889,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <!--<li>coverart</li>-->
                     <li>public</li>
                     <li>publish_at</li>
+                    <li>timezone</li>
                     <li>sort</li>
                     <li>genre_id</li>
                     <li>related_track</li>
@@ -995,7 +997,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>status_id</li>
                     <li>title</li>
                     <li>url</li>
+                    <li>public</li>
                     <li>publish_at</li>
+                    <li>timezone</li>
                     <li>image(base64_encode)</li>
                 </ul>
                 <h3>Response Example:</h3>
@@ -1021,7 +1025,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>status_id</li>
                     <li>title</li>
                     <li>url</li>
+                    <li>public</li>
                     <li>publish_at</li>
+                    <li>timezone</li>
                     <li>image(base64_encode)</li>
                 </ul>
                 <h3>Response Example:</h3>

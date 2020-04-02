@@ -64,8 +64,9 @@ class Links extends RestController {
         $link['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
         $link['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         if ((!empty($link['user_id']) || !empty($link['title'])) && !empty($link['url'])) {
+            $link['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
             $link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
-            $link['public'] = (!empty($link['publish_at'])) ? '3' : '1';
+            $link['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
             if (!empty($this->input->post('image'))) {
                 $dest_folder = 'Coverart';
                 $image = $this->input->post("image");
@@ -116,11 +117,13 @@ class Links extends RestController {
 //                    $video['coverart'] = $this->put('coverart');
 //                }
                 if (!empty($this->put('public'))) {
-                    $video['public'] = $this->put('public');
+                    $link['public'] = $this->put('public');
                 }
                 if (!empty($this->put('publish_at'))) {
                     $link['publish_at'] = $this->put('publish_at');
-                    $link['public'] = '3';
+                }
+                if (!empty($this->put('timezone'))) {
+                    $link['timezone'] = $this->put('timezone');
                 }
                 if (!empty($this->put('sort'))) {
                     $link['sort'] = $this->put('sort');
