@@ -84,16 +84,30 @@ class Link_model extends CI_Model {
         return $row->Count;
     }
 
-    public function fetch_links_by_user_id($user_id, $deleted = false) {
+    public function fetch_links_by_user_id($user_id, $deleted = false, $limit = 0, $offset = 0) {
         $this->db->from('st_link');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
         }
+        $this->db->order_by('sort');
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+
+    public function fetch_max_link_sort($user_id) {
+        $this->db->select('MAX(sort) as Max');
+        $this->db->from('st_link');
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        $row = $query->row();
+        $query->free_result();
+        return $row->Max;
     }
 
 }
