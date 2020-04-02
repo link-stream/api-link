@@ -41,7 +41,15 @@ class Links extends RestController {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
                 $links = $this->Link_model->fetch_links_by_user_id($id, false, $limit, $offset);
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $links), RestController::HTTP_OK);
+                $links_reponse = array();
+                $dest_folder = 'Coverart';
+                foreach ($links as $link) {
+                    $path = $this->s3_path . $dest_folder;
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
+                    $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                    $links_reponse[] = $link;
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $links_reponse), RestController::HTTP_OK);
             }
         } else {
             $this->error = 'Provide User ID.';
@@ -58,9 +66,9 @@ class Links extends RestController {
         if ((!empty($link['user_id']) || !empty($link['title'])) && !empty($link['url'])) {
             $link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
             $link['public'] = (!empty($link['publish_at'])) ? '3' : '1';
-            if (!empty($this->put('image'))) {
+            if (!empty($this->input->post('image'))) {
                 $dest_folder = 'Coverart';
-                $image = $this->put("image");
+                $image = $this->input->post("image");
                 preg_match("/^data:image\/(.*);base64/i", $image, $match);
                 $ext = (!empty($match[1])) ? $match[1] : '.png';
                 $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
@@ -92,105 +100,87 @@ class Links extends RestController {
 
     public function index_put($id = null) {
         if (!empty($id)) {
-            $register_user = $this->Link_model->fetch_user_by_id($id);
-            if (!empty($register_user)) {
-                //$user = array();
-                if (!empty($this->put('user_name'))) {
-                    $register_user['user_name'] = $this->put('user_name');
-                }
-                if (!empty($this->put('first_name'))) {
-                    $register_user['first_name'] = $this->put('first_name');
-                }
-                if (!empty($this->put('last_name'))) {
-                    $register_user['last_name'] = $this->put('last_name');
-                }
-                if (!empty($this->put('display_name'))) {
-                    $register_user['display_name'] = $this->put('display_name');
-                }
-                if (!empty($this->put('email'))) {
-                    $register_user['email'] = $this->put('email');
-                }
-                if (!empty($this->put('email_confirmed'))) {
-                    $register_user['email_confirmed'] = $this->put('email_confirmed');
-                }
-                if (!empty($this->put('password'))) {
-                    $register_user['password'] = $this->general_library->encrypt_txt($this->put('password'));
-                }
+            $link = $this->Link_model->fetch_link_by_id($id);
+            if (!empty($link)) {
+                $dest_folder = 'Coverart';
                 if (!empty($this->put('status_id'))) {
-                    $register_user['status_id'] = $this->put('status_id');
+                    $link['status_id'] = $this->put('status_id');
                 }
-                if (!empty($this->put('plan_id'))) {
-                    $register_user['plan_id'] = $this->put('plan_id');
+                if (!empty($this->put('title'))) {
+                    $link['title'] = $this->put('title');
                 }
                 if (!empty($this->put('url'))) {
-                    $register_user['url'] = $this->put('url');
+                    $link['url'] = $this->put('url');
                 }
-                if (!empty($this->put('phone'))) {
-                    $register_user['phone'] = $this->put('phone');
+//                if (!empty($this->put('coverart'))) {
+//                    $video['coverart'] = $this->put('coverart');
+//                }
+                if (!empty($this->put('public'))) {
+                    $video['public'] = $this->put('public');
+                }
+                if (!empty($this->put('publish_at'))) {
+                    $link['publish_at'] = $this->put('publish_at');
+                    $link['public'] = '3';
+                }
+                if (!empty($this->put('sort'))) {
+                    $link['sort'] = $this->put('sort');
                 }
                 if (!empty($this->put('image'))) {
-                    //$register_user['image'] = $this->put("image");
                     $image = $this->put("image");
                     preg_match("/^data:image\/(.*);base64/i", $image, $match);
                     $ext = (!empty($match[1])) ? $match[1] : '.png';
                     $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
-                    $register_user['image'] = $image_name;
+                    $link['coverart'] = $image_name;
                     //upload image to server 
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
-                    //$bucket = 'files.link.stream';
-                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-                    $dest_folder = 'Profile';
                     $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                     unlink($source . '/' . $image_name);
                 }
-                if (!empty($this->put('banner'))) {
-                    //$register_user['banner'] = $this->put("banner");
-                    $banner = $this->put("banner");
-                    preg_match("/^data:image\/(.*);base64/i", $banner, $match);
-                    $ext = (!empty($match[1])) ? $match[1] : '.png';
-                    $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
-                    $register_user['banner'] = $image_name;
-                    //upload image to server 
-                    $source = $this->get_temp_dir();
-                    file_put_contents($source . '/' . $image_name, file_get_contents($banner));
-                    //SAVE S3
-                    //$bucket = 'files.link.stream';
-                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-                    $dest_folder = 'Profile';
-                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
-                    $s3_source = $source . '/' . $image_name;
-                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
-                    unlink($source . '/' . $image_name);
-                }
-                if (!empty($this->put('about'))) {
-                    $register_user['about'] = $this->put('about');
-                }
-                if (!empty($this->put('email_paypal'))) {
-                    $register_user['email_paypal'] = $this->put('email_paypal');
-                }
-                if (!empty($this->put('bio'))) {
-                    $register_user['bio'] = $this->put('bio');
-                }
-                if (!empty($this->put('city'))) {
-                    $register_user['city'] = $this->put('city');
-                }
-                if (!empty($this->put('country'))) {
-                    $register_user['country'] = $this->put('country');
-                }
+//                if (!empty($this->put('genre_id'))) {
+//                    $video['genre_id'] = $this->put('genre_id');
+//                }
+//                if (!empty($this->put('related_track'))) {
+//                    $video['related_track'] = $this->put('related_track');
+//                }
+//                if (!empty($this->put('explicit_content'))) {
+//                    $video['explicit_content'] = $this->put('explicit_content');
+//                }
+//                if (!empty($this->put('image'))) {
+//                    //$register_user['image'] = $this->put("image");
+//                    $image = $this->put("image");
+//                    preg_match("/^data:image\/(.*);base64/i", $image, $match);
+//                    $ext = (!empty($match[1])) ? $match[1] : '.png';
+//                    $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+//                    $register_user['image'] = $image_name;
+//                    //upload image to server 
+//                    $source = $this->get_temp_dir();
+//                    file_put_contents($source . '/' . $image_name, file_get_contents($image));
+//                    //SAVE S3
+//                    //$bucket = 'files.link.stream';
+//                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+//                    $dest_folder = 'Profile';
+//                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
+//                    $s3_source = $source . '/' . $image_name;
+//                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
+//                    unlink($source . '/' . $image_name);
+//                }              
                 //if (!empty($user)) {
-                $this->Link_model->update_user($id, $register_user);
+                $this->Link_model->update_link($id, $link);
+                $path = $this->s3_path . $dest_folder;
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
+                $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
                 //}
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been updated successfully.', 'data' => $register_user), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Link info has been updated successfully.', 'data' => $link), RestController::HTTP_OK);
             } else {
-                $this->error = 'User Not Found.';
+                $this->error = 'Link Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } else {
-            $this->error = 'Provide User ID.';
+            $this->error = 'Provide Link ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
