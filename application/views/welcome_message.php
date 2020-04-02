@@ -934,6 +934,59 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>Get Links by User:</h3>
+                <code>POST <?= base_url() ?>v1/links/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>?page={page}&page_size={page_size}</li>
+                </ul>
+                <h3>Example:</h3>
+                <ul>
+                    <li><?= base_url() ?>v1/links/15?page=1&page_size=20</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": []
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Insert Link:</h3>
+                <code>POST <?= base_url() ?>v1/links</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>status_id</li>
+                    <li>title</li>
+                    <li>url</li>
+                    <li>publish_at</li>
+                    <li>image(base64_encode)</li>
+                    <li></li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The link has been created successfully.",
+    "id":"1"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
 
                 <!-- EXAMPLE 
                 <hr>
