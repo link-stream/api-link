@@ -166,7 +166,6 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($image));
                     //SAVE S3
-                    //$dest_folder = 'Profile';
                     $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
@@ -182,7 +181,6 @@ class Users extends RestController {
                     $source = $this->get_temp_dir();
                     file_put_contents($source . '/' . $image_name, file_get_contents($banner));
                     //SAVE S3
-                    //$dest_folder = 'Profile';
                     $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
                     $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
@@ -204,7 +202,6 @@ class Users extends RestController {
                     $register_user['country'] = $this->put('country');
                 }
                 $this->User_model->update_user($id, $register_user);
-                //$dest_folder = 'Profile';
                 $path = $this->s3_path . $dest_folder;
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
                 $register_user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
@@ -481,60 +478,6 @@ class Users extends RestController {
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
             }
         }
-
-//        if (!empty($user_id) && !empty($instagram_username) && !empty($access_token)) {
-//            //Check User
-//            $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
-//            if (empty($register_user)) {
-//                //Create Account
-//                $user = array();
-//                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($instagram_username)) ? $this->generate_username($instagram_username) : $this->generate_username();
-//                $user['email'] = '';
-//                $user['plan_id'] = '1';
-//                $user['platform'] = 'IG';
-//                $user['platform_id'] = $user_id;
-//                $user['platform_token'] = $access_token;
-//                //$user['image'] = $instagram_avatar;
-//                $instagram_avatar = (!empty($instagram_username)) ? $this->instagram_get_photo($instagram_username) : '';
-//                $user['image'] = '';
-//                if (!empty($instagram_avatar)) {
-//                    $content = file_get_contents($instagram_avatar);
-//                    //
-//                    $image_name = time() . '.png';
-//                    // upload cropped image to server 
-//                    $source = $this->get_temp_dir();
-//                    file_put_contents($source . '/' . $image_name, $content);
-//                    //SAVE S3
-//                    //$bucket = 'files.link.stream';
-//                    //$path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-//                    $dest_folder = 'Profile';
-//                    $destination = $this->s3_path . $dest_folder . '/' . $image_name;
-//                    $s3_source = $source . '/' . $image_name;
-//                    $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
-//                    //$response['file_name'] = $image_name;
-//                    unlink($source . '/' . $image_name);
-//                    $user['image'] = $image_name;
-//                }
-//                $user['status_id'] = '3';
-//                $user['id'] = $this->User_model->insert_user($user);
-//                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
-//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
-//            } else {
-//                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
-//                unset($register_user['password']);
-//                unset($register_user['email_confirmed']);
-//                unset($register_user['status_id']);
-//                unset($register_user['facebook']);
-//                unset($register_user['instagram']);
-//                unset($register_user['twitter']);
-//                unset($register_user['soundcloud']);
-//                unset($register_user['youtube']);
-//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
-//            }
-//        } else {
-//            $this->error = 'Provide complete user info to add';
-//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-//        }
     }
 
     private function instagram_get_photo($user_name) {
