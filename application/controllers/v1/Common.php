@@ -20,7 +20,7 @@ class Common extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         //Models
-        //$this->load->model("User_model");
+        $this->load->model("User_model");
         $this->load->model("Streamy_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
