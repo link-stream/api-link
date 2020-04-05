@@ -206,8 +206,8 @@ class Streamy_model extends CI_Model {
     public function fetch_timezones($zone) {
         $this->db->select('id, zone');
         $this->db->from('st_timezone');
-        if(!empty($zone)){
-           $this->db->where('zone', $zone); 
+        if (!empty($zone)) {
+            $this->db->where('zone', $zone);
         }
         $this->db->order_by('zone');
         $query = $this->db->get();
@@ -215,10 +215,27 @@ class Streamy_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
-     public function insert_timezones($data) {
+
+    public function insert_timezones($data) {
         $this->db->insert('st_timezone', $data);
         return $this->db->insert_id();
+    }
+
+    public function fetch_ip_log($ip) {
+        $this->db->select('ip');
+        $this->db->from('st_ip_log');
+        if (!empty($ip)) {
+            $this->db->where('ip', $ip);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_ip_log($data) {
+        $this->db->insert('st_ip_log', $data);
+        //return $this->db->insert_id();
     }
 
 }

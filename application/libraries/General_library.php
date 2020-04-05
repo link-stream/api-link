@@ -159,6 +159,13 @@ class General_library {
         }
     }
 
+    public function ip_location($ip) {
+        //LOCATION ip-api.com
+        $location = file_get_contents('http://ip-api.com/json/' . $ip);
+        $data_loc = json_decode($location, true);
+        return $data_loc;
+    }
+
 //    public function get_cookie($action = null) {
 //        $cookie = unserialize($this->ci->input->cookie('cs_etags'));
 //        $user_encrypt = $cookie['user'];

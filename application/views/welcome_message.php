@@ -622,11 +622,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "data": [
         {
             "id": "4",
-            "zone": "America/New_York"
+            "zone": "America/Los_Angeles (-7)"
         },
         {
             "id": "19",
-            "timezone": "America/Los_Angeles "
+            "timezone": "America/New_York (-4)"
         }
 ]
 }');
