@@ -759,7 +759,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>TimeZones:</h3>
-                <code>GET <?= base_url() ?>v1/common/timezones</code>
+                <code>GET <?= base_url() ?>v1/common/timezones/{ip}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>* {ip optional}</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -769,12 +773,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "data": [
         {
-            "id": "1",
-            "timezone": "(GMT-0800) Anchorage"
+            "id": "4",
+            "zone": "America/New_York"
         },
         {
-            "id": "2",
-            "timezone": "(GMT-0800) Juneau"
+            "id": "19",
+            "timezone": "America/Los_Angeles "
         }
 ]
 }');

@@ -58,9 +58,27 @@ class Common extends RestController {
         }
     }
 
-    public function timezones_get() {
-        $timezones = $this->Streamy_model->fetch_timezones();
-        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $timezones), RestController::HTTP_OK);
+    public function timezones_get($ip = null) {
+        if (empty($ip)) {
+            $timezones = $this->Streamy_model->fetch_timezones('');
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $timezones), RestController::HTTP_OK);
+        } else {
+            $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+            $location = file_get_contents('http://ip-api.com/json/' . $ip);
+            $data_loc = json_decode($location, true);
+//            echo '<pre>';
+//            print_r($data_loc);
+//            echo '</pre>';
+//            echo '<br>';
+//            echo '<br>';
+            $data_time_zone = (empty($data_loc['timezone'])) ? $data_loc['timezone'] : 'America/New_York';
+            $timezones = $this->Streamy_model->fetch_timezones($data_time_zone);
+            if (empty($timezones)) {
+                $id = $this->Streamy_model->insert_timezones(array('zone' => $data_time_zone));
+                $timezones = array(array('id' => $id, 'zone' => $data_time_zone));
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $timezones), RestController::HTTP_OK);
+        }
     }
 
 }
