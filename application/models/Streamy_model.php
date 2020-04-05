@@ -209,6 +209,7 @@ class Streamy_model extends CI_Model {
         if(!empty($zone)){
            $this->db->where('zone', $zone); 
         }
+        $this->db->order_by('zone');
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
