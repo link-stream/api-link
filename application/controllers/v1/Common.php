@@ -64,13 +64,9 @@ class Common extends RestController {
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $timezones), RestController::HTTP_OK);
         } else {
             $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+            //IP LOG & Location Library -- Pending
             $location = file_get_contents('http://ip-api.com/json/' . $ip);
             $data_loc = json_decode($location, true);
-//            echo '<pre>';
-//            print_r($data_loc);
-//            echo '</pre>';
-//            echo '<br>';
-//            echo '<br>';
             $data_time_zone = (empty($data_loc['timezone'])) ? $data_loc['timezone'] : 'America/New_York';
             $timezones = $this->Streamy_model->fetch_timezones($data_time_zone);
             if (empty($timezones)) {
