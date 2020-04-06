@@ -166,35 +166,30 @@ class General_library {
         return $data_loc;
     }
 
-    public function header_token() {
+    public function header_token($user_id) {
 //        $headers = array();
 //        foreach (getallheaders() as $name => $value) {
 //            $headers[$name] = $value;
 //        }
         $headers = $this->ci->input->request_headers();
-        //print_r($headers);
         $headers['Token'] = (!empty($headers['Token'])) ? $headers['Token'] : ((!empty($headers['token'])) ? $headers['token'] : '');
         if (empty($headers['Token'])) {
             return false;
-//            $this->error = 'Provide Token.';
-//            $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } else {
             try {
-
                 $token_data = AUTHORIZATION::validateToken($headers['Token']);
-                //print_r($token_data);
                 if (empty($token_data)) {
                     return false;
-//                    $this->error = 'Unauthorized Access!';
-//                    $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
                 } else {
-                    $st_token = $this->ci->User_model->fetch_token_by_id($token_data->user_id, $token_data->token);
-                    if (empty($st_token)) {
+                    if ($token_data->user_id != $user_id) {
                         return false;
-//                        $this->error = 'Unauthorized Access!';
-//                        $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
                     } else {
-                        return true;
+                        $st_token = $this->ci->User_model->fetch_token_by_id($token_data->user_id, $token_data->token);
+                        if (empty($st_token)) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             } catch (Exception $e) {

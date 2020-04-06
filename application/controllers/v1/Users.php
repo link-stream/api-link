@@ -84,7 +84,7 @@ class Users extends RestController {
 //    }
 
     public function index_get($id = null) {
-        if (!$this->general_library->header_token()) {
+        if (!$this->general_library->header_token($id)) {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
         }
         if (!empty($id)) {
@@ -110,54 +110,55 @@ class Users extends RestController {
     }
 
     public function index_post() {
-        if (!$this->general_library->header_token()) {
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-        }
-        $email = strip_tags($this->input->post('email'));
-        $user_name = strip_tags($this->input->post('user_name'));
-        $platform = strip_tags($this->input->post('platform'));
-        if ((!empty($email) || !empty($user_name)) && !empty($platform)) {
-            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
-            if (empty($register_user)) {
-                $user = array();
-                $user['user_name'] = $user_name;
-                $user['first_name'] = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
-                $user['last_name'] = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
-                $user['display_name'] = (!empty($this->input->post('display_name'))) ? $this->input->post('display_name') : '';
-                $user['email'] = $email;
-                $user['email_confirmed'] = '1';
-                $user['password'] = (!empty($this->input->post('password'))) ? $this->general_library->encrypt_txt($this->input->post('password')) : '';
-                $user['status_id'] = '3';
-                $user['plan_id'] = '1';
-                $user['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
-                $user['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
-                $user['image'] = (!empty($this->input->post('image'))) ? $this->input->post('image') : '';
-                $user['banner'] = (!empty($this->input->post('banner'))) ? $this->input->post('banner') : '';
-                $user['about'] = (!empty($this->input->post('about'))) ? $this->input->post('about') : '';
-//            $user['youtube'] = (!empty($this->input->post('youtube'))) ? $this->input->post('youtube') : '';
-//            $user['facebook'] = (!empty($this->input->post('facebook'))) ? $this->input->post('facebook') : '';
-//            $user['instagram'] = (!empty($this->input->post('instagram'))) ? $this->input->post('instagram') : '';
-//            $user['twitter'] = (!empty($this->input->post('twitter'))) ? $this->input->post('twitter') : '';
-//            $user['soundcloud'] = (!empty($this->input->post('soundcloud'))) ? $this->input->post('soundcloud') : '';
-                $user['email_paypal'] = (!empty($this->input->post('email_paypal'))) ? $this->input->post('email_paypal') : '';
-                $user['platform'] = $platform;
-                $user['platform_id'] = (!empty($this->input->post('platform_id'))) ? $this->input->post('platform_id') : '';
-                $user['platform_token'] = (!empty($this->input->post('platform_token'))) ? $this->input->post('platform_token') : '';
-                $user['bio'] = (!empty($this->input->post('bio'))) ? $this->input->post('bio') : '';
-                $user['id'] = $this->User_model->insert_user($user);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been created successfully.', 'id' => $user['id']), RestController::HTTP_OK);
-            } else {
-                $this->error = 'The given email already exists.';
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-            }
-        } else {
-            $this->error = 'Provide complete user info to add';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        }
+        die('Nothing here');
+//        if (!$this->general_library->header_token()) {
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//        }
+//        $email = strip_tags($this->input->post('email'));
+//        $user_name = strip_tags($this->input->post('user_name'));
+//        $platform = strip_tags($this->input->post('platform'));
+//        if ((!empty($email) || !empty($user_name)) && !empty($platform)) {
+//            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+//            if (empty($register_user)) {
+//                $user = array();
+//                $user['user_name'] = $user_name;
+//                $user['first_name'] = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
+//                $user['last_name'] = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
+//                $user['display_name'] = (!empty($this->input->post('display_name'))) ? $this->input->post('display_name') : '';
+//                $user['email'] = $email;
+//                $user['email_confirmed'] = '1';
+//                $user['password'] = (!empty($this->input->post('password'))) ? $this->general_library->encrypt_txt($this->input->post('password')) : '';
+//                $user['status_id'] = '3';
+//                $user['plan_id'] = '1';
+//                $user['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
+//                $user['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
+//                $user['image'] = (!empty($this->input->post('image'))) ? $this->input->post('image') : '';
+//                $user['banner'] = (!empty($this->input->post('banner'))) ? $this->input->post('banner') : '';
+//                $user['about'] = (!empty($this->input->post('about'))) ? $this->input->post('about') : '';
+////            $user['youtube'] = (!empty($this->input->post('youtube'))) ? $this->input->post('youtube') : '';
+////            $user['facebook'] = (!empty($this->input->post('facebook'))) ? $this->input->post('facebook') : '';
+////            $user['instagram'] = (!empty($this->input->post('instagram'))) ? $this->input->post('instagram') : '';
+////            $user['twitter'] = (!empty($this->input->post('twitter'))) ? $this->input->post('twitter') : '';
+////            $user['soundcloud'] = (!empty($this->input->post('soundcloud'))) ? $this->input->post('soundcloud') : '';
+//                $user['email_paypal'] = (!empty($this->input->post('email_paypal'))) ? $this->input->post('email_paypal') : '';
+//                $user['platform'] = $platform;
+//                $user['platform_id'] = (!empty($this->input->post('platform_id'))) ? $this->input->post('platform_id') : '';
+//                $user['platform_token'] = (!empty($this->input->post('platform_token'))) ? $this->input->post('platform_token') : '';
+//                $user['bio'] = (!empty($this->input->post('bio'))) ? $this->input->post('bio') : '';
+//                $user['id'] = $this->User_model->insert_user($user);
+//                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been created successfully.', 'id' => $user['id']), RestController::HTTP_OK);
+//            } else {
+//                $this->error = 'The given email already exists.';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//            }
+//        } else {
+//            $this->error = 'Provide complete user info to add';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        }
     }
 
     public function index_put($id = null) {
-        if (!$this->general_library->header_token()) {
+        if (!$this->general_library->header_token($id)) {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
         }
         if (!empty($id)) {
