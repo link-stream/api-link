@@ -173,12 +173,14 @@ class General_library {
 //        }
         $headers = $this->ci->input->request_headers();
         //print_r($headers);
+        $headers['Token'] = (!empty($headers['Token'])) ? $headers['Token'] : ((!empty($headers['token'])) ? $headers['token'] : '');
         if (empty($headers['Token'])) {
             return false;
 //            $this->error = 'Provide Token.';
 //            $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } else {
             try {
+
                 $token_data = AUTHORIZATION::validateToken($headers['Token']);
                 //print_r($token_data);
                 if (empty($token_data)) {
