@@ -104,4 +104,35 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function create_token($user_id) {
+        $tmp_token = bin2hex(random_bytes(64));
+        $st_user_token = array(
+            'user_id' => $user_id,
+            'token' => $tmp_token,
+            'expires' => date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s', strtotime('+8 hour')))),
+        );
+        $this->db->insert('st_user_token', $st_user_token);
+        $token = AUTHORIZATION::generateToken($st_user_token);
+        return $token;
+        //$token = AUTHORIZATION::generateToken(['user_id' => $user_id]);
+        //print_r($token);
+        //return $token;
+    }
+
+    public function fetch_token_by_id($user_id, $token) {
+        $this->db->from('st_user_token');
+        $this->db->where(array('user_id' => $user_id, 'active' => '1', 'token' => $token, 'expires >= ' => date('Y-m-d H:i:s')));
+        //$this->db->order_by("id", "DESC");
+        //$this->db->limit(1);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_token($user_id, $token, $data) {
+        $this->db->where(array('user_id' => $user_id, 'token' => $token));
+        $this->db->update('st_user_token', $data);
+    }
+
 }

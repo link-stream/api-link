@@ -21,7 +21,7 @@ class General_library {
     //put your code here
     public function __construct() {
         $CI = & get_instance();
-//        $CI->load->model('cs_model');
+        $CI->load->model('User_model');
 //        $CI->load->model('returned_mail_model');
 //        $CI->load->helper('cookie');
         $this->ci = $CI;
@@ -164,6 +164,64 @@ class General_library {
         $location = file_get_contents('http://ip-api.com/json/' . $ip);
         $data_loc = json_decode($location, true);
         return $data_loc;
+    }
+
+    public function header_token() {
+//        $headers = array();
+//        foreach (getallheaders() as $name => $value) {
+//            $headers[$name] = $value;
+//        }
+        $headers = $this->ci->input->request_headers();
+        //print_r($headers);
+        if (empty($headers['Token'])) {
+            return false;
+//            $this->error = 'Provide Token.';
+//            $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } else {
+            try {
+                $token_data = AUTHORIZATION::validateToken($headers['Token']);
+                //print_r($token_data);
+                if (empty($token_data)) {
+                    return false;
+//                    $this->error = 'Unauthorized Access!';
+//                    $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+                } else {
+                    $st_token = $this->ci->User_model->fetch_token_by_id($token_data->user_id, $token_data->token);
+                    if (empty($st_token)) {
+                        return false;
+//                        $this->error = 'Unauthorized Access!';
+//                        $this->ci->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+                    } else {
+                        return true;
+                    }
+                }
+            } catch (Exception $e) {
+                // Token is invalid
+                // Send the unathorized access message
+                return false;
+            }
+        }
+    }
+
+    public function unset_token() {
+        $headers = $this->ci->input->request_headers();
+        if (empty($headers['Token'])) {
+            return false;
+        } else {
+            try {
+                $token_data = AUTHORIZATION::validateToken($headers['Token']);
+                if (empty($token_data)) {
+                    return false;
+                } else {
+                    $this->ci->User_model->update_token($token_data->user_id, $token_data->token, array('active' => '0'));
+                    return true;
+                }
+            } catch (Exception $e) {
+                // Token is invalid
+                // Send the unathorized access message
+                return false;
+            }
+        }
     }
 
 //    public function get_cookie($action = null) {

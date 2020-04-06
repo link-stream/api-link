@@ -24,7 +24,7 @@ class Users extends RestController {
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         //Helpers
-        $this->load->helper('email');
+        $this->load->helper(array('email', 'jwt', 'authorization'));
     }
 
 //    public function _remap($method, $arguments = array()) {
@@ -49,9 +49,44 @@ class Users extends RestController {
 //                    'message' => 'User login successful.',
 //                    'data' => $user
 //                ], REST_Controller::HTTP_OK);
-//                
+//      
+//    private function header_token() {
+////        $headers = array();
+////        foreach (getallheaders() as $name => $value) {
+////            $headers[$name] = $value;
+////        }
+//        $headers = $this->input->request_headers();
+//        //print_r($headers);
+//        if (empty($headers['Token'])) {
+//            $this->error = 'Provide Token.';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        } else {
+//            try {
+//                $token_data = AUTHORIZATION::validateToken($headers['Token']);
+//                //print_r($token_data);
+//                if (empty($token_data)) {
+//                    $this->error = 'Unauthorized Access!';
+//                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+//                } else {
+//                    $st_token = $this->User_model->fetch_token_by_id($token_data->user_id, $token_data->token);
+//                    if (empty($st_token)) {
+//                        $this->error = 'Unauthorized Access!';
+//                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+//                    }
+//                }
+//            } catch (Exception $e) {
+//                // Token is invalid
+//                // Send the unathorized access message
+//                $this->error = 'Unauthorized Access!';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+//            }
+//        }
+//    }
 
     public function index_get($id = null) {
+        if (!$this->general_library->header_token()) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
@@ -75,6 +110,9 @@ class Users extends RestController {
     }
 
     public function index_post() {
+        if (!$this->general_library->header_token()) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
         $email = strip_tags($this->input->post('email'));
         $user_name = strip_tags($this->input->post('user_name'));
         $platform = strip_tags($this->input->post('platform'));
@@ -119,6 +157,9 @@ class Users extends RestController {
     }
 
     public function index_put($id = null) {
+        if (!$this->general_library->header_token()) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
@@ -218,7 +259,7 @@ class Users extends RestController {
         }
     }
 
-    //params: type = username or email
+//params: type = username or email
     public function availability_get($type = null, $value = null, $id = null) {
         if (empty($type)) {
             $this->error = 'Type is Required';
@@ -251,16 +292,16 @@ class Users extends RestController {
         }
     }
 
-    //params = email, password
+//params = email, password
     public function login_post() {
-        // Get the post data
+// Get the post data
         $email = $this->input->post('email');
         $password = $this->input->post('password');
-        // Validate the post data
+// Validate the post data
         if (!empty($email) && !empty($password)) {
-            // Check if any user exists with the given credentials
+// Check if any user exists with the given credentials
             $password_e = $this->general_library->encrypt_txt($password);
-            //Check Email And User
+//Check Email And User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'password' => $password_e));
             if (!empty($register_user)) {
                 if ($register_user['status_id'] == 1) {
@@ -272,6 +313,7 @@ class Users extends RestController {
                     unset($register_user['twitter']);
                     unset($register_user['soundcloud']);
                     unset($register_user['youtube']);
+                    $register_user['token'] = $this->User_model->create_token($register_user['id']);
                     $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
                 } else {
                     $this->error = 'User in PENDING Status, please confirm your email';
@@ -282,9 +324,17 @@ class Users extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } else {
-            // Set the response and exit
+// Set the response and exit
             $this->error = 'Provide email and password.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function logout_post() {
+        if ($this->general_library->unset_token()) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        } else {
+            $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
         }
     }
 
@@ -305,12 +355,12 @@ class Users extends RestController {
     }
 
     public function registration_post() {
-        // Get the post data
+// Get the post data
         $email = strip_tags($this->input->post('email'));
         $password = $this->input->post('password');
         $user_name = strip_tags($this->input->post('user_name'));
         if (!empty($email) && !empty($user_name) && !empty($password)) {
-            //Check Email And User
+//Check Email And User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
             if (empty($register_user)) {
                 $user_name = $this->generate_username($user_name);
@@ -332,6 +382,7 @@ class Users extends RestController {
                 //unset($register_user['twitter']);
                 // unset($register_user['soundcloud']);
                 // unset($register_user['youtube']);
+                $user['token'] = $this->User_model->create_token($user['id']);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
             } else {
                 $this->error = 'The given email already exists.';
@@ -344,22 +395,22 @@ class Users extends RestController {
     }
 
     private function register_email($user) {
-        //$var = $this->session->userdata;
-        // $email = $var['register-email'];
-        //$id = $var['register-id'];
-        //$user = $var['register-user'];
+//$var = $this->session->userdata;
+// $email = $var['register-email'];
+//$id = $var['register-id'];
+//$user = $var['register-user'];
         $email_e = $this->general_library->urlsafe_b64encode($user['email']);
         $id_e = $this->general_library->urlsafe_b64encode($user['id']);
-        //$user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
+//$user_e = $this->general_library->urlsafe_b64encode($user['user_name']);
         $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
         $url = $base . '/email-confirm/' . $email_e . '/' . $id_e;
         $body = $this->load->view('app/email/email-confirm', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
-        //$body = $this->load->view('email/email_register', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
+//$body = $this->load->view('email/email_register', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
         $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
     }
 
     public function email_confirm_post() {
-        //$data = array();
+//$data = array();
         $email_e = $this->input->post('param_1');
         $id_e = $this->input->post('param_2');
         if (!empty($email_e) && !empty($id_e)) {
@@ -367,7 +418,7 @@ class Users extends RestController {
             $email = (valid_email($email_decode)) ? $email_decode : 'N';
             $id_decode = $this->general_library->urlsafe_b64decode($id_e);
             $id = (!empty($id_decode)) ? $id_decode : 'N';
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
             if (!empty($register_user)) {
                 if ($register_user['email_confirmed'] == '1') {
@@ -391,7 +442,7 @@ class Users extends RestController {
     public function resend_email_confirm_post() {
         $id = $this->input->post('user_id');
         if (!empty($id)) {
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_id($id);
             if (!empty($register_user)) {
                 $this->register_email($register_user);
@@ -429,7 +480,7 @@ class Users extends RestController {
             $user_id = $auth_response->user_id;
             $instagram_user = $this->instagram_api->getUserInfo($user_id, 'id,username,account_type,media_count', $access_token);
 //            $instagram_avatar = (!empty($instagram_user->username)) ? $this->instagram_get_photo($instagram_user->username) : '';
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
             if (empty($register_user)) {
                 //Create Account
@@ -463,6 +514,7 @@ class Users extends RestController {
                 }
                 $user['status_id'] = '3';
                 $user['id'] = $this->User_model->insert_user($user);
+                $user['token'] = $this->User_model->create_token($user['id']);
                 $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
             } else {
@@ -475,6 +527,7 @@ class Users extends RestController {
                 unset($register_user['twitter']);
                 unset($register_user['soundcloud']);
                 unset($register_user['youtube']);
+                $register_user['token'] = $this->User_model->create_token($register_user['id']);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
             }
         }
@@ -484,12 +537,12 @@ class Users extends RestController {
         $getValues = file_get_contents('https://www.instagram.com/' . $user_name . '/?__a=1');
         $jsonObj = json_decode($getValues, TRUE);
         $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
-        //print_r($photoURL);
+//print_r($photoURL);
         return $photoURL;
     }
 
     public function google_post() {
-        //$this->output->set_content_type('application/json');
+//$this->output->set_content_type('application/json');
         $token = $this->input->post('platform_token');
         if (empty($token)) {
             $this->error = 'Missing token';
@@ -507,7 +560,7 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
         if (isset($token_info->email, $token_info->aud) && $token_info->aud == GOOGLE_LOGIN_CLIENT_ID) {
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'Google', 'platform_id' => $token_info->sub));
             if (empty($register_user)) {
                 //Create Account
@@ -543,6 +596,7 @@ class Users extends RestController {
                 $user['status_id'] = '3';
                 $user['email_confirmed'] = '1';
                 $user['id'] = $this->User_model->insert_user($user);
+                $user['token'] = $this->User_model->create_token($user['id']);
                 $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user), RestController::HTTP_OK);
             } else {
@@ -555,6 +609,7 @@ class Users extends RestController {
                 unset($register_user['twitter']);
                 unset($register_user['soundcloud']);
                 unset($register_user['youtube']);
+                $register_user['token'] = $this->User_model->create_token($register_user['id']);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
             }
             return $this->output->set_output(json_encode(['success' => true]));
@@ -586,10 +641,10 @@ class Users extends RestController {
     }
 
     public function forgot_password_post() {
-        //$data = array();
+//$data = array();
         $email = $this->input->post('email');
         if (!empty($email)) {
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
             if (!empty($register_user)) {
                 $this->forgot_password_email($register_user);
@@ -610,25 +665,25 @@ class Users extends RestController {
         $date = date('Y-m-d H:i:s', strtotime(date('Y-m-d H:i:s', strtotime('+10 minutes'))));
         $date_e = $this->general_library->urlsafe_b64encode($date);
         $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
-        //$url = $base . '/reset-password/' . $email_e . '/' . $id_e . '/' . $date_e;
+//$url = $base . '/reset-password/' . $email_e . '/' . $id_e . '/' . $date_e;
         $url = $base . '/reset-password/' . $email_e . '/' . $id_e;
         $body = $this->load->view('app/email/email-password-reset', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
         $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
     }
 
-    //https://dev-link-vue.link.stream/reset-password/cGF1bEBsaW5rLnN0cmVhbQ../MzU.
+//https://dev-link-vue.link.stream/reset-password/cGF1bEBsaW5rLnN0cmVhbQ../MzU.
     public function password_reset_post() {
-        //$data = array();
+//$data = array();
         $email_e = $this->input->post('param_1');
         $id_e = $this->input->post('param_2');
-        //$date_e = $this->input->post('param_3');
+//$date_e = $this->input->post('param_3');
         $new_pass = $this->input->post('new_password');
         if (!empty($email_e) && !empty($id_e) && !empty($new_pass)) {
             $email_decode = $this->general_library->urlsafe_b64decode($email_e);
             $id_decode = $this->general_library->urlsafe_b64decode($id_e);
             $id = (!empty($id_decode)) ? $id_decode : 'N';
             $email = (valid_email($email_decode)) ? $email_decode : 'N';
-            //Check User
+//Check User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email, 'id' => $id));
             if (!empty($register_user)) {
                 $password = $this->general_library->encrypt_txt($new_pass);

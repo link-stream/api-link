@@ -121,6 +121,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 </p>
                 <hr>
+                <h3>Logout:</h3>
+                <code>POST <?= base_url() ?>v1/users/logout</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "staging",
+}');
+                    echo '</pre>';
+                    ?>
+
+                </p>
+                <hr>
                 <h3>Registration:</h3>
                 <code>POST <?= base_url() ?>v1/users/registration</code>
                 <h3>Parameters:</h3>
