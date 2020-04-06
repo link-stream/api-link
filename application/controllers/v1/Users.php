@@ -24,7 +24,7 @@ class Users extends RestController {
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         //Helpers
-        $this->load->helper(array('email', 'jwt', 'authorization'));
+        $this->load->helper(array('email'));
     }
 
 //    public function _remap($method, $arguments = array()) {
