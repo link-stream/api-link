@@ -333,9 +333,9 @@ class Users extends RestController {
 
     public function logout_post() {
         if ($this->general_library->unset_token()) {
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-        } else {
             $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+        } else {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
         }
     }
 
