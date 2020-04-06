@@ -30,6 +30,9 @@ class Videos extends RestController {
 
     public function index_get($id = null) {
         if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
             //$limit = 0;
@@ -56,6 +59,9 @@ class Videos extends RestController {
         $video['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
         $video['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         if ((!empty($video['user_id']) || !empty($video['title'])) && !empty($video['url'])) {
+            if (!$this->general_library->header_token($video['user_id'])) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             //$video['coverart'] = (!empty($this->input->post('coverart'))) ? $this->input->post('coverart') : '';
             $video['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
             $video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
@@ -82,6 +88,9 @@ class Videos extends RestController {
         if (!empty($id)) {
             $video = $this->Video_model->fetch_video_by_id($id);
             if (!empty($video)) {
+                if (!$this->general_library->header_token($video['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
                 if (!empty($this->put('status_id'))) {
                     $video['status_id'] = $this->put('status_id');
                 }
@@ -153,6 +162,10 @@ class Videos extends RestController {
 //        array('id' => '10', 'sort' => '1'),
 //        array('id' => '1', 'sort' => '2'),
 //        ));
+        $id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!$this->general_library->header_token($id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
         //print_r($list);
         if (!empty($list)) {

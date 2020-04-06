@@ -781,6 +781,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <code>POST <?= base_url() ?>v1/videos/sort_videos</code>
                 <h3>Parameters:</h3>
                 <ul>
+                    <li>user_id</li>
                     <li>list (JSON Array. Example: [{"id":"10","sort":"1"},{"id":"1","sort":"2"}])</li>
                 </ul>
                 <h3>Response Example:</h3>
