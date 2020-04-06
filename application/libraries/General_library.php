@@ -202,6 +202,7 @@ class General_library {
 
     public function unset_token() {
         $headers = $this->ci->input->request_headers();
+        $headers['Token'] = (!empty($headers['Token'])) ? $headers['Token'] : ((!empty($headers['token'])) ? $headers['token'] : '');
         if (empty($headers['Token'])) {
             return false;
         } else {
