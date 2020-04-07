@@ -45,7 +45,7 @@ class Videos extends RestController {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
                 $videos = $this->Video_model->fetch_video_by_user_id($id, $video_id, false, $limit, $offset);
-                $response_videos = array();
+                $videos_response = array();
                 foreach ($videos as $video) {
                     $video['date'] = '';
                     $video['time'] = '';
@@ -56,9 +56,9 @@ class Videos extends RestController {
                         $video['date'] = substr($local_date, 0, 10);
                         $video['time'] = substr($local_date, 11);
                     }
-                    $response_videos[] = $video;
+                    $videos_response[] = $video;
                 }
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response_videos), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $videos_response), RestController::HTTP_OK);
             }
         } else {
             $this->error = 'Provide User ID.';

@@ -22,14 +22,18 @@ class Links extends RestController {
         //Models
         $this->load->model("User_model");
         $this->load->model("Link_model");
+        $this->load->model("Streamy_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
         //Helpers
         $this->load->helper('email');
     }
 
-    public function index_get($id = null) {
+    public function index_get($id = null, $link_id = null) {
         if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
             //$limit = 0;
@@ -40,10 +44,19 @@ class Links extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $links = $this->Link_model->fetch_links_by_user_id($id, false, $limit, $offset);
+                $links = $this->Link_model->fetch_links_by_user_id($id, $link_id, false, $limit, $offset);
                 $links_reponse = array();
                 $dest_folder = 'Coverart';
                 foreach ($links as $link) {
+                    $link['date'] = '';
+                    $link['time'] = '';
+                    if ($link['public'] == '3') {
+                        $link['timezone'] = (!empty($link['timezone'])) ? $link['timezone'] : '85';
+                        $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
+                        $local_date = $this->general_library->gtm_to_local($tz['zone'], $link['publish_at']);
+                        $link['date'] = substr($local_date, 0, 10);
+                        $link['time'] = substr($local_date, 11);
+                    }
                     $path = $this->s3_path . $dest_folder;
                     $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
                     $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
@@ -64,9 +77,24 @@ class Links extends RestController {
         $link['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
         $link['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         if ((!empty($link['user_id']) || !empty($link['title'])) && !empty($link['url'])) {
+            if (!$this->general_library->header_token($link['user_id'])) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $link['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
-            $link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
-            $link['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+            if ($link['public'] == '3') {
+                $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
+                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
+                $link['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+                //$link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+                $link['publish_at'] = '';
+                if (!empty($date) && !empty($time) && !empty($link['timezone'])) {
+                    $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
+                    if (!empty($tz)) {
+                        $timezone = $tz['zone'];
+                        $link['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
+                    }
+                }
+            }
             if (!empty($this->input->post('image'))) {
                 $dest_folder = 'Coverart';
                 $image = $this->input->post("image");
@@ -84,7 +112,7 @@ class Links extends RestController {
                 $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                 unlink($source . '/' . $image_name);
             }
-            $link['sort'] = $this->get_last_link_sort($video['user_id']);
+            $link['sort'] = $this->get_last_link_sort($link['user_id']);
             $link['id'] = $this->Link_model->insert_link($link);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The link has been created successfully.', 'id' => $link['id']), RestController::HTTP_OK);
         } else {
@@ -94,7 +122,7 @@ class Links extends RestController {
     }
 
     private function get_last_link_sort($user_id) {
-        $max = $this->Link_model->fetch_max_video_sort($user_id);
+        $max = $this->Link_model->fetch_max_link_sort($user_id);
         $sort = (empty($max)) ? '1' : ($max + 1);
         return $sort;
     }
@@ -103,6 +131,9 @@ class Links extends RestController {
         if (!empty($id)) {
             $link = $this->Link_model->fetch_link_by_id($id);
             if (!empty($link)) {
+                if (!$this->general_library->header_token($link['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
                 $dest_folder = 'Coverart';
                 if (!empty($this->put('status_id'))) {
                     $link['status_id'] = $this->put('status_id');
@@ -119,12 +150,28 @@ class Links extends RestController {
                 if (!empty($this->put('public'))) {
                     $link['public'] = $this->put('public');
                 }
-                if (!empty($this->put('publish_at'))) {
-                    $link['publish_at'] = $this->put('publish_at');
+                if ($link['public'] == '3') {
+                    $date = (!empty($this->put('date'))) ? $this->put('date') : '';
+                    $time = (!empty($this->put('time'))) ? $this->put('time') : '';
+                    $link['timezone'] = (!empty($this->put('timezone'))) ? $this->put('timezone') : '';
+                    //$video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+                    $link['publish_at'] = '';
+                    if (!empty($date) && !empty($time) && !empty($link['timezone'])) {
+                        $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
+                        if (!empty($tz)) {
+                            $timezone = $tz['zone'];
+                            $link['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
+                        }
+                    }
+                } else {
+                    $link['publish_at'] = '';
                 }
-                if (!empty($this->put('timezone'))) {
-                    $link['timezone'] = $this->put('timezone');
-                }
+//                if (!empty($this->put('publish_at'))) {
+//                    $link['publish_at'] = $this->put('publish_at');
+//                }
+//                if (!empty($this->put('timezone'))) {
+//                    $link['timezone'] = $this->put('timezone');
+//                }
                 if (!empty($this->put('sort'))) {
                     $link['sort'] = $this->put('sort');
                 }
@@ -174,8 +221,13 @@ class Links extends RestController {
                 //if (!empty($user)) {
                 $this->Link_model->update_link($id, $link);
                 $path = $this->s3_path . $dest_folder;
-                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
-                $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                $link['data_image'] = '';
+                if (!empty($link['coverart'])) {
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
+                    $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                }
+                $link['date'] = ($link['public'] == '3') ? $date : '';
+                $link['time'] = ($link['public'] == '3') ? $time : '';
                 //}
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Link info has been updated successfully.', 'data' => $link), RestController::HTTP_OK);
             } else {
@@ -193,6 +245,10 @@ class Links extends RestController {
 //        array('id' => '10', 'sort' => '1'),
 //        array('id' => '1', 'sort' => '2'),
 //        ));
+        $id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!$this->general_library->header_token($id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
         //print_r($list);
         if (!empty($list)) {

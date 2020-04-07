@@ -874,9 +874,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Get Links by User:</h3>
-                <code>POST <?= base_url() ?>v1/links/{user_id}</code>
+                <code>POST <?= base_url() ?>v1/links/{user_id}/{link_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
+                    <li>user_id</li>
+                    <li>link_id  (optional)</li>
                     <li>?page={page}&page_size={page_size}</li>
                 </ul>
                 <h3>Example:</h3>
@@ -890,7 +892,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "data": []
+    "data": [
+        {
+            "id": "147",
+            "created_at": "2020-04-07 18:33:21",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "TESTING API",
+            "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
+            "coverart": null,
+            "public": "3",
+            "publish_at": "2020-04-10 16:00:00",
+            "timezone": "19",
+            "sort": "1",
+            "date": "2020-04-10",
+            "time": "12:00:00",
+            "data_image": ""
+        }
+    ]
 }');
                     echo '</pre>';
                     ?>
@@ -907,7 +926,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>title</li>
                     <li>url</li>
                     <li>public</li>
-                    <li>publish_at</li>
+                    <li>date</li>
+                    <li>time</li>
                     <li>timezone</li>
                     <li>image(base64_encode)</li>
                 </ul>
@@ -935,8 +955,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>title</li>
                     <li>url</li>
                     <li>public</li>
-                    <li>publish_at</li>
+                    <li>date</li>
+                    <li>time</li>
                     <li>timezone</li>
+                    <li>sort</li>
                     <li>image(base64_encode)</li>
                 </ul>
                 <h3>Response Example:</h3>
@@ -947,7 +969,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "message": "The Link info has been updated successfully.",
-    "data": []
+    "data": {
+        "id": "147",
+        "created_at": "2020-04-07 18:33:21",
+        "user_id": "35",
+        "status_id": "1",
+        "title": "TESTING API LINK",
+        "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
+        "coverart": null,
+        "public": "3",
+        "publish_at": "2020-04-10 16:00:00",
+        "timezone": "19",
+        "sort": "1",
+        "data_image": "",
+        "date": "2020-04-10",
+        "time": "12:00:00"
+    }
 }');
                     echo '</pre>';
                     ?>
@@ -958,6 +995,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <code>POST <?= base_url() ?>v1/links/sort_links</code>
                 <h3>Parameters:</h3>
                 <ul>
+                    <li>user_id</li>
                     <li>list (JSON Array. Example: [{"id":"10","sort":"1"},{"id":"1","sort":"2"}])</li>
                 </ul>
                 <h3>Response Example:</h3>
