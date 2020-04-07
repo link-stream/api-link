@@ -84,11 +84,14 @@ class Video_model extends CI_Model {
         return $row->Count;
     }
 
-    public function fetch_video_by_user_id($user_id, $deleted = false, $limit = 0, $offset = 0) {
+    public function fetch_video_by_user_id($user_id, $video_id, $deleted = false, $limit = 0, $offset = 0) {
         $this->db->from('st_video');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
+        }
+        if (!empty($video_id)) {
+            $this->db->where('id', $video_id);
         }
         $this->db->order_by('sort');
         if (!empty($limit)) {

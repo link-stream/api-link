@@ -29,7 +29,7 @@ class Videos extends RestController {
         $this->load->helper('email');
     }
 
-    public function index_get($id = null) {
+    public function index_get($id = null, $video_id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -44,7 +44,7 @@ class Videos extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $videos = $this->Video_model->fetch_video_by_user_id($id, false, $limit, $offset);
+                $videos = $this->Video_model->fetch_video_by_user_id($id, $video_id, false, $limit, $offset);
                 $response_videos = array();
                 foreach ($videos as $video) {
                     $video['date'] = '';

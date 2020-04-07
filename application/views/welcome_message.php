@@ -692,9 +692,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Get Videos by User:</h3>
-                <code>GET <?= base_url() ?>v1/videos/{user_id}</code>
+                <code>GET <?= base_url() ?>v1/videos/{user_id}/{video_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
+                    <li>user_id</li>
+                    <li>video_id (optional)</li>
                     <li>?page={page}&page_size={page_size}</li>
                 </ul>
                 <h3>Example:</h3>
@@ -924,7 +926,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
-                <h3>Update Link::</h3>
+                <h3>Update Link:</h3>
                 <code>PUT <?= base_url() ?>v1/links/{link_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
