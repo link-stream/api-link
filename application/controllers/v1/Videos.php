@@ -22,6 +22,7 @@ class Videos extends RestController {
         //Models
         $this->load->model("User_model");
         $this->load->model("Video_model");
+        $this->load->model("Streamy_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
         //Helpers
@@ -44,7 +45,19 @@ class Videos extends RestController {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
                 $videos = $this->Video_model->fetch_video_by_user_id($id, false, $limit, $offset);
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $videos), RestController::HTTP_OK);
+                $response_videos = array();
+                foreach ($videos as $video) {
+                    $video['date'] = '';
+                    $video['time'] = '';
+                    if ($video['public'] == '3') {
+                        $tz = $this->Streamy_model->fetch_timezones_by_id($video['timezone']);
+                        $local_date = $this->general_library->gtm_to_local($tz['zone'], $video['publish_at']);
+                        $video['date'] = substr($local_date, 0, 10);
+                        $video['time'] = substr($local_date, 11);
+                    }
+                    $response_videos[] = $video;
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response_videos), RestController::HTTP_OK);
             }
         } else {
             $this->error = 'Provide User ID.';
@@ -63,9 +76,21 @@ class Videos extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             //$video['coverart'] = (!empty($this->input->post('coverart'))) ? $this->input->post('coverart') : '';
-            $video['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
-            $video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
-            $video['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+            $video['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '1';
+            if ($video['public'] == '3') {
+                $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
+                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
+                $video['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+                //$video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+                $video['publish_at'] = '';
+                if (!empty($date) && !empty($time) && !empty($video['timezone'])) {
+                    $tz = $this->Streamy_model->fetch_timezones_by_id($video['timezone']);
+                    if (!empty($tz)) {
+                        $timezone = $tz['zone'];
+                        $video['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
+                    }
+                }
+            }
             $video['sort'] = $this->get_last_video_sort($video['user_id']);
             $video['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
             $video['related_track'] = (!empty($this->input->post('related_track'))) ? $this->input->post('related_track') : '';
@@ -106,9 +131,25 @@ class Videos extends RestController {
                 if (!empty($this->put('public'))) {
                     $video['public'] = $this->put('public');
                 }
-                if (!empty($this->put('publish_at'))) {
-                    $video['publish_at'] = $this->put('publish_at');
+                if ($video['public'] == '3') {
+                    $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
+                    $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
+                    $video['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+                    //$video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+                    $video['publish_at'] = '';
+                    if (!empty($date) && !empty($time) && !empty($video['timezone'])) {
+                        $tz = $this->Streamy_model->fetch_timezones_by_id($video['timezone']);
+                        if (!empty($tz)) {
+                            $timezone = $tz['zone'];
+                            $video['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
+                        }
+                    }
+                } else {
+                    $video['publish_at'] = '';
                 }
+//                if (!empty($this->put('publish_at'))) {
+//                    $video['publish_at'] = $this->put('publish_at');
+//                }
                 if (!empty($this->put('timezone'))) {
                     $video['timezone'] = $this->put('timezone');
                 }

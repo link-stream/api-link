@@ -215,6 +215,15 @@ class Streamy_model extends CI_Model {
         $query->free_result();
         return $result;
     }
+    
+    public function fetch_timezones_by_id($id) {
+        $this->db->from('st_timezone');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
 
     public function insert_timezones($data) {
         $this->db->insert('st_timezone', $data);

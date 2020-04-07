@@ -2045,7 +2045,6 @@ class App extends CI_Controller {
     public function yt() {
         //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
         //exec($cmd . " 2>&1", $output);
-
         //$url = "https://www.youtube.com/watch?v=BFaRWXEpFrs";
         $url = 'https://www.youtube.com/watch?v=g4S3jUtqcyM';
         //INFO
@@ -2093,7 +2092,7 @@ class App extends CI_Controller {
         //INFO
         //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
         $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id ' . $url;
-        
+
         exec($cmd, $output);
         echo "<pre>";
         print_r($output);
@@ -2121,6 +2120,38 @@ class App extends CI_Controller {
         echo '<br>';
         echo 'Audio: ' . $final_filename;
         echo '<br>';
+    }
+
+    //TIME TEST
+    public function local_to_gtm() {
+        $timezone = 'America/New_York';
+        $date = '2020-04-06';
+        $time = '21:10:00';
+        $datetime = $date . ' ' . $time;
+        echo $datetime . ' ' . $timezone;
+        echo '<br>';
+        $local_date = DateTime::createFromFormat('Y-m-d H:i:s', $datetime, new DateTimeZone($timezone));
+        $utc_date = $local_date;
+        $utc_date->setTimeZone(new DateTimeZone('UTC'));
+        echo $utc_date->format('Y-m-d H:i:s') . ' UTC';
+    }
+
+    public function gtm_to_local() {
+        $timezone = 'America/New_York';
+        $datetime = '2020-04-07 01:10:00';
+        echo $datetime . ' UTC';
+        echo '<br>';
+        $utc_date = DateTime::createFromFormat('Y-m-d H:i:s', $datetime, new DateTimeZone('UTC'));
+        $local_date = $utc_date;
+//        echo $timezone;
+//        echo '<br>';
+        $local_date->setTimeZone(new DateTimeZone($timezone));
+        echo $local_date->format('Y-m-d H:i:s') . ' ' . $timezone;
+//        echo '<br>';
+//        echo $local_date->format('Y-m-d');
+//        echo '<br>';
+//        echo $local_date->format('H:i:s');
+//        echo '<br>';
     }
 
 }

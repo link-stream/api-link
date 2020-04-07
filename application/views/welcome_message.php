@@ -708,7 +708,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "data": []
+    "data": [
+        {
+            "id": "153",
+            "created_at": "2020-03-19 15:43:54",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Disney OOoo",
+            "url": "https://www.youtube.com/watch?v=XOnHtStmbCI",
+            "coverart": null,
+            "public": "1",
+            "publish_at": "0000-00-00 00:00:00",
+            "timezone": null,
+            "sort": "1",
+            "genre_id": "2",
+            "related_track": "0",
+            "explicit_content": "0",
+            "date": "",
+            "time": ""
+        },
+        {
+            "id": "169",
+            "created_at": "2020-04-07 02:22:36",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "TESTING API",
+            "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
+            "coverart": null,
+            "public": "3",
+            "publish_at": "2020-04-10 16:00:00",
+            "timezone": "19",
+            "sort": "2",
+            "genre_id": "2",
+            "related_track": "0",
+            "explicit_content": "0",
+            "date": "2020-04-10",
+            "time": "12:00:00"
+        }
+    ]
 }');
                     echo '</pre>';
                     ?>
@@ -724,7 +761,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>url</li>
                     <!--<li>coverart</li>-->
                     <li>public</li>
-                    <li>publish_at</li>
+                    <li>date</li>
+                    <li>time</li>
                     <li>timezone</li>
                     <li>sort</li>
                     <li>genre_id</li>
@@ -755,7 +793,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <!--<li>url</li>-->
                     <!--<li>coverart</li>-->
                     <li>public</li>
-                    <li>publish_at</li>
+                    <li>date</li>
+                    <li>time</li>
                     <li>timezone</li>
                     <li>sort</li>
                     <li>genre_id</li>
