@@ -811,7 +811,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "message": "The Video info has been updated successfully.",
-    "data": []
+    "data": {
+        "id": "169",
+        "created_at": "2020-04-07 02:22:36",
+        "user_id": "35",
+        "status_id": "1",
+        "title": "TESTING API",
+        "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
+        "coverart": null,
+        "public": "3",
+        "publish_at": "2020-04-10 16:00:00",
+        "timezone": "19",
+        "sort": "4",
+        "genre_id": "2",
+        "related_track": "0",
+        "explicit_content": "0",
+        "date": "2020-04-10",
+        "time": "12:00:00"
+    }
 }');
                     echo '</pre>';
                     ?>
