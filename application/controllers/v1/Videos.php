@@ -132,9 +132,9 @@ class Videos extends RestController {
                     $video['public'] = $this->put('public');
                 }
                 if ($video['public'] == '3') {
-                    $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
-                    $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
-                    $video['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+                    $date = (!empty($this->put('date'))) ? $this->put('date') : '';
+                    $time = (!empty($this->put('time'))) ? $this->put('time') : '';
+                    $video['timezone'] = (!empty($this->put('timezone'))) ? $this->put('timezone') : '';
                     //$video['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
                     $video['publish_at'] = '';
                     if (!empty($date) && !empty($time) && !empty($video['timezone'])) {
@@ -150,9 +150,9 @@ class Videos extends RestController {
 //                if (!empty($this->put('publish_at'))) {
 //                    $video['publish_at'] = $this->put('publish_at');
 //                }
-                if (!empty($this->put('timezone'))) {
-                    $video['timezone'] = $this->put('timezone');
-                }
+//                if (!empty($this->put('timezone'))) {
+//                    $video['timezone'] = $this->put('timezone');
+//                }
                 if (!empty($this->put('sort'))) {
                     $video['sort'] = $this->put('sort');
                 }
@@ -186,6 +186,14 @@ class Videos extends RestController {
 //                }              
                 //if (!empty($user)) {
                 $this->Video_model->update_video($id, $video);
+                $video['date'] = ($video['public'] == '3') ? $date : '';
+                $video['time'] = ($video['public'] == '3') ? $time : '';
+//                if ($video['public'] == '3') {
+//                    $tz = $this->Streamy_model->fetch_timezones_by_id($video['timezone']);
+//                    $local_date = $this->general_library->gtm_to_local($tz['zone'], $video['publish_at']);
+//                    $video['date'] = substr($local_date, 0, 10);
+//                    $video['time'] = substr($local_date, 11);
+//                }
                 //}
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Video info has been updated successfully.', 'data' => $video), RestController::HTTP_OK);
             } else {
