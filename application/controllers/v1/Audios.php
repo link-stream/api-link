@@ -28,10 +28,10 @@ class Audios extends RestController {
         $this->load->helper('email');
     }
 
-    public function genre_get() {
-        $genres = $this->Streamy_model->fetch_genres();
-        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
-    }
+//    public function genre_get() {
+//        $genres = $this->Streamy_model->fetch_genres();
+//        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
+//    }
 
     public function track_type_get() {
         $genres = $this->Streamy_model->fetch_track_types();
@@ -41,6 +41,9 @@ class Audios extends RestController {
     public function related_track_get($user_id = null) {
         $data = array();
         if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
                 $related_audio = $this->Streamy_model->fetch_related_audio_by_user_id($user_id);
@@ -55,29 +58,29 @@ class Audios extends RestController {
         }
     }
 
-    public function visibility_get($user_id = null) {
-        if (!empty($user_id)) {
-            $register_user = $this->User_model->fetch_user_by_id($user_id);
-            if (!empty($register_user)) {
-                //$visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
-                $visibility = array('1' => 'Public', '3' => 'Scheduled');
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
-//                if ($register_user['plan_id'] == '1') {
-//                    $visibility = array('1' => 'Public', '2' => 'Private');
-//                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
-//                } else {
-//                    $visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
-//                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
-//                }
-            } else {
-                $this->error = 'User Not Found.';
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-            }
-        } else {
-            $this->error = 'Provide User ID.';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        }
-    }
+//    public function visibility_get($user_id = null) {
+//        if (!empty($user_id)) {
+//            $register_user = $this->User_model->fetch_user_by_id($user_id);
+//            if (!empty($register_user)) {
+//                //$visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
+//                $visibility = array('1' => 'Public', '3' => 'Scheduled');
+//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
+////                if ($register_user['plan_id'] == '1') {
+////                    $visibility = array('1' => 'Public', '2' => 'Private');
+////                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
+////                } else {
+////                    $visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
+////                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
+////                }
+//            } else {
+//                $this->error = 'User Not Found.';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//            }
+//        } else {
+//            $this->error = 'Provide User ID.';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        }
+//    }
 
     public function index_get($id = null) {
         if (!empty($id)) {
