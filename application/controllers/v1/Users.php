@@ -245,10 +245,16 @@ class Users extends RestController {
                 }
                 $this->User_model->update_user($id, $register_user);
                 $path = $this->s3_path . $dest_folder;
-                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
-                $register_user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
-                $data_banner = $this->aws_s3->s3_read($this->bucket, $path, $register_user['banner']);
-                $register_user['data_banner'] = (!empty($data_banner)) ? base64_encode($data_banner) : '';
+                $register_user['data_image'] = '';
+                if (!empty($register_user['image'])) {
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $register_user['image']);
+                    $register_user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                }
+                $register_user['data_banner'] = '';
+                if (!empty($register_user['banner'])) {
+                    $data_banner = $this->aws_s3->s3_read($this->bucket, $path, $register_user['banner']);
+                    $register_user['data_banner'] = (!empty($data_banner)) ? base64_encode($data_banner) : '';
+                }
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been updated successfully.', 'data' => $register_user), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
