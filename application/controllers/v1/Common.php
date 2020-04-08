@@ -35,6 +35,9 @@ class Common extends RestController {
 
     public function visibility_get($user_id = null) {
         if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
                 //$visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
