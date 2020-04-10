@@ -168,11 +168,14 @@ class Streamy_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_streamys_by_user_id($user_id, $deleted = false, $limit = 0, $offset = 0) {
+    public function fetch_streamys_by_user_id($user_id, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
         $this->db->from('st_streamy');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
+        }
+        if (!empty($audio_id)) {
+            $this->db->where('id', $audio_id);
         }
         $this->db->order_by('sort');
         if (!empty($limit)) {
@@ -215,7 +218,7 @@ class Streamy_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function fetch_timezones_by_id($id) {
         $this->db->from('st_timezone');
         $this->db->where('id', $id);

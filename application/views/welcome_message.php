@@ -612,8 +612,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "data": {
         "1": "Public",
-        "2": "Private",
-        "3": "Scheduled"
+        "2": "Private"
     }
 }');
                     echo '</pre>';
@@ -712,40 +711,34 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "data": [
         {
-            "id": "153",
-            "created_at": "2020-03-19 15:43:54",
+            "id": "151",
+            "created_at": "2020-03-16 15:35:27",
             "user_id": "35",
             "status_id": "1",
-            "title": "Disney OOoo",
-            "url": "https://www.youtube.com/watch?v=XOnHtStmbCI",
-            "coverart": null,
+            "title": "TESTING API 01",
+            "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
             "public": "1",
-            "publish_at": "0000-00-00 00:00:00",
-            "timezone": null,
-            "sort": "1",
-            "genre_id": "2",
-            "related_track": "0",
-            "explicit_content": "0",
-            "date": "",
-            "time": ""
+            "sort": "3",
+            "genre_id": "1",
+            "related_track": "",
+            "scheduled": false,
+            "date": "0000-00-00",
+            "time": "00:00:00"
         },
         {
             "id": "169",
             "created_at": "2020-04-07 02:22:36",
             "user_id": "35",
             "status_id": "1",
-            "title": "TESTING API",
+            "title": "TESTING API 02",
             "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
-            "coverart": null,
-            "public": "3",
-            "publish_at": "2020-04-10 16:00:00",
-            "timezone": "19",
-            "sort": "2",
+            "public": "1",
+            "sort": "4",
             "genre_id": "2",
-            "related_track": "0",
-            "explicit_content": "0",
+            "related_track": "",
+            "scheduled": true,
             "date": "2020-04-10",
-            "time": "12:00:00"
+            "time": "16:00:00"
         }
     ]
 }');
@@ -763,13 +756,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>url</li>
                     <!--<li>coverart</li>-->
                     <li>public</li>
-                    <li>date</li>
-                    <li>time</li>
-                    <li>timezone</li>
-                    <li>sort</li>
+                    <!--<li>date</li>-->
+                    <!--<li>time</li>-->
+                    <!--<li>timezone</li>-->
+                    <!--<li>sort</li>-->
                     <li>genre_id</li>
                     <li>related_track</li>
-                    <li>explicit_content</li>
+                    <!--<li>explicit_content</li>-->
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -790,18 +783,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <code>PUT <?= base_url() ?>v1/videos/{video_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
-                    <li>status_id</li>
+                    <!--<li>status_id</li>-->
                     <li>title</li>
-                    <!--<li>url</li>-->
+                    <li>url</li>
                     <!--<li>coverart</li>-->
                     <li>public</li>
+                    <li>scheduled(1-Yes, 0-No)</li>
                     <li>date</li>
                     <li>time</li>
-                    <li>timezone</li>
-                    <li>sort</li>
+                    <!--<li>timezone</li>-->
+                    <!--<li>sort</li>-->
                     <li>genre_id</li>
                     <li>related_track</li>
-                    <li>explicit_content</li>
+                    <!--<li>explicit_content</li>-->
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -818,17 +812,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "status_id": "1",
         "title": "TESTING API",
         "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
-        "coverart": null,
-        "public": "3",
-        "publish_at": "2020-04-10 16:00:00",
-        "timezone": "19",
+        "public": "1",
         "sort": "4",
         "genre_id": "2",
-        "related_track": "0",
-        "explicit_content": "0",
+        "related_track": "",
         "date": "2020-04-10",
-        "time": "12:00:00"
+        "time": "12:00:00",
+        "scheduled": true
     }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Delete Video:</h3>
+                <code>DELETE <?= base_url() ?>v1/videos/{video_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Video has been deleted successfully."
 }');
                     echo '</pre>';
                     ?>
@@ -1024,6 +1031,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "message": "The information of the links has been updated correctly"
 }');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Get Audios by User:</h3>
+                <code>GET <?= base_url() ?>v1/audios/{user_id}/{audio_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>audio_id (optional)</li>
+                    <li>?page={page}&page_size={page_size}</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('');
                     echo '</pre>';
                     ?>
                 </p>

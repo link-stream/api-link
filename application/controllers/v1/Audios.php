@@ -82,8 +82,11 @@ class Audios extends RestController {
 //        }
 //    }
 
-    public function index_get($id = null) {
+    public function index_get($id = null, $audio_id = null) {
         if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
             //$limit = 0;
@@ -94,8 +97,9 @@ class Audios extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $audios = array();
-                $streamys = $this->Streamy_model->fetch_streamys_by_user_id($id, false, $limit, $offset);
+                $streamys = $this->Streamy_model->fetch_streamys_by_user_id($id, $audio_id, false, $limit, $offset);
+                $streamys_reponse = array();
+                $dest_folder = 'Coverart';
                 foreach ($streamys as $streamy) {
                     $streamy['related_link'] = $this->Streamy_model->fetch_related_links($streamy['id']);
                     $audios[] = $streamy;
