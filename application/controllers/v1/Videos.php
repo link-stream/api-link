@@ -108,8 +108,21 @@ class Videos extends RestController {
             $video['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
             $video['related_track'] = (!empty($this->input->post('related_track'))) ? $this->input->post('related_track') : '';
 //            $video['explicit_content'] = (!empty($this->input->post('explicit_content'))) ? $this->input->post('explicit_content') : '';
-            $video['id'] = $this->Video_model->insert_video($video);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The video has been created successfully.', 'id' => $video['id']), RestController::HTTP_OK);
+            $id = $this->Video_model->insert_video($video);
+            //REPONSE
+            $video_response = $this->Video_model->fetch_video_by_id($id);
+            $video_response['scheduled'] = false;
+//            if ($video_response['publish_at'] == '0000-00-00 00:00:00') {
+//                $video_response['scheduled'] = false;
+//            }
+            $video_response['date'] = '0000-00-00';
+            $video_response['time'] = '00:00:00';
+            $video_response['related_track'] = empty($video['related_track']) ? '' : $video['related_track'];
+            unset($video_response['coverart']);
+            unset($video_response['publish_at']);
+            unset($video_response['timezone']);
+            unset($video_response['explicit_content']);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The video has been created successfully.', 'id' => $id, 'data' => $video_response), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide complete video info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -168,7 +181,7 @@ class Videos extends RestController {
 //                }
                 $scheduled = (!empty($this->put('scheduled'))) ? true : false;
                 if ($scheduled) {
-                    $date = (!empty($this->put('date'))) ? $this->put('date') : '0000-00-00';
+                    $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
                     $time = (!empty($this->put('time'))) ? $this->put('time') : '00:00:00';
                     $video['publish_at'] = $date . ' ' . $time;
                 } else {
