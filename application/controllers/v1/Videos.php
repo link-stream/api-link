@@ -48,7 +48,7 @@ class Videos extends RestController {
                 $videos_response = array();
                 foreach ($videos as $video) {
                     $video['scheduled'] = true;
-                    if ($video['publish_at'] == '0000-00-00 00:00:00') {
+                    if ($video['publish_at'] == '0000-00-00 00:00:00' || empty($video['publish_at'])) {
                         $video['scheduled'] = false;
                     }
                     $video['date'] = substr($video['publish_at'], 0, 10);
