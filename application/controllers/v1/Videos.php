@@ -51,8 +51,8 @@ class Videos extends RestController {
                     if ($video['publish_at'] == '0000-00-00 00:00:00' || empty($video['publish_at'])) {
                         $video['scheduled'] = false;
                     }
-                    $video['date'] = substr($video['publish_at'], 0, 10);
-                    $video['time'] = substr($video['publish_at'], 11);
+                    $video['date'] = ( $video['scheduled']) ? substr($video['publish_at'], 0, 10) : '';
+                    $video['time'] = ( $video['scheduled']) ? substr($video['publish_at'], 11) : '';
                     $video['public'] = ($video['public'] == '3') ? '1' : $video['public'];
                     $video['related_track'] = empty($video['related_track']) ? '' : $video['related_track'];
                     unset($video['coverart']);
