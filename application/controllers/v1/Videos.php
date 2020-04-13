@@ -104,7 +104,7 @@ class Videos extends RestController {
 //                    }
 //                }
 //            }
-//            $video['sort'] = $this->get_last_video_sort($video['user_id']);
+            $video['sort'] = $this->get_last_video_sort($video['user_id']);
             $video['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
             $video['related_track'] = (!empty($this->input->post('related_track'))) ? $this->input->post('related_track') : '';
 //            $video['explicit_content'] = (!empty($this->input->post('explicit_content'))) ? $this->input->post('explicit_content') : '';
