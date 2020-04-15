@@ -1005,14 +1005,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <!--<li>user_id</li>-->
-                    <li>status_id</li>
+                    <!--<li>status_id</li>-->
                     <li>title</li>
                     <li>url</li>
                     <li>public</li>
+                    <li>scheduled</li>
                     <li>date</li>
                     <li>time</li>
-                    <li>timezone</li>
-                    <li>sort</li>
+                    <!--<li>timezone</li>-->
+                    <!--<li>sort</li>-->
                     <li>image(base64_encode)</li>
                 </ul>
                 <h3>Response Example:</h3>
@@ -1030,15 +1031,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "status_id": "1",
         "title": "TESTING API LINK",
         "url": "https://www.youtube.com/watch?v=2EbI4inaHwM",
-        "coverart": null,
-        "public": "3",
-        "publish_at": "2020-04-10 16:00:00",
-        "timezone": "19",
+        "coverart": "",
+        "public": "1",
         "sort": "1",
         "data_image": "",
+        "scheduled": true,
         "date": "2020-04-10",
         "time": "12:00:00"
     }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Delete Link:</h3>
+                <code>DELETE <?= base_url() ?>v1/links/{link_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Link has been deleted successfully."
 }');
                     echo '</pre>';
                     ?>
