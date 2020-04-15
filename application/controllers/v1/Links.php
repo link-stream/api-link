@@ -28,6 +28,17 @@ class Links extends RestController {
         //Helpers
         $this->load->helper('email');
     }
+    
+    private function get_temp_dir() {
+        $cronDir = sys_get_temp_dir() . '';
+        if ($_SERVER['HTTP_HOST'] == 'localhost') {
+            $cronDir = FCPATH . 'tmp';
+        }
+        if (!is_dir($cronDir)) {
+            mkdir($cronDir, 0777, true);
+        }
+        return $cronDir;
+    }
 
     public function index_get($id = null, $link_id = null) {
         if (!empty($id)) {
@@ -48,18 +59,36 @@ class Links extends RestController {
                 $links_reponse = array();
                 $dest_folder = 'Coverart';
                 foreach ($links as $link) {
-                    $link['date'] = '';
-                    $link['time'] = '';
-                    if ($link['public'] == '3') {
-                        $link['timezone'] = (!empty($link['timezone'])) ? $link['timezone'] : '85';
-                        $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
-                        $local_date = $this->general_library->gtm_to_local($tz['zone'], $link['publish_at']);
-                        $link['date'] = substr($local_date, 0, 10);
-                        $link['time'] = substr($local_date, 11);
+                    $link['scheduled'] = true;
+                    if ($link['publish_at'] == '0000-00-00 00:00:00' || empty($link['publish_at'])) {
+                        $link['scheduled'] = false;
                     }
+                    $link['date'] = ($link['scheduled']) ? substr($link['publish_at'], 0, 10) : '';
+                    $link['time'] = ($link['scheduled']) ? substr($link['publish_at'], 11) : '';
+                    //$link['public'] = ($link['public'] == '3') ? '1' : $link['public'];
+                    //$link['public'] = ($link['public'] == '3') ? '1' : $link['public'];
+//                    $link['date'] = '';
+//                    $link['time'] = '';
+//                    if ($link['public'] == '3') {
+//                        $link['timezone'] = (!empty($link['timezone'])) ? $link['timezone'] : '85';
+//                        $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
+//                        $local_date = $this->general_library->gtm_to_local($tz['zone'], $link['publish_at']);
+//                        $link['date'] = substr($local_date, 0, 10);
+//                        $link['time'] = substr($local_date, 11);
+//                    }
                     $path = $this->s3_path . $dest_folder;
-                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
-                    $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                    $link['data_image'] = '';
+                    if (!empty($link['coverart'])) {
+                        $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
+                        $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                    }
+//                    $path = $this->s3_path . $dest_folder;
+//                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
+//                    $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+//                    unset($link['coverart']);
+                    unset($link['publish_at']);
+                    unset($link['timezone']);
+//                    unset($link['explicit_content']);
                     $links_reponse[] = $link;
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $links_reponse), RestController::HTTP_OK);
@@ -73,30 +102,40 @@ class Links extends RestController {
     public function index_post() {
         $link = array();
         $link['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
-        $link['status_id'] = (!empty($this->input->post('status_id'))) ? $this->input->post('status_id') : '1';
+        $link['status_id'] = '1';
         $link['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
         $link['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         if ((!empty($link['user_id']) || !empty($link['title'])) && !empty($link['url'])) {
             if (!$this->general_library->header_token($link['user_id'])) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
-            $link['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '';
-            if ($link['public'] == '3') {
-                $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
-                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
-                $link['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
-                //$link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
-                $link['publish_at'] = '';
-                if (!empty($date) && !empty($time) && !empty($link['timezone'])) {
-                    $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
-                    if (!empty($tz)) {
-                        $timezone = $tz['zone'];
-                        $link['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
-                    }
-                }
+            $link['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '1';
+            $scheduled = (!empty($this->input->post('scheduled'))) ? true : false;
+            if ($scheduled) {
+                $date = (!empty($this->input->post('date'))) ? substr($this->input->post('date'), 0, 10) : '0000-00-00';
+                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '00:00:00';
+                $link['publish_at'] = $date . ' ' . $time;
+            } else {
+                $date = '0000-00-00';
+                $time = '00:00:00';
+                $link['publish_at'] = $date . ' ' . $time;
             }
+//            if ($link['public'] == '3') {
+//                $date = (!empty($this->input->post('date'))) ? $this->input->post('date') : '';
+//                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '';
+//                $link['timezone'] = (!empty($this->input->post('timezone'))) ? $this->input->post('timezone') : '';
+//                //$link['publish_at'] = (!empty($this->input->post('publish_at'))) ? $this->input->post('publish_at') : '';
+//                $link['publish_at'] = '';
+//                if (!empty($date) && !empty($time) && !empty($link['timezone'])) {
+//                    $tz = $this->Streamy_model->fetch_timezones_by_id($link['timezone']);
+//                    if (!empty($tz)) {
+//                        $timezone = $tz['zone'];
+//                        $link['publish_at'] = $this->general_library->local_to_gtm($timezone, $date, $time);
+//                    }
+//                }
+//            }
+            $dest_folder = 'Coverart';
             if (!empty($this->input->post('image'))) {
-                $dest_folder = 'Coverart';
                 $image = $this->input->post("image");
                 preg_match("/^data:image\/(.*);base64/i", $image, $match);
                 $ext = (!empty($match[1])) ? $match[1] : '.png';
@@ -106,15 +145,30 @@ class Links extends RestController {
                 $source = $this->get_temp_dir();
                 file_put_contents($source . '/' . $image_name, file_get_contents($image));
                 //SAVE S3
-                //$dest_folder = 'Profile';
                 $destination = $this->s3_path . $dest_folder . '/' . $image_name;
                 $s3_source = $source . '/' . $image_name;
                 $this->aws_s3->s3push($s3_source, $destination, $this->bucket);
                 unlink($source . '/' . $image_name);
             }
             $link['sort'] = $this->get_last_link_sort($link['user_id']);
-            $link['id'] = $this->Link_model->insert_link($link);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The link has been created successfully.', 'id' => $link['id']), RestController::HTTP_OK);
+            $id = $this->Link_model->insert_link($link);
+            //REPONSE
+            $link_response = $this->Link_model->fetch_link_by_id($id);
+            $link_response['scheduled'] = true;
+            if ($link_response['publish_at'] == '0000-00-00 00:00:00' || empty($link_response['publish_at'])) {
+                $link_response['scheduled'] = false;
+            }
+            $link_response['date'] = ($link_response['scheduled']) ? substr($link_response['publish_at'], 0, 10) : '';
+            $link_response['time'] = ($link_response['scheduled']) ? substr($link_response['publish_at'], 11) : '';
+            $link_response['data_image'] = '';
+            $path = $this->s3_path . $dest_folder;
+            if (!empty($link_response['coverart'])) {
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link_response['coverart']);
+                $link_response['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+            }
+            unset($link_response['publish_at']);
+            unset($link_response['timezone']);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The link has been created successfully.', 'id' => $id, 'data' => $link_response), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide complete link info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
