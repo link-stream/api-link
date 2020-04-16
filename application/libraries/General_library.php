@@ -29,6 +29,28 @@ class General_library {
 //        $CI->load->library(array('ShipstationLibrary', 'aws_s3'));
     }
 
+//    public function get_temp_dir() {
+//        $cronDir = sys_get_temp_dir() . '/Cron/FL/upload/';
+//        if ($_SERVER['HTTP_HOST'] == 'localhost') {
+//            $cronDir = FCPATH . 'processed/';
+//        }
+//        if (!is_dir($cronDir)) {
+//            mkdir($cronDir, 0777, true);
+//        }
+//        return $cronDir;
+//    }
+
+    public function get_temp_dir() {
+        $cronDir = sys_get_temp_dir() . '';
+        if ($_SERVER['HTTP_HOST'] == 'localhost') {
+            $cronDir = FCPATH . 'tmp';
+        }
+        if (!is_dir($cronDir)) {
+            mkdir($cronDir, 0777, true);
+        }
+        return $cronDir;
+    }
+
     public function urlsafe_b64encode($string) {
         $data = base64_encode($string);
         $data = str_replace(array('+', '/', '='), array('-', '_', '.'), $data);
@@ -76,17 +98,6 @@ class General_library {
         $pst_date = gmt_to_local($str_date, 'UM8', $is_summer);
         $pst_date = date('Y-m-d H:i:s', $pst_date);
         return $pst_date;
-    }
-
-    public function get_temp_dir() {
-        $cronDir = sys_get_temp_dir() . '/Cron/FL/upload/';
-        if ($_SERVER['HTTP_HOST'] == 'localhost') {
-            $cronDir = FCPATH . 'processed/';
-        }
-        if (!is_dir($cronDir)) {
-            mkdir($cronDir, 0777, true);
-        }
-        return $cronDir;
     }
 
     public function create_cookie($streamy_user) {
