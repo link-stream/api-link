@@ -19,17 +19,17 @@ class Audio_model extends CI_Model {
     }
 
     public function insert_streamy($data) {
-        $this->db->insert('st_streamy', $data);
+        $this->db->insert('st_audio', $data);
         return $this->db->insert_id();
     }
 
     public function update_streamy($id, $data) {
         $this->db->where('id', $id);
-        $this->db->update('st_streamy', $data);
+        $this->db->update('st_audio', $data);
     }
 
     public function fetch_streamy_by_id($id) {
-        $this->db->from('st_streamy');
+        $this->db->from('st_audio');
         $this->db->where('id', $id);
         $query = $this->db->get();
         $result = $query->row_array();
@@ -147,7 +147,7 @@ class Audio_model extends CI_Model {
 
     public function fetch_related_audio_by_user_id($user_id, $deleted = false) {
         $this->db->select('id, title');
-        $this->db->from('st_streamy');
+        $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
@@ -168,7 +168,7 @@ class Audio_model extends CI_Model {
     }
 
     public function fetch_streamys_by_user_id($user_id, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
-        $this->db->from('st_streamy');
+        $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
@@ -188,7 +188,7 @@ class Audio_model extends CI_Model {
 
     public function fetch_max_streamys_sort($user_id) {
         $this->db->select('MAX(sort) as Max');
-        $this->db->from('st_streamy');
+        $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
         $query = $this->db->get();
         $row = $query->row();
