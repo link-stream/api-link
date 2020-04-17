@@ -20,8 +20,9 @@ class Audios extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         //Models
-        $this->load->model("User_model");
-        $this->load->model("Streamy_model");
+        $this->load->model(array('User_model', 'Audio_model'));
+//        $this->load->model("User_model");
+//        $this->load->model("Streamy_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
         //Helpers
@@ -29,12 +30,12 @@ class Audios extends RestController {
     }
 
 //    public function genre_get() {
-//        $genres = $this->Streamy_model->fetch_genres();
+//        $genres = $this->Audio_model->fetch_genres();
 //        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
 //    }
 
     public function track_type_get() {
-        $genres = $this->Streamy_model->fetch_track_types();
+        $genres = $this->Audio_model->fetch_track_types();
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
     }
 
@@ -46,7 +47,7 @@ class Audios extends RestController {
             }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
-                $related_audio = $this->Streamy_model->fetch_related_audio_by_user_id($user_id);
+                $related_audio = $this->Audio_model->fetch_related_audio_by_user_id($user_id);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $related_audio), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
@@ -97,11 +98,11 @@ class Audios extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $streamys = $this->Streamy_model->fetch_streamys_by_user_id($id, $audio_id, false, $limit, $offset);
+                $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $audio_id, false, $limit, $offset);
                 $streamys_reponse = array();
                 $dest_folder = 'Coverart';
                 foreach ($streamys as $streamy) {
-                    $streamy['related_link'] = $this->Streamy_model->fetch_related_links($streamy['id']);
+                    $streamy['related_link'] = $this->Audio_model->fetch_related_links($streamy['id']);
                     $audios[] = $streamy;
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);

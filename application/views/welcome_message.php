@@ -881,19 +881,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "data": [
         {
             "id": "1",
-            "track_type": "Song"
+            "track_type": "Song",
+            "active":"1"
         },
         {
             "id": "2",
-            "track_type": "Beat"
+            "track_type": "Beat",
+            "active":"1"
         },
         {
             "id": "3",
-            "track_type": "Podcast"
+            "track_type": "Podcast",
+            "active":"0"
         },
         {
             "id": "4",
-            "track_type": "Audiobook"
+            "track_type": "Audiobook",
+            "active":"0"
         }
     ]
 }');

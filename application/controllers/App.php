@@ -1504,18 +1504,18 @@ class App extends CI_Controller {
     }
 
     //
-    public function customize() {
-        if ($this->input->cookie($this->general_library->ses_name) != '') {
-            $user = $this->general_library->get_cookie();
-            $register_user = $this->User_model->fetch_user_by_search(array('id' => $user['id']));
-            $data = array();
-            $data['user'] = $register_user;
-            $data['order'] = $this->Streamy_model->fetch_content_order($register_user['id']);
-            $this->load->view($this->loc_path . 'customize', $data);
-        } else {
-            redirect($this->loc_url . '/login', 'location', 302);
-        }
-    }
+//    public function customize() {
+//        if ($this->input->cookie($this->general_library->ses_name) != '') {
+//            $user = $this->general_library->get_cookie();
+//            $register_user = $this->User_model->fetch_user_by_search(array('id' => $user['id']));
+//            $data = array();
+//            $data['user'] = $register_user;
+//            $data['order'] = $this->Streamy_model->fetch_content_order($register_user['id']);
+//            $this->load->view($this->loc_path . 'customize', $data);
+//        } else {
+//            redirect($this->loc_url . '/login', 'location', 302);
+//        }
+//    }
 
     public function get_banner() {
         $user = $this->general_library->get_cookie();

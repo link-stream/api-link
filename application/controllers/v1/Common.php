@@ -20,8 +20,9 @@ class Common extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         //Models
-        $this->load->model("User_model");
-        $this->load->model("Streamy_model");
+        $this->load->model(array('User_model', 'Audio_model'));
+//        $this->load->model("User_model");
+//        $this->load->model("Streamy_model");
         //Libraries
         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
         //Helpers
@@ -29,7 +30,7 @@ class Common extends RestController {
     }
 
     public function genres_get() {
-        $genres = $this->Streamy_model->fetch_genres();
+        $genres = $this->Audio_model->fetch_genres();
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
     }
 
@@ -41,7 +42,6 @@ class Common extends RestController {
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
                 //$visibility = array('1' => 'Public', '2' => 'Private', '3' => 'Scheduled');
-                //$visibility = array('1' => 'Public', '3' => 'Scheduled');
                 $visibility = array('1' => 'Public', '2' => 'Private');
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $visibility), RestController::HTTP_OK);
 //                if ($register_user['plan_id'] == '1') {
@@ -64,7 +64,7 @@ class Common extends RestController {
 
     public function timezones_get($ip = null) {
         if (empty($ip)) {
-            $timezones = $this->Streamy_model->fetch_timezones('');
+            $timezones = $this->Audio_model->fetch_timezones('');
             $response = array();
             foreach ($timezones as $timezone) {
                 $diff = $this->timezone_dif($timezone['zone']);
@@ -75,7 +75,7 @@ class Common extends RestController {
         } else {
             $ip = (empty($ip) || $ip == '::1') ? '170.55.19.206' : $ip;
             //IP LOG
-            $ip_info = $this->Streamy_model->fetch_ip_log($ip);
+            $ip_info = $this->Audio_model->fetch_ip_log($ip);
             if (!empty($ip_info)) {
                 $data_time_zone = (!empty($ip_info['timezone'])) ? $ip_info['timezone'] : 'America/New_York';
             } else {
@@ -95,12 +95,12 @@ class Common extends RestController {
                 $ip_log['lat'] = (!empty($data_loc['lat'])) ? $data_loc['lat'] : '';
                 $ip_log['lon'] = (!empty($data_loc['lon'])) ? $data_loc['lon'] : '';
                 $ip_log['timezone'] = $data_time_zone;
-                $this->Streamy_model->insert_ip_log($ip_log);
+                $this->Audio_model->insert_ip_log($ip_log);
             }
-            $timezones = $this->Streamy_model->fetch_timezones($data_time_zone);
+            $timezones = $this->Audio_model->fetch_timezones($data_time_zone);
             $response = array();
             if (empty($timezones)) {
-                $id = $this->Streamy_model->insert_timezones(array('zone' => $data_time_zone));
+                $id = $this->Audio_model->insert_timezones(array('zone' => $data_time_zone));
                 $diff = $this->timezone_dif($data_time_zone);
                 $zone = $data_time_zone . ' (' . $diff . ')';
                 $response[] = array('id' => $id, 'zone' => $zone);
