@@ -625,42 +625,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-                <hr>
-                <h3>Related Track:</h3>
-                <code>GET <?= base_url() ?>v1/audios/related_track/{user_id}</code>
-                <h3>Response Example:</h3>
-                <p>
-                    <?php
-                    echo '<pre>';
-                    print_r('{
-    "status": "success",
-    "env": "dev",
-    "data": [
-        {
-            "id": "35",
-            "title": "Go Hard Prod Silo1"
-        },
-        {
-            "id": "39",
-            "title": "Beat It"
-        },
-        {
-            "id": "135",
-            "title": "Streamy"
-        },
-        {
-            "id": "136",
-            "title": "2pac feat Dr.Dre - California Love HD"
-        },
-        {
-            "id": "140",
-            "title": "The Box"
-        }
-    ]
-}');
-                    echo '</pre>';
-                    ?>
-                </p>
+
 
 
 
@@ -869,44 +834,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
-                <h3>Track Type:</h3>
-                <code>GET <?= base_url() ?>v1/audios/track_type</code>
-                <h3>Response Example:</h3>
-                <p>
-                    <?php
-                    echo '<pre>';
-                    print_r('{
-    "status": "success",
-    "env": "dev",
-    "data": [
-        {
-            "id": "1",
-            "track_type": "Song",
-            "active":"1"
-        },
-        {
-            "id": "2",
-            "track_type": "Beat",
-            "active":"1"
-        },
-        {
-            "id": "3",
-            "track_type": "Podcast",
-            "active":"0"
-        },
-        {
-            "id": "4",
-            "track_type": "Audiobook",
-            "active":"0"
-        }
-    ]
-}');
-                    echo '</pre>';
-                    ?>
-                </p>
-
-
-                <hr>
                 <h3>Get Links by User:</h3>
                 <code>GET <?= base_url() ?>v1/links/{user_id}/{link_id}</code>
                 <h3>Parameters:</h3>
@@ -1077,6 +1004,70 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
+                <h3>Related Track:</h3>
+                <code>GET <?= base_url() ?>v1/audios/related_track/{user_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "35",
+            "title": "Go Hard Prod Silo1"
+        },
+        {
+            "id": "39",
+            "title": "Beat It"
+        },
+        {
+            "id": "135",
+            "title": "Streamy"
+        },
+        {
+            "id": "136",
+            "title": "2pac feat Dr.Dre - California Love HD"
+        },
+        {
+            "id": "140",
+            "title": "The Box"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Track Type:</h3>
+                <code>GET <?= base_url() ?>v1/audios/track_type</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "track_type": "Song",
+            "active":"1"
+        },
+        {
+            "id": "2",
+            "track_type": "Beat",
+            "active":"1"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+<!--                <hr>
                 <h3>Get Audios by User:</h3>
                 <code>GET <?= base_url() ?>v1/audios/{user_id}/{audio_id}</code>
                 <h3>Parameters:</h3>
@@ -1092,7 +1083,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('');
                     echo '</pre>';
                     ?>
-                </p>
+                </p>-->
 
 
                 <!-- EXAMPLE 
