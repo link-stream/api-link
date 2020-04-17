@@ -85,7 +85,7 @@ if (ENV == "dev") {
     if (!defined('DB_PASS'))
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
     if (!defined('DB_TABLE'))
-        define('DB_TABLE', 'streamy_dev');
+        define('DB_TABLE', 'linkstream_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
 } elseif (ENV == "staging") {
@@ -96,7 +96,7 @@ if (ENV == "dev") {
     if (!defined('DB_PASS'))
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
     if (!defined('DB_TABLE'))
-        define('DB_TABLE', 'streamy_dev');
+        define('DB_TABLE', 'linkstream_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', TRUE);
 } else {
@@ -107,7 +107,7 @@ if (ENV == "dev") {
     if (!defined('DB_PASS'))
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
     if (!defined('DB_TABLE'))
-        define('DB_TABLE', 'streamy_dev');
+        define('DB_TABLE', 'linkstream_dev');
     if (!defined('DB_DEBUG'))
         define('DB_DEBUG', FALSE);
 }
