@@ -64,7 +64,14 @@ class Links extends RestController {
         if ($images) {
             if (!empty($link['coverart'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
-                $link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                //$link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                if (!empty($data_image)) {
+                    $img_file = $link['coverart'];
+                    file_put_contents($this->temp_dir . '/' . $link['coverart'], $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $link['coverart']) . ';base64,' . base64_encode($data_image);
+                    $link['data_image'] = $src;
+                    unlink($this->temp_dir . '/' . $link['coverart']);
+                }
             }
         }
         unset($link['publish_at']);
