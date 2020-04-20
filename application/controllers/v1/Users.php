@@ -70,11 +70,25 @@ class Users extends RestController {
         if ($images) {
             if (!empty($user['image'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
-                $user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                //$user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                if (!empty($data_image)) {
+                    $img_file = $user['image'];
+                    file_put_contents($this->temp_dir . '/' . $user['image'], $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
+                    $user['data_image'] = $src;
+                    unlink($this->temp_dir . '/' . $user['image']);
+                }
             }
             if (!empty($user['banner'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['banner']);
-                $user['data_banner'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                //$user['data_banner'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                if (!empty($data_image)) {
+                    $img_file = $user['banner'];
+                    file_put_contents($this->temp_dir . '/' . $user['banner'], $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['banner']) . ';base64,' . base64_encode($data_image);
+                    $user['data_banner'] = $src;
+                    unlink($this->temp_dir . '/' . $user['banner']);
+                }
             }
         }
         return $user;
