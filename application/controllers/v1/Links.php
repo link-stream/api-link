@@ -174,7 +174,7 @@ class Links extends RestController {
                 if (!empty($this->put('public'))) {
                     $link['public'] = $this->put('public');
                 }
-                if (isset($this->put('scheduled'))) {
+                if ($this->put('scheduled') !== null) {
                     $scheduled = (!empty($this->put('scheduled'))) ? true : false;
                     if ($scheduled) {
                         $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
@@ -191,7 +191,7 @@ class Links extends RestController {
                     }
                 }
 
-                if (isset($this->put('image'))) {
+                if ($this->put('image') !== null) {
                     if (!empty($this->put('image'))) {
                         $image = $this->put("image");
                         $link['coverart'] = $this->image_decode_put($image);
