@@ -58,6 +58,8 @@ class Links extends RestController {
         }
         $link['date'] = ($link['scheduled']) ? substr($link['publish_at'], 0, 10) : '';
         $link['time'] = ($link['scheduled']) ? substr($link['publish_at'], 11) : '';
+        $link['end_date'] = ($link['scheduled']) ? substr($link['publish_end'], 0, 10) : '';
+        $link['end_time'] = ($link['scheduled']) ? substr($link['publish_end'], 11) : '';
         //Coverart
         $path = $this->s3_path . $this->s3_folder;
         $link['data_image'] = '';
@@ -75,7 +77,8 @@ class Links extends RestController {
             }
         }
         unset($link['publish_at']);
-        unset($link['timezone']);
+        unset($link['publish_end']);
+        //unset($link['timezone']);
         return $link;
     }
 
@@ -124,10 +127,14 @@ class Links extends RestController {
                 $date = (!empty($this->input->post('date'))) ? substr($this->input->post('date'), 0, 10) : '0000-00-00';
                 $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '00:00:00';
                 $link['publish_at'] = $date . ' ' . $time;
+                $end_date = (!empty($this->input->post('end_date'))) ? substr($this->input->post('end_date'), 0, 10) : '0000-00-00';
+                $end_time = (!empty($this->input->post('end_time'))) ? $this->input->post('end_time') : '00:00:00';
+                $link['publish_end'] = $end_date . ' ' . $end_time;
             } else {
                 $date = '0000-00-00';
                 $time = '00:00:00';
                 $link['publish_at'] = $date . ' ' . $time;
+                $link['publish_end'] = $date . ' ' . $time;
             }
             if (!empty($this->input->post('image'))) {
                 $image = $this->input->post("image");
@@ -167,21 +174,30 @@ class Links extends RestController {
                 if (!empty($this->put('public'))) {
                     $link['public'] = $this->put('public');
                 }
-                $scheduled = (!empty($this->put('scheduled'))) ? true : false;
-                if ($scheduled) {
-                    $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
-                    $time = (!empty($this->put('time'))) ? $this->put('time') : '00:00:00';
-                    $link['publish_at'] = $date . ' ' . $time;
-                } else {
-                    $date = '0000-00-00';
-                    $time = '00:00:00';
-                    $link['publish_at'] = $date . ' ' . $time;
+                if (isset($this->put('scheduled'))) {
+                    $scheduled = (!empty($this->put('scheduled'))) ? true : false;
+                    if ($scheduled) {
+                        $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
+                        $time = (!empty($this->put('time'))) ? $this->put('time') : '00:00:00';
+                        $link['publish_at'] = $date . ' ' . $time;
+                        $end_date = (!empty($this->input->post('end_date'))) ? substr($this->input->post('end_date'), 0, 10) : '0000-00-00';
+                        $end_time = (!empty($this->input->post('end_time'))) ? $this->input->post('end_time') : '00:00:00';
+                        $link['publish_end'] = $end_date . ' ' . $end_time;
+                    } else {
+                        $date = '0000-00-00';
+                        $time = '00:00:00';
+                        $link['publish_at'] = $date . ' ' . $time;
+                        $link['publish_end'] = $date . ' ' . $time;
+                    }
                 }
-                if (!empty($this->put('image'))) {
-                    $image = $this->put("image");
-                    $link['coverart'] = $this->image_decode_put($image);
-                } else {
-                    $link['coverart'] = '';
+
+                if (isset($this->put('image'))) {
+                    if (!empty($this->put('image'))) {
+                        $image = $this->put("image");
+                        $link['coverart'] = $this->image_decode_put($image);
+                    } else {
+                        $link['coverart'] = '';
+                    }
                 }
                 $this->Link_model->update_link($id, $link);
                 //REPONSE

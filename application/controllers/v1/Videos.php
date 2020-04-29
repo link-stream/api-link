@@ -35,8 +35,8 @@ class Videos extends RestController {
     private function video_clean($video) {
         unset($video['coverart']);
         unset($video['publish_at']);
-        unset($video['timezone']);
-        unset($video['explicit_content']);
+        //unset($video['timezone']);
+        //unset($video['explicit_content']);
         return $video;
     }
 
