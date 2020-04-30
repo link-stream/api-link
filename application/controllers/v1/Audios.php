@@ -39,6 +39,11 @@ class Audios extends RestController {
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
     }
 
+    public function audio_key_get() {
+        $audio_key = $this->Audio_model->fetch_audio_key();
+        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audio_key), RestController::HTTP_OK);
+    }
+
     public function related_track_get($user_id = null) {
         $data = array();
         if (!empty($user_id)) {
@@ -57,6 +62,64 @@ class Audios extends RestController {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function image_decode_put($image) {
+        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+        $ext = (!empty($match[1])) ? $match[1] : '.png';
+        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+        //upload image to server 
+        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //SAVE S3
+        $this->s3_push($image_name, $this->s3_coverart);
+        return $image_name;
+    }
+
+    private function audio_decode_put($file) {
+        preg_match("/^data:image\/(.*);base64/i", $file, $match);
+        $ext = (!empty($match[1])) ? $match[1] : '.png';
+        $file_name = md5(uniqid(rand(), true)) . '.' . $ext;
+        //upload image to server 
+        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+        //SAVE S3
+        $this->s3_push($file_name, $this->s3_audio);
+        return $file_name;
+    }
+
+    private function s3_push($file_name, $s3_folder) {
+        //SAVE S3
+        $source = $this->temp_dir . '/' . $file_name;
+        $destination = $this->s3_path . $s3_folder . '/' . $file_name;
+        $this->aws_s3->s3push($source, $destination, $this->bucket);
+        unlink($this->temp_dir . '/' . $file_name);
+    }
+
+    private function audio_clean($audio, $images = true) {
+        $audio['scheduled'] = true;
+        if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
+            $audio['scheduled'] = false;
+        }
+        $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
+        $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
+        //Coverart
+        $path = $this->s3_path . $this->s3_coverart;
+        $audio['data_image'] = '';
+        if ($images) {
+            if (!empty($audio['coverart'])) {
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+                //$link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+                if (!empty($data_image)) {
+                    $img_file = $audio['coverart'];
+                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+                    $audio['data_image'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['coverart']);
+                }
+            }
+        }
+        unset($audio['publish_at']);
+        //unset($audio['timezone']);
+        return $link;
     }
 
     public function index_get($id = null, $audio_id = null) {

@@ -249,5 +249,13 @@ class Audio_model extends CI_Model {
         $this->db->insert('st_ip_log', $data);
         //return $this->db->insert_id();
     }
+    
+    public function fetch_audio_key() {
+        $this->db->from('st_audio_key');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
 
 }

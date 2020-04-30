@@ -1076,6 +1076,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
+                
+                <hr>
+                <h3>Audio Key:</h3>
+                <code>GET <?= base_url() ?>v1/audios/audio_key</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "name": "A-flat minor"
+        },
+        {
+            "id": "2",
+            "name": "A-flat major"
+        }...
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
                 <!--                <hr>
                                 <h3>Get Audios by User:</h3>
