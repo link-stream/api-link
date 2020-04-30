@@ -58,8 +58,11 @@ class Links extends RestController {
         }
         $link['date'] = ($link['scheduled']) ? substr($link['publish_at'], 0, 10) : '';
         $link['time'] = ($link['scheduled']) ? substr($link['publish_at'], 11) : '';
-        $link['end_date'] = ($link['scheduled']) ? substr($link['publish_end'], 0, 10) : '';
-        $link['end_time'] = ($link['scheduled']) ? substr($link['publish_end'], 11) : '';
+        $link['end_date'] = ($link['scheduled']) ? (($link['publish_end'] != '0000-00-00 00:00:00') ? substr($link['publish_end'], 0, 10) : '') : '';
+        $link['end_time'] = ($link['scheduled']) ? (($link['publish_end'] != '0000-00-00 00:00:00') ? substr($link['publish_end'], 11) : '') : '';
+
+
+
         //Coverart
         $path = $this->s3_path . $this->s3_folder;
         $link['data_image'] = '';
