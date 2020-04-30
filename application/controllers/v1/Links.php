@@ -183,8 +183,8 @@ class Links extends RestController {
                         $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
                         $time = (!empty($this->put('time'))) ? $this->put('time') : '00:00:00';
                         $link['publish_at'] = $date . ' ' . $time;
-                        $end_date = (!empty($this->input->post('end_date'))) ? substr($this->input->post('end_date'), 0, 10) : '0000-00-00';
-                        $end_time = (!empty($this->input->post('end_time'))) ? $this->input->post('end_time') : '00:00:00';
+                        $end_date = (!empty($this->input->put('end_date'))) ? substr($this->input->put('end_date'), 0, 10) : '0000-00-00';
+                        $end_time = (!empty($this->input->put('end_time'))) ? $this->input->put('end_time') : '00:00:00';
                         $link['publish_end'] = $end_date . ' ' . $end_time;
                     } else {
                         $date = '0000-00-00';
