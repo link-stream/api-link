@@ -1111,6 +1111,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>?title={title}</li>
 
                 </ul>
+                <h3>Example:</h3>
+                <ul>
+                    <li><?= base_url() ?>v1/albums/related_album/35?title=alb</li>
+                </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
@@ -1128,7 +1132,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
+
                 <hr>
                 <h3>Collaborator:</h3>
                 <code>GET <?= base_url() ?>v1/users/collaborator/{user_id}</code>
@@ -1136,6 +1140,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>?search={search}</li>
 
+                </ul>
+                <h3>Example:</h3>
+                <ul>
+                    <li><?= base_url() ?>v1/users/collaborator/35?search=user_test</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
