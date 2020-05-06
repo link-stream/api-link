@@ -1108,7 +1108,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>track_type (optional)</li>
-                    <li>?page={title}</li>
+                    <li>?title={title}</li>
 
                 </ul>
                 <h3>Response Example:</h3>
@@ -1122,6 +1122,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         {
             "id": "1",
             "title": "ALBUM"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+                
+                <hr>
+                <h3>Collaborator:</h3>
+                <code>GET <?= base_url() ?>v1/users/collaborator/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>?search={search}</li>
+
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "26",
+            "user_name": "user_test",
+            "email": "user_test@link.stream"
+        },
+        {
+            "id": "27",
+            "user_name": "user_test_2",
+            "email": "user_test_2@link.stream"
         }
     ]
 }');

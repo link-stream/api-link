@@ -135,4 +135,18 @@ class User_model extends CI_Model {
         $this->db->update('st_user_token', $data);
     }
 
+    public function fetch_collaborator($search) {
+        $this->db->select('id, user_name, email');
+        $this->db->from('st_user');
+        $this->db->where('status_id <> ', '2');
+        if (!empty($search)) {
+            $this->db->like('user_name', $search);
+            $this->db->or_like('email', $search);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

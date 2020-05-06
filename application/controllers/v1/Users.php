@@ -554,4 +554,19 @@ class Users extends RestController {
         }
     }
 
+    public function collaborator_get($user_id = null) {
+        $data = array();
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $search = (!empty($this->input->get('search'))) ? $this->input->get('search') : '';
+            $collaborator = $this->User_model->fetch_collaborator($search);
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $collaborator), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
