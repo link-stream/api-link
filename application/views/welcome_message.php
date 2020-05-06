@@ -1076,7 +1076,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
+
                 <hr>
                 <h3>Audio Key:</h3>
                 <code>GET <?= base_url() ?>v1/audios/audio_key</code>
@@ -1096,6 +1096,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "id": "2",
             "name": "A-flat major"
         }...
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Related Album:</h3>
+                <code>GET <?= base_url() ?>v1/albums/related_album/{user_id}/{track_type}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>track_type (optional)</li>
+                    <li>?page={title}</li>
+
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "title": "ALBUM"
+        }
     ]
 }');
                     echo '</pre>';
