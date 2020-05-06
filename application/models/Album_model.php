@@ -149,11 +149,11 @@ class Album_model extends CI_Model {
         $this->db->select('id, title');
         $this->db->from('st_album');
         $this->db->where('user_id', $user_id);
-        if (!empty($title)) {
-            $this->db->like('title', $title);
-        }
         if (!empty($track_type)) {
             $this->db->where('track_type', $track_type);
+        }
+        if (!empty($title)) {
+            $this->db->like('title', $title);
         }
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
