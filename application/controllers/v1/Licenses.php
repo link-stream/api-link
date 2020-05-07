@@ -128,16 +128,21 @@ class Licenses extends RestController {
                         $licenses_reponse[] = $license;
                     }
                 } else {
-                    $licenses = $this->License_model->fetch_licenses();
-                    foreach ($licenses as $license) {
-                        $license['user_id'] = $id;
-                        $license['status_id'] = '1';
-                        unset($license['id']);
-                        $license_id = $this->License_model->insert_license($license);
-                        $license['id'] = $license_id;
-                        //Define if user can use the license (PENDING) ***** 
-                        $license['license_available'] = true;
-                        $licenses_reponse[] = $license;
+                    if (!empty($license_id)) {
+                        $this->error = 'License Not Found.';
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    } else {
+                        $licenses = $this->License_model->fetch_licenses();
+                        foreach ($licenses as $license) {
+                            $license['user_id'] = $id;
+                            $license['status_id'] = '1';
+                            unset($license['id']);
+                            $license_id = $this->License_model->insert_license($license);
+                            $license['id'] = $license_id;
+                            //Define if user can use the license (PENDING) ***** 
+                            $license['license_available'] = true;
+                            $licenses_reponse[] = $license;
+                        }
                     }
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $licenses_reponse), RestController::HTTP_OK);
