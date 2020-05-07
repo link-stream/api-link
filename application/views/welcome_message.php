@@ -1169,6 +1169,73 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>License:</h3>
+                <code>GET <?= base_url() ?>v1/licenses/{user_id}/{license_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>license_id (optional)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Standard License",
+            "descripcion": "Untagged MP3",
+            "prize": "30.00",
+            "license_available": true
+        },
+        {
+            "id": "2",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Premium License ",
+            "descripcion": "Untagged MP3 - WAV",
+            "prize": "50.00",
+            "license_available": true
+        },
+        {
+            "id": "3",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Unlimited License",
+            "descripcion": "Untagged MP3 - WAV",
+            "prize": "100.00",
+            "license_available": true
+        },
+        {
+            "id": "4",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Unlimited With Trackouts License",
+            "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
+            "prize": "200.00",
+            "license_available": true
+        },
+        {
+            "id": "5",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Exclusive License",
+            "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
+            "prize": "300.00",
+            "license_available": true
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
                 <!--                <hr>
                                 <h3>Get Audios by User:</h3>
                                 <code>GET <?= base_url() ?>v1/audios/{user_id}/{audio_id}</code>
