@@ -1170,7 +1170,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
-                <h3>License:</h3>
+                <h3>Get Licenses by User:</h3>
                 <code>GET <?= base_url() ?>v1/licenses/{user_id}/{license_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
