@@ -564,6 +564,9 @@ class Users extends RestController {
             $collaborators_reponse = array();
             $path = $this->s3_path . $this->s3_folder;
             foreach ($collaborators as $collaborator) {
+                if ($user_id == $collaborator['id']) {
+                    continue;
+                }
                 $collaborator['data_image'] = '';
                 if (!empty($collaborator['image'])) {
                     $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);

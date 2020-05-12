@@ -322,7 +322,7 @@ class Aws_s3 {
         // Register the stream wrapper from an S3Client object
         $this->s3->registerStreamWrapper();
         //$path = (ENV == 'live')?'PROD/'.$path:'DEV/'.$path;
-        return file_get_contents('s3://' . $bucket . (!empty($path) ? '/' . $path : '') . '/' . $filename);
+        return @file_get_contents('s3://' . $bucket . (!empty($path) ? '/' . $path : '') . '/' . $filename);
     }
 
     public function s3_del($bucket, $path, $filename) {
