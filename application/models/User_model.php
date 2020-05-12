@@ -136,7 +136,7 @@ class User_model extends CI_Model {
     }
 
     public function fetch_collaborator($search) {
-        $this->db->select('id, user_name, email');
+        $this->db->select('id, user_name, email, image');
         $this->db->from('st_user');
         $this->db->where('status_id <> ', '2');
         if (!empty($search)) {

@@ -1161,7 +1161,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         {
             "id": "27",
             "user_name": "user_test_2",
-            "email": "user_test_2@link.stream"
+            "email": "user_test_2@link.stream",
+            "image": "54ec6e5b610a3c082d8d6641f59b94f9.jpeg",
+            "data_image": "data: image/jpeg;base64,.."
         }
     ]
 }');
