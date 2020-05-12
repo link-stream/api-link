@@ -143,6 +143,7 @@ class User_model extends CI_Model {
             $this->db->like('user_name', $search);
             $this->db->or_like('email', $search);
         }
+        $this->db->limit(25);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
