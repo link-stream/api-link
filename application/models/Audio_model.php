@@ -18,7 +18,7 @@ class Audio_model extends CI_Model {
         parent::__construct();
     }
 
-    public function insert_streamy($data) {
+    public function insert_audio($data) {
         $this->db->insert('st_audio', $data);
         return $this->db->insert_id();
     }
@@ -28,7 +28,7 @@ class Audio_model extends CI_Model {
         $this->db->update('st_audio', $data);
     }
 
-    public function fetch_streamy_by_id($id) {
+    public function fetch_audio_by_id($id) {
         $this->db->from('st_audio');
         $this->db->where('id', $id);
         $query = $this->db->get();
@@ -186,7 +186,7 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_max_streamys_sort($user_id) {
+    public function fetch_max_audio_sort($user_id) {
         $this->db->select('MAX(sort) as Max');
         $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
@@ -249,13 +249,23 @@ class Audio_model extends CI_Model {
         $this->db->insert('st_ip_log', $data);
         //return $this->db->insert_id();
     }
-    
+
     public function fetch_audio_key() {
         $this->db->from('st_audio_key');
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+
+    public function insert_audio_collaborator($data) {
+        $this->db->insert('st_audio_collaborator', $data);
+        //return $this->db->insert_id();
+    }
+    
+    public function insert_audio_license($data) {
+        $this->db->insert('st_audio_license', $data);
+        //return $this->db->insert_id();
     }
 
 }

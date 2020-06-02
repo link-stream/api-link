@@ -2048,17 +2048,18 @@ class App extends CI_Controller {
         //$url = "https://www.youtube.com/watch?v=BFaRWXEpFrs";
         $url = 'https://www.youtube.com/watch?v=g4S3jUtqcyM';
         //INFO
-        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
         exec($cmd, $output);
 //        echo "<pre>";
 //        print_r($output);
 //        echo "</pre>";
+//        exit;
         $title = $output[0];
         $id = $output[1];
         $thumbnail_url = $output[2];
 
         //GET VIDEO
-        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
         //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
         exec($cmd, $output);
 //        echo "<pre>";
@@ -2074,7 +2075,7 @@ class App extends CI_Controller {
 
         //GET mp3
         $video = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/' . $id . '.mp4';
-        $cmd = "/usr/local/Cellar/ffmpeg/4.2.2_2/bin/ffmpeg -i " . $video . " /Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/" . $id . ".mp3";
+        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $video . " /Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/" . $id . ".mp3";
         exec($cmd, $output);
 //        echo "<pre>";
 //        print_r($output);
@@ -2088,15 +2089,15 @@ class App extends CI_Controller {
 //      $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
         //exec($cmd . " 2>&1", $output);
 
-        $url = "https://soundcloud.com/iamstarinthesky/tracks";
+        $url = "https://soundcloud.com/iamstarinthesky/thasswassup-feat-tommy-ice-prod-tsurreal-jkei";
         //INFO
-        //$cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
-        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
+        //$cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id ' . $url;
 
         exec($cmd, $output);
         echo "<pre>";
         print_r($output);
-        echo "</pre>";
+        echo "</pre>";//exit;
         $title = $output[0];
         $id = $output[1];
         $thumbnail_url = $output[2];
@@ -2105,12 +2106,50 @@ class App extends CI_Controller {
         $format = $output[4];
 
         //GET AUDIO
-//        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
-////        $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
-//        exec($cmd, $output);
-////        echo "<pre>";
-////        print_r($output);
-////        echo "</pre>";
+//        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.0/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
+        exec($cmd, $output);
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";
+
+        echo 'Title: ' . $title;
+        echo '<br>';
+        echo 'ID: ' . $id;
+        echo '<br>';
+        echo 'Thumbnail Url: ' . $thumbnail_url;
+        echo '<br>';
+        echo 'Audio: ' . $final_filename;
+        echo '<br>';
+    }
+    
+     public function bs() {
+//      $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
+        //exec($cmd . " 2>&1", $output);
+
+        $url = "https://www.beatstars.com/beat/start-a-war-whook-free-download-4534917";
+        //INFO
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id --get-thumbnail --get-filename  --get-format  ' . $url;
+        //$cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --get-title --get-id ' . $url;
+
+        exec($cmd, $output);
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";exit;
+        $title = $output[0];
+        $id = $output[1];
+        $thumbnail_url = $output[2];
+        $filename = $output[3];
+        $final_filename = str_replace("/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/", "", $filename);
+        $format = $output[4];
+
+        //GET AUDIO
+//        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.0/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" ' . $url;
+        $cmd = '/usr/local/Cellar/youtube-dl/2020.05.08/bin/youtube-dl  -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --write-thumbnail ' . $url;
+        exec($cmd, $output);
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";
 
         echo 'Title: ' . $title;
         echo '<br>';
@@ -2152,6 +2191,342 @@ class App extends CI_Controller {
 //        echo '<br>';
 //        echo $local_date->format('H:i:s');
 //        echo '<br>';
+    }
+
+    //Stripe
+//    public function payment_intent() {
+//        $this->load->library('Stripe');
+//        $response = $this->stripe->payment_intent();
+//        print_r($response);
+//    }
+//    public function payment_token() {
+//        $this->load->library('Stripe');
+//        $number = '4242424242424242';
+//        $exp_month = 6;
+//        $exp_year = 2021;
+//        $cvc = '314';
+//        $response = $this->stripe->create_token($number, $exp_month, $exp_year, $cvc);
+//        print_r($response);
+//    }
+    //Definir dos funciones 1 con token y charge y otra solo charge
+    public function payment_charge() {
+        if ($this->input->post()) {
+            $this->load->library('Stripe');
+            $number = '4242424242424242';
+            $exp_month = 6;
+            $exp_year = 2021;
+            $cvc = '314';
+            $name = 'Paolo Maledeto';
+            $zip = '33312';
+//            $amount = 100;
+//            $ls_fee = round((($amount * 0.03) + 0.30), 2);
+//            $total_amount = $amount + $ls_fee;
+//            echo 'Amount: ' . $amount;
+//            echo '<br>';
+//            echo 'LS Fee: ' . $ls_fee;
+//            echo '<br>';
+//            echo 'Total Amount: ' . $total_amount;
+//            echo '<br>';
+//            exit;
+            $response = $this->stripe->create_token($number, $exp_month, $exp_year, $cvc, $name, $zip);
+            if ($response['status']) {
+                $amount = 100;
+                //$ls_fee = round((($amount * 0.029) + 0.30), 2);
+                $cc_fee = round((($amount * 0.03) + 0.30), 2);
+                $ls_fee = 1.99;
+                $total_amount = $amount + $cc_fee + $ls_fee;
+                echo 'Amount: ' . $amount;
+                echo '<br>';
+                echo 'CC Fee: ' . $cc_fee;
+                echo '<br>';
+                echo 'LS Fee: ' . $ls_fee;
+                echo '<br>';
+                echo 'Total Amount: ' . $total_amount;
+                echo '<br>';
+                $response = $this->stripe->create_charge($total_amount, 'Payment Example', $response['payment_id']);
+                echo 'Confirmation Page' . '<br>';
+                echo '<pre>';
+                print_r($response);
+                echo '</pre>';
+                echo '<br>';
+                $payment_charge_id = $response['payment_charge_id'];
+                $destination_a = 'acct_1GiQbXFi0TLGlCIZ'; //paolofq@gmail.com
+                $destination_b = 'acct_1GiRAQIrLgupgBOM'; //legal@linkstream.com
+                $destination_a_amount = 60;
+                $destination_b_amount = 40;
+                $transfer_group = '';
+                //$charge_id = 'ch_1Gigk5KagYlVQcNzn4bD6VQf';
+                $response = $this->stripe->create_transfer($destination_a_amount, $destination_a, $transfer_group, $payment_charge_id);
+                echo 'Destination A';
+                echo '<br>';
+                echo '<pre>';
+                print_r($response);
+                echo '</pre>';
+                echo '<br>';
+                $response = $this->stripe->create_transfer($destination_b_amount, $destination_b, $transfer_group, $payment_charge_id);
+                echo 'Destination B';
+                echo '<br>';
+                echo '<pre>';
+                print_r($response);
+                echo '</pre>';
+                echo '<br>';
+            } else {
+                print_r($response);
+            }
+        } else {
+            $data = [];
+            $this->load->view($this->loc_path . 'example/payment', $data);
+        }
+    }
+
+    public function payment_refund() {
+        $this->load->library('Stripe');
+        $response = $this->stripe->create_refund('ch_1GiKoYKagYlVQcNzwKAPNyhn', 0.25, 'requested_by_customer');
+        print_r($response);
+    }
+
+//    public function create_account() {
+//        if ($this->input->post()) {
+//            $this->load->library('Stripe');
+//            $country = 'US';
+//            $email = 'paul@linkstream.com';
+//            $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+//
+//            $response = $this->stripe->create_account($country, $email, $business_type);
+//            print_r($response);
+//        } else {
+//            $data = [];
+//            $this->load->view($this->loc_path . 'example/account', $data);
+//        }
+//    }
+//
+//    public function confirm_account() {
+//        $this->load->library('Stripe');
+//        $code = $this->input->get('code');
+//        echo $code;
+//        echo '<br>';
+//        $response = $this->stripe->auth_token($code);
+//        print_r($response);
+//    }
+//
+//    public function separate_charges() {
+//        $this->load->library('Stripe');
+//        $destination_a = 'acct_1GiQbXFi0TLGlCIZ'; //paolofq@gmail.com
+//        $destination_b = 'acct_1GiRAQIrLgupgBOM'; //legal@linkstream.com
+//        $total_amount = 13;
+//        $ls_fee = 3;
+//        $customer_amount = 10;
+//        $destination_a_amount = 6;
+//        $destination_b_amount = 4;
+//        $number = '4242424242424242';
+//        $exp_month = 6;
+//        $exp_year = 2021;
+//        $cvc = '314';
+//        $name = 'Test User';
+//        $zip = '33312';
+//        $response = $this->stripe->create_token($number, $exp_month, $exp_year, $cvc, $name, $zip);
+//        if ($response['status']) {
+//            // $amount = 0.50;
+//            $response = $this->stripe->create_charge($total_amount, 'Multiple Payment Example', $response['payment_id']);
+//            echo 'Confirmation Page' . '<br>';
+//            print_r($response);
+//            echo '<br>';
+//            if ($response['status']) {
+//                $response = $this->stripe->create_transfer($destination_a_amount, $destination_a);
+//                print_r($response);
+//                echo '<br>';
+//                $response = $this->stripe->create_transfer($destination_b_amount, $destination_b);
+//                print_r($response);
+//                echo '<br>';
+//            } else {
+//                print_r($response);
+//            }
+//        } else {
+//            print_r($response);
+//        }
+//    }
+//
+//    public function split_charges() {
+//        $this->load->library('Stripe');
+//        $destination_a = 'acct_1GiQbXFi0TLGlCIZ'; //paolofq@gmail.com
+//        $destination_b = 'acct_1GiRAQIrLgupgBOM'; //legal@linkstream.com
+//        $total_amount = 100;
+//        $ls_fee = 10;
+//        $destination_a_amount = 70;
+//        $destination_b_amount = 20;
+//        $transfer_group = '001';
+//        $response = $this->stripe->create_payment_intent($total_amount, $transfer_group);
+//        if ($response['status']) {
+//            echo 'Intent Sucess';
+//            echo '<br>';
+//            print_r($response);
+//            echo '<br>';
+////            $response = $this->stripe->create_transfer($destination_a_amount, $destination_a, $transfer_group);
+////            echo 'Destination A';
+////            echo '<br>';
+////            print_r($response);
+////            echo '<br>';
+////            $response = $this->stripe->create_transfer($destination_b_amount, $destination_b, $transfer_group);
+////            echo 'Destination B';
+////            echo '<br>';
+////            print_r($response);
+////            echo '<br>';
+//        } else {
+//            echo 'Intent Error';
+//            echo '<br>';
+//            print_r($response);
+//            echo '<br>';
+//        }
+//    }
+//
+//    public function split_charges_js() {
+//        $this->load->library('Stripe');
+//        $destination_a = 'acct_1GiQbXFi0TLGlCIZ'; //paolofq@gmail.com
+//        $destination_b = 'acct_1GiRAQIrLgupgBOM'; //legal@linkstream.com
+//        $total_amount = 100;
+//        $ls_fee = 10;
+//        $destination_a_amount = 70;
+//        $destination_b_amount = 20;
+//        $transfer_group = '003';
+//        $response = $this->stripe->create_payment_intent($total_amount, $transfer_group);
+//        if ($response['status']) {
+////            $charge_id = $response['intent_id'];
+////            $response_a = $this->stripe->create_transfer($destination_a_amount, $destination_a, $transfer_group, $charge_id);
+////            print_r($response_a);$transfer_a = $response_a['transfer_id'];
+////            $response_b = $this->stripe->create_transfer($destination_b_amount, $destination_b, $transfer_group, $charge_id);
+////            $transfer_b = $response_b['transfer_id'];
+//
+//
+//            $output = [
+//                'intent_id' => $response['intent_id'],
+//                'clientSecret' => $response['client_secret'],
+//                    //'$transfer_a' => $response['transfer_a'],
+//                    //'$transfer_b' => $response['transfer_b']
+//            ];
+//            echo json_encode($output);
+//        } else {
+//            echo 'Intent Error';
+//            echo '<br>';
+//            print_r($response);
+//            echo '<br>';
+//        }
+//    }
+//
+//    public function collect_payments() {
+//        if ($this->input->post()) {
+//            $this->load->library('Stripe');
+//        } else {
+//            $data = [];
+//            $this->load->view($this->loc_path . 'example/collect_payments', $data);
+//        }
+//    }
+//
+//    public function split_transfer() {
+//        $this->load->library('Stripe');
+//        $destination_a = 'acct_1GiQbXFi0TLGlCIZ'; //paolofq@gmail.com
+//        $destination_b = 'acct_1GiRAQIrLgupgBOM'; //legal@linkstream.com
+//        $total_amount = 100;
+//        $ls_fee = 10;
+//        $destination_a_amount = 2;
+//        $destination_b_amount = 5;
+//        $transfer_group = '003';
+//        $charge_id = 'ch_1Gigk5KagYlVQcNzn4bD6VQf';
+//        $response = $this->stripe->create_transfer($destination_a_amount, $destination_a, $transfer_group, $charge_id);
+//        echo 'Destination A';
+//        echo '<br>';
+//        print_r($response);
+//        echo '<br>';
+//        $response = $this->stripe->create_transfer($destination_b_amount, $destination_b, $transfer_group, $charge_id);
+//        echo 'Destination B';
+//        echo '<br>';
+//        print_r($response);
+//        echo '<br>';
+//    }
+
+    public function create_payment_method() {
+        $this->load->library('Stripe');
+        $number = '4242424242424242';
+        $exp_month = 6;
+        $exp_year = 2021;
+        $cvc = '314';
+        //$name = 'Paolo Maledeto';
+        //$zip = '33312';
+        $type = 'card';
+        $card = [
+            'number' => $number,
+            'exp_month' => $exp_month,
+            'exp_year' => $exp_year,
+            'cvc' => $cvc,
+        ];
+        $response = $this->stripe->create_payment_method($type, $card);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    public function create_customer() {
+        $this->load->library('Stripe');
+        $email = 'paul@link.stream';
+        $name = 'Paolo Test 01';
+        $phone = '1111111111';
+        $description = 'My First Test Customer (created for API docs)';
+        $line1 = '2210 Coral Reef Ct';
+        $line2 = '';
+        $city = 'Fort Lauderdale';
+        $state = 'FL';
+        $postal_code = '33312';
+        $country = 'US';
+        $address = [
+            'line1' => $line1,
+            'line2' => $line2,
+            'city' => $city,
+            'state' => $state,
+            'postal_code' => $postal_code,
+            'country' => $country
+        ];
+        $shipping = [
+            'name' => $name,
+            'address' => [
+                'line1' => $line1,
+                'line2' => $line2,
+                'city' => $city,
+                'state' => $state,
+                'postal_code' => $postal_code,
+                'country' => $country
+            ]
+        ];
+        $payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
+        $metadata = ['ls_user_id' => '50'];
+        $response = $this->stripe->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    public function create_subscription() {
+        $this->load->library('Stripe');
+        $customer_id = 'cus_HIsbVuMPkHrVe6';
+        $plan = 'plan_HGtTLCzgNfaGeM';
+        $default_payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
+        $response = $this->stripe->create_subscription($customer_id, $plan, $default_payment_method);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    public function fetch_subscription() {
+        $this->load->library('Stripe');
+        $customer_id = 'cus_HIsbVuMPkHrVe6';
+        $plan = 'plan_HGtTLCzgNfaGeM';
+        $default_payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
+        $response = $this->stripe->fetch_subscription();
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
     }
 
 }
