@@ -1273,10 +1273,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>time</li>
                     <li>track_type (1=Song, 2=Beat)</li>
                     <li>genre_id</li>
-                    <li>tags (Example: beat, linkstream, audio)</li>
-                    <li>beat_packs (Example: ["1","2"])</li>
-                    <li>collaborators (Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
-                    <li>licenses (Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
+                    <li>tags (Text Example: beat, linkstream, audio)</li>
+                    <li>beat_packs (JSON ENCODE Example: ["1","2"])</li>
+                    <li>collaborators (JSON ENCODE Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
+                    <li>licenses (JSON ENCODE Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
                     <li>untagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                     <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
                     <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
