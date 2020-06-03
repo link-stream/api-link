@@ -1239,23 +1239,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
-                <!--                <hr>
-                                <h3>Get Audios by User:</h3>
-                                <code>GET <?= base_url() ?>v1/audios/{user_id}/{audio_id}</code>
-                                <h3>Parameters:</h3>
-                                <ul>
-                                    <li>user_id</li>
-                                    <li>audio_id (optional)</li>
-                                    <li>?page={page}&page_size={page_size}</li>
-                                </ul>
-                                <h3>Response Example:</h3>
-                                <p>
-                <?php
-                echo '<pre>';
-                print_r('');
-                echo '</pre>';
-                ?>
-                                </p>-->
+                <hr>
+                <h3>Get Audios by User:</h3>
+                <code>GET <?= base_url() ?>v1/audios/{user_id}/{track_type}/{audio_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>audio_id (optional)</li>
+                    <li>track_type (optional)</li>
+                    <li>?page={page}&page_size={page_size}</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "173",
+            "created_at": "2020-06-03 13:44:31",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Test",
+            "bpm": "1024",
+            "key_id": "0",
+            "coverart": "0858dd0360424f6384b086ca4d6cb9a4.jpeg",
+            "public": "1",
+            "publish_at": "0000-00-00 00:00:00",
+            "sort": "19",
+            "genre_id": "2",
+            "track_type": "2",
+            "tags": "test",
+            "untagged_file": "7061c6403d2ab998af931332b9f6136a.mp3",
+            "track_stems": null,
+            "tagged_file": null
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
                 <hr>
                 <h3>Insert Audio:</h3>

@@ -167,11 +167,14 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_streamys_by_user_id($user_id, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
+    public function fetch_streamys_by_user_id($user_id, $track_type, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
         $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
+        }
+        if (!empty($track_type)) {
+            $this->db->where('track_type', $track_type);
         }
         if (!empty($audio_id)) {
             $this->db->where('id', $audio_id);
@@ -262,7 +265,7 @@ class Audio_model extends CI_Model {
         $this->db->insert('st_audio_collaborator', $data);
         //return $this->db->insert_id();
     }
-    
+
     public function insert_audio_license($data) {
         $this->db->insert('st_audio_license', $data);
         //return $this->db->insert_id();

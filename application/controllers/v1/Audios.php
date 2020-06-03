@@ -133,7 +133,7 @@ class Audios extends RestController {
         return $audio;
     }
 
-    public function index_get($id = null, $audio_id = null) {
+    public function index_get($id = null, $track_type = null, $audio_id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -148,11 +148,11 @@ class Audios extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $audio_id, false, $limit, $offset);
+                $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $track_type, $audio_id, false, $limit, $offset);
                 $streamys_reponse = array();
                 $dest_folder = 'Coverart';
                 foreach ($streamys as $streamy) {
-                    $streamy['related_link'] = $this->Audio_model->fetch_related_links($streamy['id']);
+                    //$streamy['related_link'] = $this->Audio_model->fetch_related_links($streamy['id']);
                     $audios[] = $streamy;
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
