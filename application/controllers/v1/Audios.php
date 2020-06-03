@@ -105,16 +105,26 @@ class Audios extends RestController {
         unlink($this->temp_dir . '/' . $file_name);
     }
 
-    private function audio_clean($audio, $images = true) {
+    private function audio_clean($audio, $audio_id = null, $images = true) {
         $audio['scheduled'] = true;
         if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
             $audio['scheduled'] = false;
         }
         $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
         $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
+        $audio['beat_packs'] = '';
+        $audio['collaborators'] = '';
+        $audio['licenses'] = '';
+        $audio['data_image'] = '';
+        $audio['data_untagged_file'] = '';
+        $audio['data_track_stems'] = '';
+        $audio['data_tagged_file'] = '';
+
+
+
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
-        $audio['data_image'] = '';
+
         if ($images) {
             if (!empty($audio['coverart'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
@@ -125,6 +135,48 @@ class Audios extends RestController {
                     $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
                     $audio['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $audio['coverart']);
+                }
+            }
+        }
+
+        $path = $this->s3_path . $this->s3_audio;
+
+        if (!empty($audio_id)) {
+
+            $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
+            $audio['collaborators'] = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
+            $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio_id);
+
+
+
+            if (!empty($audio['untagged_file'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_file']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['untagged_file'];
+                    file_put_contents($this->temp_dir . '/' . $audio['untagged_file'], $data_file);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_file']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_untagged_file'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['untagged_file']);
+                }
+            }
+            if (!empty($audio['track_stems'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['track_stems'];
+                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_track_stems'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['track_stems']);
+                }
+            }
+            if (!empty($audio['tagged_file'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['tagged_file'];
+                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_tagged_file'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
                 }
             }
         }
@@ -153,7 +205,7 @@ class Audios extends RestController {
                 $dest_folder = 'Coverart';
                 foreach ($streamys as $streamy) {
                     //$streamy['related_link'] = $this->Audio_model->fetch_related_links($streamy['id']);
-                    $audios[] = $streamy;
+                    $audios[] = $this->audio_clean($streamy, $audio_id);
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
             }

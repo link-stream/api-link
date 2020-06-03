@@ -268,5 +268,15 @@ class Album_model extends CI_Model {
         $this->db->insert('st_album_audio', $data);
         //return $this->db->insert_id();
     }
+    
+    public function fetch_album_audio_by_id($id) {
+        $this->db->select('id_album');
+        $this->db->from('st_album_audio');
+        $this->db->where('id_audio', $id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
 
 }
