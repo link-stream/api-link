@@ -122,7 +122,6 @@ class Audios extends RestController {
         $audio['data_untagged_file'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
-
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -138,18 +137,12 @@ class Audios extends RestController {
                 }
             }
         }
-
-//        $path = $this->s3_path . $this->s3_audio;
         if (!empty($audio_id)) {
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
             $audio['collaborators'] = [];
-            //$audio['collaborators'] = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
             $path = $this->s3_path . $this->s3_folder;
             $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
             foreach ($collaborators as $collaborator) {
-//                if ($user_id == $collaborator['id']) {
-//                    continue;
-//                }
                 $collaborator['data_image'] = '';
                 if (!empty($collaborator['image'])) {
                     $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
@@ -283,16 +276,6 @@ class Audios extends RestController {
                 $tagged_file = $this->input->post("tagged_file");
                 $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
             }
-
-//            print_r(json_encode(
-//                            array(
-//                                array('license_id' => '1', 'price' => '20', 'status_id' => '1'),
-//                                array('license_id' => '2', 'price' => '40', 'status_id' => '0')
-//                            )
-//                    )
-//            );
-//            print_r($licenses);
-//            exit;
             $id = $this->Audio_model->insert_audio($audio);
             if (!empty($beat_packs)) {
                 //$beat_packs = ['1','2'];
@@ -318,8 +301,6 @@ class Audios extends RestController {
                     $this->Audio_model->insert_audio_marketing($item);
                 }
             }
-
-
             //REPONSE
             $audio_response = $this->Audio_model->fetch_audio_by_id($id);
             $audio_response = $this->audio_clean($audio_response);
@@ -437,6 +418,26 @@ class Audios extends RestController {
             }
         } else {
             $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+    
+    public function sort_audios_post() {
+        $id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!$this->general_library->header_token($id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        if (!empty($list)) {
+            $videos = json_decode($list, true);
+            foreach ($videos as $video) {
+                $id = $video['id'];
+                $sort = $video['sort'];
+                $this->Audio_model->update_streamy($id, array('sort' => $sort));
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the audios has been updated correctly'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide list of audios.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
