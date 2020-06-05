@@ -15,6 +15,7 @@ class Audios extends RestController {
     private $s3_path;
     private $s3_coverart;
     private $s3_audio;
+    private $s3_folder;
     private $temp_dir;
 
     public function __construct() {
@@ -31,6 +32,7 @@ class Audios extends RestController {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_coverart = 'Coverart';
         $this->s3_audio = 'Audio';
+        $this->s3_folder = 'Profile';
         $this->temp_dir = $this->general_library->get_temp_dir();
     }
 
@@ -115,16 +117,14 @@ class Audios extends RestController {
         $audio['beat_packs'] = '';
         $audio['collaborators'] = '';
         $audio['licenses'] = '';
+        $audio['marketing'] = '';
         $audio['data_image'] = '';
         $audio['data_untagged_file'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
 
-
-
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
-
         if ($images) {
             if (!empty($audio['coverart'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
@@ -139,16 +139,33 @@ class Audios extends RestController {
             }
         }
 
-        $path = $this->s3_path . $this->s3_audio;
-
+//        $path = $this->s3_path . $this->s3_audio;
         if (!empty($audio_id)) {
-
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
-            $audio['collaborators'] = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
+            $audio['collaborators'] = [];
+            //$audio['collaborators'] = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
+            $path = $this->s3_path . $this->s3_folder;
+            $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
+            foreach ($collaborators as $collaborator) {
+//                if ($user_id == $collaborator['id']) {
+//                    continue;
+//                }
+                $collaborator['data_image'] = '';
+                if (!empty($collaborator['image'])) {
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
+                    if (!empty($data_image)) {
+                        $img_file = $collaborator['image'];
+                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
+                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+                        $collaborator['data_image'] = $src;
+                        unlink($this->temp_dir . '/' . $collaborator['image']);
+                    }
+                }
+                $audio['collaborators'][] = $collaborator;
+            }
             $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio_id);
-
-
-
+            $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
+            $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['untagged_file'])) {
                 $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_file']);
                 if (!empty($data_file)) {
@@ -251,6 +268,8 @@ class Audios extends RestController {
             $collaborators = (!empty($this->input->post('collaborators'))) ? json_decode($this->input->post('collaborators'), TRUE) : '';
             //List
             $licenses = (!empty($this->input->post('licenses'))) ? json_decode($this->input->post('licenses'), TRUE) : '';
+            //Marketing
+            $marketing = (!empty($this->input->post('marketing'))) ? json_decode($this->input->post('marketing'), TRUE) : '';
             //Audios
             if (!empty($this->input->post('untagged_file'))) {
                 $untagged_file = $this->input->post("untagged_file");
@@ -264,9 +283,7 @@ class Audios extends RestController {
                 $tagged_file = $this->input->post("tagged_file");
                 $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
             }
-            //Marketing
-            //
-            //
+
 //            print_r(json_encode(
 //                            array(
 //                                array('license_id' => '1', 'price' => '20', 'status_id' => '1'),
@@ -293,6 +310,12 @@ class Audios extends RestController {
                 foreach ($licenses as $license) {
                     $license['audio_id'] = $id;
                     $this->Audio_model->insert_audio_license($license);
+                }
+            }
+            if (!empty($marketing)) {
+                foreach ($marketing as $item) {
+                    $item['audio_id'] = $id;
+                    $this->Audio_model->insert_audio_marketing($item);
                 }
             }
 

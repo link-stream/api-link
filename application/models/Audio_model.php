@@ -267,9 +267,10 @@ class Audio_model extends CI_Model {
     }
 
     public function fetch_audio_collaborator_by_id($id) {
-        $this->db->select('user_id, profit, publishing');
-        $this->db->from('st_audio_collaborator');
-        $this->db->where('audio_id', $id);
+        $this->db->select('a.user_id, a.profit, a.publishing, b.user_name, b.image');
+        $this->db->from('st_audio_collaborator a');
+        $this->db->join('st_user b', 'a.user_id = b.id');
+        $this->db->where('a.audio_id', $id);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
@@ -280,10 +281,25 @@ class Audio_model extends CI_Model {
         $this->db->insert('st_audio_license', $data);
         //return $this->db->insert_id();
     }
-    
+
     public function fetch_audio_license_by_id($id) {
         $this->db->select('license_id, price, status_id');
         $this->db->from('st_audio_license');
+        $this->db->where('audio_id', $id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_audio_marketing($data) {
+        $this->db->insert('st_audio_marketing', $data);
+        //return $this->db->insert_id();
+    }
+
+    public function fetch_audio_marketing_by_id($id) {
+        $this->db->select('marketing_id, connect_id');
+        $this->db->from('st_audio_marketing');
         $this->db->where('audio_id', $id);
         $query = $this->db->get();
         $result = $query->result_array();
