@@ -266,6 +266,11 @@ class Audio_model extends CI_Model {
         //return $this->db->insert_id();
     }
 
+    public function delete_audio_collaborator($id) {
+        $this->db->where('audio_id', $id);
+        $this->db->delete('st_audio_collaborator');
+    }
+
     public function fetch_audio_collaborator_by_id($id) {
         $this->db->select('a.user_id, a.profit, a.publishing, b.user_name, b.image');
         $this->db->from('st_audio_collaborator a');
@@ -282,6 +287,11 @@ class Audio_model extends CI_Model {
         //return $this->db->insert_id();
     }
 
+    public function delete_audio_license($id) {
+        $this->db->where('audio_id', $id);
+        $this->db->delete('st_audio_license');
+    }
+
     public function fetch_audio_license_by_id($id) {
         $this->db->select('license_id, price, status_id');
         $this->db->from('st_audio_license');
@@ -295,6 +305,11 @@ class Audio_model extends CI_Model {
     public function insert_audio_marketing($data) {
         $this->db->insert('st_audio_marketing', $data);
         //return $this->db->insert_id();
+    }
+
+    public function delete_audio_marketing($id) {
+        $this->db->where('audio_id', $id);
+        $this->db->delete('st_audio_marketing');
     }
 
     public function fetch_audio_marketing_by_id($id) {
