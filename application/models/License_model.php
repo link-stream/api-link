@@ -43,9 +43,18 @@ class License_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function update_streamy($id, $data) {
+    public function fetch_license_by_id($id) {
+        $this->db->from('st_user_license');
         $this->db->where('id', $id);
-        $this->db->update('st_audio', $data);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_license($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_license', $data);
     }
 
     public function fetch_streamy_by_id($id) {

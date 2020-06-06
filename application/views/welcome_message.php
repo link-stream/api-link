@@ -1194,7 +1194,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "status_id": "1",
             "title": "Standard License",
             "descripcion": "Untagged MP3",
-            "prize": "30.00",
+            "price": "30.00",
+            "mp3": "1",
+            "wav": "0",
+            "trackout_stems": "0",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
             "license_available": true
         },
         {
@@ -1203,7 +1215,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "status_id": "1",
             "title": "Premium License ",
             "descripcion": "Untagged MP3 - WAV",
-            "prize": "50.00",
+            "price": "50.00",
+            "mp3": "1",
+            "wav": "1",
+            "trackout_stems": "0",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
             "license_available": true
         },
         {
@@ -1212,7 +1236,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "status_id": "1",
             "title": "Unlimited License",
             "descripcion": "Untagged MP3 - WAV",
-            "prize": "100.00",
+            "price": "100.00",
+            "mp3": "1",
+            "wav": "1",
+            "trackout_stems": "0",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
             "license_available": true
         },
         {
@@ -1221,7 +1257,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "status_id": "1",
             "title": "Unlimited With Trackouts License",
             "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
-            "prize": "200.00",
+            "price": "200.00",
+            "mp3": "1",
+            "wav": "1",
+            "trackout_stems": "1",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
             "license_available": true
         },
         {
@@ -1230,10 +1278,76 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "status_id": "1",
             "title": "Exclusive License",
             "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
-            "prize": "300.00",
+            "price": "300.00",
+            "mp3": "1",
+            "wav": "1",
+            "trackout_stems": "1",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
             "license_available": true
         }
     ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Update License:</h3>
+                <code>PUT <?= base_url() ?>v1/licenses/{license_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>status_id</li>
+                    <li>price</li>
+                    <li>mp3</li>
+                    <li>wav</li>
+                    <li>trackout_stems</li>
+                    <li>distribution_copies</li>
+                    <li>free_download</li>
+                    <li>audio_streams</li>
+                    <li>music_videos</li>
+                    <li>video_streams</li>
+                    <li>broadcasting_rights</li>
+                    <li>radio_station</li>
+                    <li>paid_performances</li>
+                    <li>non_profit_performances</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The License info has been updated successfully.",
+    "data": {
+        "id": "1",
+        "user_id": "35",
+        "status_id": "1",
+        "title": "Standard License",
+        "descripcion": "Untagged MP3",
+        "price": "30.00",
+        "mp3": "1",
+        "wav": "0",
+        "trackout_stems": "0",
+        "distribution_copies": "0",
+        "free_download": "0",
+        "audio_streams": "0",
+        "music_videos": "0",
+        "video_streams": "0",
+        "broadcasting_rights": "0",
+        "radio_station": "0",
+        "paid_performances": "0",
+        "non_profit_performances": "Unlimited",
+        "license_available": true
+    }
 }');
                     echo '</pre>';
                     ?>

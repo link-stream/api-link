@@ -156,6 +156,69 @@ class Licenses extends RestController {
         }
     }
 
+    public function index_put($id = null) {
+        if (!empty($id)) {
+            $license = $this->License_model->fetch_license_by_id($id);
+            if (!empty($license)) {
+                if (!$this->general_library->header_token($license['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if ($this->put('status_id') !== null) {
+                    $license['status_id'] = $this->put('status_id');
+                }
+                if ($this->put('price') !== null) {
+                    $license['price'] = $this->put('price');
+                }
+                if ($this->put('mp3') !== null) {
+                    $license['mp3'] = $this->put('mp3');
+                }
+                if ($this->put('wav') !== null) {
+                    $license['wav'] = $this->put('wav');
+                }
+                if ($this->put('trackout_stems') !== null) {
+                    $license['trackout_stems'] = $this->put('trackout_stems');
+                }
+                if ($this->put('distribution_copies') !== null) {
+                    $license['distribution_copies'] = $this->put('distribution_copies');
+                }
+                if ($this->put('free_download') !== null) {
+                    $license['free_download'] = $this->put('free_download');
+                }
+                if ($this->put('audio_streams') !== null) {
+                    $license['audio_streams'] = $this->put('audio_streams');
+                }
+                if ($this->put('music_videos') !== null) {
+                    $license['music_videos'] = $this->put('music_videos');
+                }
+                if ($this->put('video_streams') !== null) {
+                    $license['video_streams'] = $this->put('video_streams');
+                }
+                if ($this->put('broadcasting_rights') !== null) {
+                    $license['broadcasting_rights'] = $this->put('broadcasting_rights');
+                }
+                if ($this->put('radio_station') !== null) {
+                    $license['radio_station'] = $this->put('radio_station');
+                }
+                if ($this->put('paid_performances') !== null) {
+                    $license['paid_performances'] = $this->put('paid_performances');
+                }
+                if ($this->put('non_profit_performances') !== null) {
+                    $license['non_profit_performances'] = $this->put('non_profit_performances');
+                }
+                $this->License_model->update_license($id, $license);
+                //Define if user can use the license (PENDING) ***** 
+                $license['license_available'] = true;
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The License info has been updated successfully.', 'data' => $license), RestController::HTTP_OK);
+            } else {
+                $this->error = 'License Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide License ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 //    
 //    public function index_post() {
 //        $email = strip_tags($this->input->post('email'));
