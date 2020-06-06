@@ -1520,7 +1520,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Sort Audios:</h3>
-                <code>POST <?= base_url() ?>v1/videos/sort_audios</code>
+                <code>POST <?= base_url() ?>v1/audios/sort_audios</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
