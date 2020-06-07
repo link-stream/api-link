@@ -295,7 +295,7 @@ class Audio_model extends CI_Model {
     public function fetch_audio_license_by_id($id) {
         $this->db->select('a.license_id, a.price, a.status_id, b.mp3, b.wav, b.trackout_stems');
         $this->db->from('st_audio_license a');
-        $this->db->join('st_license b', 'a.license_id = b.id');
+        $this->db->join('st_user_license b', 'a.license_id = b.id');
         $this->db->where('a.audio_id', $id);
         $query = $this->db->get();
         $result = $query->result_array();
