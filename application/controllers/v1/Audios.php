@@ -137,6 +137,7 @@ class Audios extends RestController {
                 }
             }
         }
+        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio_id);
         if (!empty($audio_id)) {
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
             $audio['collaborators'] = [];
@@ -156,7 +157,6 @@ class Audios extends RestController {
                 }
                 $audio['collaborators'][] = $collaborator;
             }
-            $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio_id);
             $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
             $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['untagged_file'])) {
@@ -460,7 +460,7 @@ class Audios extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
+
     public function index_delete($id = null) {
         if (!empty($id)) {
             $audio = $this->Audio_model->fetch_audio_by_id($id);
