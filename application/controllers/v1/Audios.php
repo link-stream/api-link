@@ -115,8 +115,8 @@ class Audios extends RestController {
         $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
         $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
         $audio['beat_packs'] = '';
-        $audio['collaborators'] = '';
         $audio['licenses'] = '';
+        $audio['collaborators'] = '';  
         $audio['marketing'] = '';
         $audio['data_image'] = '';
         $audio['data_untagged_mp3'] = '';
@@ -138,7 +138,7 @@ class Audios extends RestController {
                 }
             }
         }
-        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio_id);
+        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
         if (!empty($audio_id)) {
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
             $audio['collaborators'] = [];
@@ -208,9 +208,9 @@ class Audios extends RestController {
 
     public function index_get($id = null, $track_type = null, $audio_id = null) {
         if (!empty($id)) {
-            if (!$this->general_library->header_token($id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-            }
+//            if (!$this->general_library->header_token($id)) {
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//            }
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
             //$limit = 0;
