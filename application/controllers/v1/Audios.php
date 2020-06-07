@@ -224,6 +224,7 @@ class Audios extends RestController {
                 $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $track_type, $audio_id, false, $limit, $offset);
                 $streamys_reponse = array();
                 $dest_folder = 'Coverart';
+                $audios = [];
                 foreach ($streamys as $streamy) {
                     //$streamy['related_link'] = $this->Audio_model->fetch_related_links($streamy['id']);
                     $audios[] = $this->audio_clean($streamy, $audio_id);
