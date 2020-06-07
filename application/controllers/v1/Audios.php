@@ -489,7 +489,7 @@ class Audios extends RestController {
         if (!empty($id)) {
             $audio = $this->Audio_model->fetch_audio_by_id($id);
             if (!empty($audio)) {
-                if (!$this->general_library->header_token($video['user_id'])) {
+                if (!$this->general_library->header_token($audio['user_id'])) {
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
                 }
                 $this->Audio_model->update_streamy($id, ['status_id' => '3']);
