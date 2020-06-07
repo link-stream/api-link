@@ -1386,7 +1386,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             "genre_id": "2",
             "track_type": "2",
             "tags": "test",
-            "untagged_file": "7061c6403d2ab998af931332b9f6136a.mp3",
+            "untagged_mp3": "ee92d7354fd40189f1b31a2be78f66f1.mp3",
+            "untagged_wav": "ee92d7354fd40189f1b31a2be78f66f1.wav",
             "track_stems": null,
             "tagged_file": null
         }
@@ -1417,7 +1418,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>collaborators (JSON ENCODE Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
                     <li>licenses (JSON ENCODE Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
                     <li>marketing (JSON ENCODE Example: [{"marketing_id":"1","connect_id":""},{"marketing_id":"1","connect_id":""}])</li>
-                    <li>untagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                     <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
                     <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                 </ul>
@@ -1444,7 +1446,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "genre_id": "3",
         "track_type": "2",
         "tags": "beat, linkstream, audio",
-        "untagged_file": "ee92d7354fd40189f1b31a2be78f66f1.mp3",
+        "untagged_mp3": "ee92d7354fd40189f1b31a2be78f66f1.mp3",
+        "untagged_wav": "ee92d7354fd40189f1b31a2be78f66f1.wav",
         "track_stems": "a922d63cb28dc9004a0a73d3e948cbf6.zip",
         "tagged_file": "8216dd6cab5b0f76b58fed92426d3da4.mp3",
         "scheduled": true,
@@ -1478,7 +1481,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>collaborators (JSON ENCODE Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
                     <li>licenses (JSON ENCODE Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
                     <li>marketing (JSON ENCODE Example: [{"marketing_id":"1","connect_id":""},{"marketing_id":"1","connect_id":""}])</li>
-                    <li>untagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                     <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
                     <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                 </ul>
@@ -1505,7 +1509,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "genre_id": "3",
         "track_type": "2",
         "tags": "beat, linkstream, audio",
-        "untagged_file": "ee92d7354fd40189f1b31a2be78f66f1.mp3",
+        "untagged_mp3": "ee92d7354fd40189f1b31a2be78f66f1.mp3",
+        "untagged_wav": "ee92d7354fd40189f1b31a2be78f66f1.wav",
         "track_stems": "a922d63cb28dc9004a0a73d3e948cbf6.zip",
         "tagged_file": "8216dd6cab5b0f76b58fed92426d3da4.mp3",
         "scheduled": true,

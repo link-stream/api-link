@@ -119,7 +119,8 @@ class Audios extends RestController {
         $audio['licenses'] = '';
         $audio['marketing'] = '';
         $audio['data_image'] = '';
-        $audio['data_untagged_file'] = '';
+        $audio['data_untagged_mp3'] = '';
+        $audio['data_untagged_wav'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
         //Coverart
@@ -159,14 +160,24 @@ class Audios extends RestController {
             }
             $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
             $path = $this->s3_path . $this->s3_audio;
-            if (!empty($audio['untagged_file'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_file']);
+            if (!empty($audio['untagged_mp3'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
                 if (!empty($data_file)) {
-                    $img_file = $audio['untagged_file'];
-                    file_put_contents($this->temp_dir . '/' . $audio['untagged_file'], $data_file);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_file']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_untagged_file'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['untagged_file']);
+                    $img_file = $audio['untagged_mp3'];
+                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_untagged_mp3'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
+                }
+            }
+            if (!empty($audio['untagged_wav'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['untagged_wav'];
+                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_untagged_wav'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
                 }
             }
             if (!empty($audio['track_stems'])) {
@@ -264,9 +275,13 @@ class Audios extends RestController {
             //Marketing
             $marketing = (!empty($this->input->post('marketing'))) ? json_decode($this->input->post('marketing'), TRUE) : '';
             //Audios
-            if (!empty($this->input->post('untagged_file'))) {
-                $untagged_file = $this->input->post("untagged_file");
-                $audio['untagged_file'] = $this->audio_decode_put($untagged_file);
+            if (!empty($this->input->post('untagged_mp3'))) {
+                $untagged_mp3 = $this->input->post("untagged_mp3");
+                $audio['untagged_mp3'] = $this->audio_decode_put($untagged_mp3);
+            }
+            if (!empty($this->input->post('untagged_wav'))) {
+                $untagged_wav = $this->input->post("untagged_wav");
+                $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
             }
             if (!empty($this->input->post('track_stems'))) {
                 $track_stems = $this->input->post("track_stems");
@@ -363,12 +378,20 @@ class Audios extends RestController {
                     }
                 }
                 //Audios
-                if ($this->put('untagged_file') !== null) {
-                    if (!empty($this->put('untagged_file'))) {
-                        $untagged_file = $this->put("untagged_file");
-                        $audio['untagged_file'] = $this->audio_decode_put($untagged_file);
+                if ($this->put('untagged_mp3') !== null) {
+                    if (!empty($this->put('untagged_mp3'))) {
+                        $untagged_mp3 = $this->put("untagged_mp3");
+                        $audio['untagged_mp3'] = $this->audio_decode_put($untagged_mp3);
                     } else {
-                        $audio['untagged_file'] = '';
+                        $audio['untagged_mp3'] = '';
+                    }
+                }
+                if ($this->put('untagged_wav') !== null) {
+                    if (!empty($this->put('untagged_wav'))) {
+                        $untagged_wav = $this->put("untagged_wav");
+                        $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
+                    } else {
+                        $audio['untagged_wav'] = '';
                     }
                 }
                 if ($this->put('track_stems') !== null) {
