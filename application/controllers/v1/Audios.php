@@ -114,9 +114,14 @@ class Audios extends RestController {
         }
         $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
         $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
+
+        $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
+        $audio['key_id'] = !empty($audio['key_id']) ? $audio['key_id'] : '';
+
+
         $audio['beat_packs'] = '';
         $audio['licenses'] = '';
-        $audio['collaborators'] = '';  
+        $audio['collaborators'] = '';
         $audio['marketing'] = '';
         $audio['data_image'] = '';
         $audio['data_untagged_mp3'] = '';
@@ -276,18 +281,22 @@ class Audios extends RestController {
             //Marketing
             $marketing = (!empty($this->input->post('marketing'))) ? json_decode($this->input->post('marketing'), TRUE) : '';
             //Audios
+            $audio['untagged_mp3_name'] = (!empty($this->input->post('untagged_mp3_name'))) ? $this->input->post('untagged_mp3_name') : '';
             if (!empty($this->input->post('untagged_mp3'))) {
                 $untagged_mp3 = $this->input->post("untagged_mp3");
                 $audio['untagged_mp3'] = $this->audio_decode_put($untagged_mp3);
             }
+            $audio['untagged_wav_name'] = (!empty($this->input->post('untagged_wav_name'))) ? $this->input->post('untagged_wav_name') : '';
             if (!empty($this->input->post('untagged_wav'))) {
                 $untagged_wav = $this->input->post("untagged_wav");
                 $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
             }
+            $audio['track_stems_name'] = (!empty($this->input->post('track_stems_name'))) ? $this->input->post('track_stems_name') : '';
             if (!empty($this->input->post('track_stems'))) {
                 $track_stems = $this->input->post("track_stems");
                 $audio['track_stems'] = $this->file_decode_put($track_stems);
             }
+            $audio['tagged_file_name'] = (!empty($this->input->post('tagged_file_name'))) ? $this->input->post('tagged_file_name') : '';
             if (!empty($this->input->post('tagged_file'))) {
                 $tagged_file = $this->input->post("tagged_file");
                 $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
@@ -379,6 +388,9 @@ class Audios extends RestController {
                     }
                 }
                 //Audios
+                if (!empty($this->put('untagged_mp3_name'))) {
+                    $audio['untagged_mp3_name'] = $this->put('untagged_mp3_name');
+                }
                 if ($this->put('untagged_mp3') !== null) {
                     if (!empty($this->put('untagged_mp3'))) {
                         $untagged_mp3 = $this->put("untagged_mp3");
@@ -386,6 +398,9 @@ class Audios extends RestController {
                     } else {
                         $audio['untagged_mp3'] = '';
                     }
+                }
+                if (!empty($this->put('untagged_wav_name'))) {
+                    $audio['untagged_wav_name'] = $this->put('untagged_wav_name');
                 }
                 if ($this->put('untagged_wav') !== null) {
                     if (!empty($this->put('untagged_wav'))) {
@@ -395,6 +410,9 @@ class Audios extends RestController {
                         $audio['untagged_wav'] = '';
                     }
                 }
+                if (!empty($this->put('track_stems_name'))) {
+                    $audio['track_stems_name'] = $this->put('track_stems_name');
+                }
                 if ($this->put('track_stems') !== null) {
                     if (!empty($this->put('track_stems'))) {
                         $track_stems = $this->put("track_stems");
@@ -402,6 +420,9 @@ class Audios extends RestController {
                     } else {
                         $audio['track_stems'] = '';
                     }
+                }
+                if (!empty($this->put('tagged_file_name'))) {
+                    $audio['tagged_file_name'] = $this->put('tagged_file_name');
                 }
                 if ($this->put('tagged_file') !== null) {
                     if (!empty($this->put('tagged_file'))) {

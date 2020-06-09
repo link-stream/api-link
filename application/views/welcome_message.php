@@ -1418,9 +1418,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>collaborators (JSON ENCODE Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
                     <li>licenses (JSON ENCODE Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
                     <li>marketing (JSON ENCODE Example: [{"marketing_id":"1","connect_id":""},{"marketing_id":"1","connect_id":""}])</li>
+                    <li>untagged_mp3_name</li>
                     <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_wav_name</li>
                     <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>track_stems_name</li>
                     <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
+                    <li>tagged_file_name</li>
                     <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                 </ul>
                 <h3>Response Example:</h3>
@@ -1481,9 +1485,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>collaborators (JSON ENCODE Example: [{"user_id":"1","profit":"60","publishing":"60"},{"user_id":"2","profit":"40","publishing":"40"}])</li>
                     <li>licenses (JSON ENCODE Example: [{"license_id":"1","price":"20","status_id":"1"},{"license_id":"2","price":"40","status_id":"0"}])</li>
                     <li>marketing (JSON ENCODE Example: [{"marketing_id":"1","connect_id":""},{"marketing_id":"1","connect_id":""}])</li>
+                    <li>untagged_mp3_name</li>
                     <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>untagged_wav_name</li>
                     <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>track_stems_name</li>
                     <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
+                    <li>tagged_file_name</li>
                     <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                 </ul>
                 <h3>Response Example:</h3>
