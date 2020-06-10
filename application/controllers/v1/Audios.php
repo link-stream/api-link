@@ -108,6 +108,7 @@ class Audios extends RestController {
     }
 
     private function audio_clean($audio, $audio_id = null, $images = true) {
+
         $audio['scheduled'] = true;
         if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
             $audio['scheduled'] = false;
@@ -118,7 +119,7 @@ class Audios extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['key_id'] = !empty($audio['key_id']) ? $audio['key_id'] : '';
 
-
+        $audio['url_title'] = '';
         $audio['beat_packs'] = '';
         $audio['licenses'] = '';
         $audio['collaborators'] = '';
@@ -137,7 +138,7 @@ class Audios extends RestController {
                 if (!empty($data_image)) {
                     $img_file = $audio['coverart'];
                     file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
                     $audio['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $audio['coverart']);
                 }
@@ -145,6 +146,8 @@ class Audios extends RestController {
         }
         $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
         if (!empty($audio_id)) {
+            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
+            $audio['url_title'] = $user['url'] . '/beat/' . url_title($audio['title']);
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
             $audio['collaborators'] = [];
             $path = $this->s3_path . $this->s3_folder;
@@ -156,7 +159,7 @@ class Audios extends RestController {
                     if (!empty($data_image)) {
                         $img_file = $collaborator['image'];
                         file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
-                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+                        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
                         $collaborator['data_image'] = $src;
                         unlink($this->temp_dir . '/' . $collaborator['image']);
                     }
@@ -170,7 +173,7 @@ class Audios extends RestController {
                 if (!empty($data_file)) {
                     $img_file = $audio['untagged_mp3'];
                     file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
                     $audio['data_untagged_mp3'] = $src;
                     unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
                 }
@@ -180,7 +183,7 @@ class Audios extends RestController {
                 if (!empty($data_file)) {
                     $img_file = $audio['untagged_wav'];
                     file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
                     $audio['data_untagged_wav'] = $src;
                     unlink($this->temp_dir . '/' . $audio['untagged_wav']);
                 }
@@ -190,7 +193,7 @@ class Audios extends RestController {
                 if (!empty($data_file)) {
                     $img_file = $audio['track_stems'];
                     file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
                     $audio['data_track_stems'] = $src;
                     unlink($this->temp_dir . '/' . $audio['track_stems']);
                 }
@@ -200,7 +203,7 @@ class Audios extends RestController {
                 if (!empty($data_file)) {
                     $img_file = $audio['tagged_file'];
                     file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
                     $audio['data_tagged_file'] = $src;
                     unlink($this->temp_dir . '/' . $audio['tagged_file']);
                 }
