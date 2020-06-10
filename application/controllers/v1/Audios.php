@@ -119,6 +119,7 @@ class Audios extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['key_id'] = !empty($audio['key_id']) ? $audio['key_id'] : '';
 
+        $audio['url_user'] = '';
         $audio['url_title'] = '';
         $audio['beat_packs'] = '';
         $audio['licenses'] = '';
@@ -147,7 +148,8 @@ class Audios extends RestController {
         $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
         if (!empty($audio_id)) {
             $user = $this->User_model->fetch_user_by_id($audio['user_id']);
-            $audio['url_title'] = $user['url'] . '/beat/' . url_title($audio['title']);
+            $audio['url_user'] = $user['url'];
+            $audio['url_title'] = url_title($audio['title']);
             $audio['beat_packs'] = $this->Album_model->fetch_album_audio_by_id($audio_id);
             $audio['collaborators'] = [];
             $path = $this->s3_path . $this->s3_folder;
