@@ -1568,6 +1568,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Audio Title Availability:</h3>
+                <code>GET <?= base_url() ?>v1/audios/availability/{user_id}/{type}?value={title name}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>type = 'title'</li>
+                    <li>value</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+                OR
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "false",
+    "env": "dev",
+    "error": "Title: BEAT TEST is not available"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

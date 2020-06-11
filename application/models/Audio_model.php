@@ -37,6 +37,23 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_audio_by_search($search, $limit = 0, $offset = 0) {
+        $this->db->from('st_audio');
+        if (!empty($search['user_id'])) {
+            $this->db->where('user_id', $search['user_id']); //By Usew
+        }
+        if (!empty($search['title'])) {
+            $this->db->where('title',  $search['title']); //By Usew
+        }
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 //    public function fetch_streamys_by_search($search, $limit = 0, $offset = 0) {
 //        $this->db->select('a.*,b.id as type_id,b.type as type_name');
 //        $this->db->from('st_streamy a');
