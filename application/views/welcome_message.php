@@ -1411,7 +1411,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>scheduled</li>
                     <li>date</li>
                     <li>time</li>
-                    <li>track_type (1=Song, 2=Beat)</li>
+                    <li>track_type (1=Song, 2=Beat, 3=Sound Kit)</li>
                     <li>genre_id</li>
                     <li>tags (Text Example: beat, linkstream, audio)</li>
                     <li>beat_packs (JSON ENCODE Example: ["1","2"])</li>
