@@ -1173,7 +1173,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
-                <h3>Collaborator:</h3>
+                <h3>Invite Collaborator:</h3>
                 <code>POST <?= base_url() ?>v1/users/invite_collaborator/{user_id}/{email}</code>
                 <h3>Parameters:</h3>
                 <ul>
