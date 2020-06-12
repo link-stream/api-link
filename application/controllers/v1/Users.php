@@ -281,6 +281,12 @@ class Users extends RestController {
         }
     }
 
+    private function generate_password() {
+        $tmp_pass = md5(uniqid(rand(), true));
+        $password = $this->general_library->encrypt_txt($tmp_pass);
+        return $password;
+    }
+
     public function registration_post() {
         // Get the post data
         $email = strip_tags($this->input->post('email'));
@@ -561,7 +567,7 @@ class Users extends RestController {
             }
             $search = (!empty($this->input->get('search'))) ? $this->input->get('search') : '';
             $collaborators = $this->User_model->fetch_collaborator($search);
-            $collaborators_reponse = array();
+            $collaborators_reponse = [];
             $path = $this->s3_path . $this->s3_folder;
             foreach ($collaborators as $collaborator) {
                 if ($user_id == $collaborator['id']) {
@@ -583,6 +589,59 @@ class Users extends RestController {
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $collaborators_reponse), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function invite_collaborator_post($user_id = null, $email) {
+        if (!empty($user_id) && !empty($email)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $collaborators_reponse = [];
+            $path = $this->s3_path . $this->s3_folder;
+            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+            if (!empty($register_user)) {
+                $collaborators_reponse['id'] = $register_user['id'];
+                $collaborators_reponse['user_name'] = $register_user['user_name'];
+                $collaborators_reponse['email'] = $register_user['email'];
+                $collaborators_reponse['image'] = $register_user['image'];
+                $collaborators_reponse['data_image'] = '';
+                if (!empty($collaborators_reponse['image'])) {
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborators_reponse['image']);
+                    if (!empty($data_image)) {
+                        $img_file = $collaborators_reponse['image'];
+                        file_put_contents($this->temp_dir . '/' . $collaborators_reponse['image'], $data_image);
+                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborators_reponse['image']) . ';base64,' . base64_encode($data_image);
+                        $collaborators_reponse['data_image'] = $src;
+                        unlink($this->temp_dir . '/' . $collaborators_reponse['image']);
+                    }
+                }
+            } else {
+                //Create User ***
+                $email_user = strstr($email, '@', true);
+                //
+                $user_name = $this->generate_username($email_user);
+                $user = array();
+                $user['user_name'] = $user['display_name'] = $user['url'] = strtolower(str_replace(' ', '', $user_name));
+                $user['email'] = $email;
+                $user['password'] = $this->generate_password();
+                $user['plan_id'] = '1';
+                $user['status_id'] = '3';
+                $user['platform'] = 'LinkStream';
+                $user['id'] = $this->User_model->insert_user($user);
+                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+                $collaborators_reponse['id'] = $user['id'];
+                $collaborators_reponse['user_name'] = $user['user_name'];
+                $collaborators_reponse['email'] = $user['email'];
+                $collaborators_reponse['image'] = '';
+                $collaborators_reponse['data_image'] = '';
+                //Send Invitation Email
+                /////////////////////////////$this->register_email($user);
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $collaborators_reponse), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID and Email';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

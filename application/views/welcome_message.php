@@ -1173,6 +1173,37 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
+                <h3>Collaborator:</h3>
+                <code>POST <?= base_url() ?>v1/users/invite_collaborator/{user_id}/{email}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>{user_id}</li>
+                    <li>{email}</li>
+                </ul>
+                <h3>Example:</h3>
+                <ul>
+                    <li><?= base_url() ?>v1/users/invite_collaborator/35/pepe.cabeza@linkstream.com</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "id": 105,
+        "user_name": "pepe.cabeza",
+        "email": "pepe.cabeza@linkstream.com",
+        "image": "",
+        "data_image": ""
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
                 <h3>Get Licenses by User:</h3>
                 <code>GET <?= base_url() ?>v1/licenses/{user_id}/{license_id}</code>
                 <h3>Parameters:</h3>
