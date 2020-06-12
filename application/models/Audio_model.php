@@ -48,6 +48,7 @@ class Audio_model extends CI_Model {
         if (!empty($search['excluded_id'])) {
             $this->db->where('id <> ', $search['excluded_id']); //By Usew
         }
+        $this->db->where('status_id <>', 3); //By Status
         if (!empty($limit)) {
             $this->db->limit($limit, $offset);
         }
