@@ -654,7 +654,7 @@ class Audios extends RestController {
     }
 
     //params: type = title
-    public function availability_get($user_id = null, $type = null) {
+    public function availability_get($user_id = null, $type = null, $audio_id = null) {
         $value = (!empty($this->input->get('value'))) ? $this->input->get('value') : 0;
         if (empty($type)) {
             $this->error = 'Type is Required';
@@ -672,7 +672,7 @@ class Audios extends RestController {
             if (!$this->general_library->header_token($user_id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
-            $audio = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id, 'title' => $value], 0, 0);
+            $audio = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id, 'title' => $value, 'excluded_id' => $audio_id], 0, 0);
             if (empty($audio)) {
                 $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
             } else {
