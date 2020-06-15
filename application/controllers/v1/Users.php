@@ -344,7 +344,7 @@ class Users extends RestController {
                     $this->error = 'Email already confirmed previously';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 } else {
-                    $this->User_model->update_user($register_user['id'], array('email_confirmed' => '1'));
+                    $this->User_model->update_user($register_user['id'], array('email_confirmed' => '1', 'status_id' => '1'));
                     $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Confirmed Email'));
                     $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
                 }
