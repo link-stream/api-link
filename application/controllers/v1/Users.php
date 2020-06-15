@@ -70,18 +70,21 @@ class Users extends RestController {
         if ($images) {
             if (!empty($user['image'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
-                //$user['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
                 if (!empty($data_image)) {
                     $img_file = $user['image'];
                     file_put_contents($this->temp_dir . '/' . $user['image'], $data_image);
                     $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
+                } else {
+                    file_put_contents($this->temp_dir . '/LS_avatar.png', $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/LS_avatar.png') . ';base64,' . base64_encode($data_image);
+                    $user['data_image'] = $src;
+                    unlink($this->temp_dir . '/LS_avatar.png');
                 }
             }
             if (!empty($user['banner'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['banner']);
-                //$user['data_banner'] = (!empty($data_image)) ? base64_encode($data_image) : '';
                 if (!empty($data_image)) {
                     $img_file = $user['banner'];
                     file_put_contents($this->temp_dir . '/' . $user['banner'], $data_image);
@@ -430,6 +433,28 @@ class Users extends RestController {
         $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
         return $photoURL;
     }
+
+//    public function instagram_get_photo_get($user_name) {
+//        echo $user_name;
+//        echo '<br>';
+//        echo '<br>';
+//        $getValues = file_get_contents('https://www.instagram.com/' . $user_name . '/?__a=1');
+//        $jsonObj = json_decode($getValues, TRUE);
+//        $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
+//        echo $photoURL;
+//        echo '<br>';
+//        echo '<br>';
+//        $instagram_avatar = $photoURL;
+//        $content = file_get_contents($instagram_avatar);
+//        $image_name = md5(uniqid(rand(), true)) . '.png';
+//        echo $image_name;
+//        echo '<br>';
+//        echo '<br>';
+//        //upload cropped image to server 
+//        file_put_contents($this->temp_dir . '/' . $image_name, $content);
+//        //SAVE S3
+//        $this->s3_push($image_name);
+//    }
 
     public function google_post() {
         //$this->output->set_content_type('application/json');
