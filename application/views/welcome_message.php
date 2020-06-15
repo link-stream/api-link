@@ -1453,10 +1453,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                     <li>untagged_wav_name</li>
                     <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
-                    <li>track_stems_name</li>
-                    <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
-                    <li>tagged_file_name</li>
-                    <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>track_stems_name - Beat & Sound Kit</li>
+                    <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....) - Beat & Sound Kit</li>
+                    <li>tagged_file_name - Beat & Sound Kit</li>
+                    <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....) - Beat & Sound Kit</li>
+                    <li>price</li>
+                    <li>samples</li>
+                    <li>description</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -1520,10 +1523,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>untagged_mp3 (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
                     <li>untagged_wav_name</li>
                     <li>untagged_wav (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
-                    <li>track_stems_name</li>
-                    <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....)</li>
-                    <li>tagged_file_name</li>
-                    <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....)</li>
+                    <li>track_stems_name - Beat & Sound Kit</li>
+                    <li>track_stems (Example: data:@file/zip;base64,UEsDBBQACAAIAPxJmE8AAAA.....) - Beat & Sound Kit</li>
+                    <li>tagged_file_name - Beat & Sound Kit</li>
+                    <li>tagged_file (Example: data:audio/mpeg;base64,SUQzAwAAAAAAZlRDT04A.....) - Beat & Sound Kit</li>
+                    <li>price</li>
+                    <li>samples</li>
+                    <li>description</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

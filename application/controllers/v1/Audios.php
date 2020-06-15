@@ -221,7 +221,9 @@ class Audios extends RestController {
             }
         }
         unset($audio['publish_at']);
-        //unset($audio['timezone']);
+        unset($audio['price']);
+        unset($audio['samples']);
+        unset($audio['description']);
         return $audio;
     }
 
@@ -427,6 +429,11 @@ class Audios extends RestController {
                 $tagged_file = $this->input->post("tagged_file");
                 $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
             }
+            //Sound Kit
+            $audio['price'] = (!empty($this->input->post('price'))) ? $this->input->post('price') : 0.00;
+            $audio['samples'] = (!empty($this->input->post('samples'))) ? $this->input->post('samples') : 0;
+            $audio['description'] = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
+            //
             $id = $this->Audio_model->insert_audio($audio);
             if (!empty($beat_packs)) {
                 //$beat_packs = ['1','2'];
@@ -598,6 +605,17 @@ class Audios extends RestController {
                         $this->Audio_model->insert_audio_marketing($item);
                     }
                 }
+                //Sound Kit
+                if ($this->put('price') !== null) {
+                    $audio['price'] = $this->put('price');
+                }
+                if ($this->put('samples') !== null) {
+                    $audio['samples'] = $this->put('samples');
+                }
+                if ($this->put('description') !== null) {
+                    $audio['description'] = $this->put('description');
+                }
+                //
                 $this->Audio_model->update_streamy($id, $audio);
                 $audio['date'] = $date;
                 $audio['time'] = $time;
