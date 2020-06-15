@@ -473,7 +473,7 @@ class Users extends RestController {
                     $this->s3_push($image_name);
                     $user['image'] = $image_name;
                 }
-                $user['status_id'] = '3';
+                $user['status_id'] = '1';
                 $user['email_confirmed'] = '1';
                 $user['id'] = $this->User_model->insert_user($user);
                 $user['token'] = $this->User_model->create_token($user['id']);
