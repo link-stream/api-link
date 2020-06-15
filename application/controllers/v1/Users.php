@@ -76,11 +76,16 @@ class Users extends RestController {
                     $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
-                } else {
-                    file_put_contents($this->temp_dir . '/LS_avatar.png', $data_image);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/LS_avatar.png') . ';base64,' . base64_encode($data_image);
+                }
+            } else {
+                $user['image'] = 'LS_avatar.png';
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
+                if (!empty($data_image)) {
+                    $img_file = $user['image'];
+                    file_put_contents($this->temp_dir . '/' . $user['image'], $data_image);
+                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
                     $user['data_image'] = $src;
-                    unlink($this->temp_dir . '/LS_avatar.png');
+                    unlink($this->temp_dir . '/' . $user['image']);
                 }
             }
             if (!empty($user['banner'])) {
