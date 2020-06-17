@@ -1607,11 +1607,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Audio Title Availability:</h3>
-                <code>GET <?= base_url() ?>v1/audios/availability/{user_id}/{type}/{audio_id}?value={title name}</code>
+                <code>GET <?= base_url() ?>v1/audios/availability/{user_id}/{type}/{track_type}/{audio_id}?value={title name}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
                     <li>type = 'title'</li>
+                    <li>track_type</li>
                     <li>audio_id (optional)</li>
                     <li>value</li>
                 </ul>

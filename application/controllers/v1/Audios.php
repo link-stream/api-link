@@ -672,29 +672,32 @@ class Audios extends RestController {
     }
 
     //params: type = title
-    public function availability_get($user_id = null, $type = null, $audio_id = null) {
+    public function availability_get($user_id = null, $type = null, $track_type = null, $audio_id = null) {
         $value = (!empty($this->input->get('value'))) ? $this->input->get('value') : 0;
-        if (empty($type)) {
-            $this->error = 'Type is Required';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        } elseif (empty($value)) {
-            $this->error = 'Value is Required';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        } elseif (empty($user_id)) {
+        if (empty($user_id)) {
             $this->error = 'User ID is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } elseif (empty($type)) {
+            $this->error = 'Type is Required';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } elseif ($type != 'title') {
             $this->error = 'Type ' . $type . ' is now allowed, only title is allowed as type';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } elseif (empty($track_type) || ($track_type != '1' && $track_type != '2' && $track_type != '3')) {
+            $this->error = 'Track Type is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } elseif (empty($value)) {
+            $this->error = 'Value is Required';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } else {
             if (!$this->general_library->header_token($user_id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
-            $audio = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id, 'title' => $value, 'excluded_id' => $audio_id], 0, 0);
+            $audio = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id, 'title' => $value, 'excluded_id' => $audio_id, 'track_type' => $track_type], 0, 0);
             if (empty($audio)) {
                 $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
             } else {
-                $this->error = ucfirst($type) . ': ' . $value . ' is not available';
+                $this->error = ucfirst($type) . ': ' . $value . ' is not available on Track Type: ' . $track_type;
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         }
