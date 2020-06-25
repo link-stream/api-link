@@ -768,4 +768,56 @@ class Audios extends RestController {
 //        return $file_name;
     }
 
+    public function sound_kit_file_get($id = null, $audio_id = null, $title) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $audio = $this->Audio_model->fetch_audio_by_id_user($audio_id, $id);
+            $response = [];
+            if (empty($audio)) {
+                $this->error = 'Audio Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                if (!empty($audio['track_stems'])) {
+                    $path = $this->s3_path . $this->s3_audio;
+                    $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+                    if (!empty($data_file)) {
+//                        $img_file = $audio['track_stems'];
+                        file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+                        //$src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+                        //$audio['data_track_stems'] = $src;
+                        //Audio List.
+                        $zip = new ZipArchive;
+                        //$res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
+                        if ($zip->open($this->temp_dir . '/' . $audio['track_stems']) === TRUE) {
+                            $beat_file = $zip->getFromName($title);
+                            $zip->close();
+                            if (!empty($beat_file)) {
+                                file_put_contents($this->temp_dir . '/' . $title, $beat_file);
+                                $src = 'data:' . mime_content_type($this->temp_dir . '/' . $title) . ';base64,' . base64_encode($beat_file);
+                                $response['audio'] = $src;
+                            } else {
+                                $this->error = 'Title Not Found.';
+                                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                            }
+                        }
+                        unlink($this->temp_dir . '/' . $audio['track_stems']);
+                        unlink($this->temp_dir . '/' . $title);
+                    } else {
+                        $this->error = 'Track_Stems Not Found.';
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $this->error = 'Track_Stems Not Found.';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
