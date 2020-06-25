@@ -245,12 +245,13 @@ class Audios extends RestController {
         //$audio['licenses'] = '';
         //$audio['collaborators'] = '';
         //$audio['marketing'] = '';
+        $audio['kit_files_name'] = [];
         $audio['data_image'] = '';
         //$audio['data_untagged_mp3'] = '';
         //$audio['data_untagged_wav'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
-        $audio['kit_files_name'] = [];
+        
         //$audio['samples'] = 0;
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
