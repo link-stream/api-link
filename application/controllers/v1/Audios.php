@@ -250,6 +250,8 @@ class Audios extends RestController {
         //$audio['data_untagged_wav'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
+        $audio['kit_files_name'] = [];
+        $audio['kit_samples'] = 0;
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -317,6 +319,21 @@ class Audios extends RestController {
                     file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
                     $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
                     $audio['data_track_stems'] = $src;
+
+                    //Audio List.
+                    $zip = new ZipArchive;
+                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
+                    if ($res === TRUE) {
+                        for ($i = 0; $i < $zip->numFiles; $i++) {
+                            $filename = $zip->getNameIndex($i);
+                            $pos = strpos($filename, 'MACOSX/.');
+                            if ($pos === false) {
+                                $audio['kit_files_name'][] = $filename;
+                            }
+                        }
+                    }
+                    $audio['kit_samples'] = count($audio['kit_files_name']);
+                    //
                     unlink($this->temp_dir . '/' . $audio['track_stems']);
                 }
             }
@@ -701,6 +718,54 @@ class Audios extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         }
+    }
+
+    public function unzip_post() {
+        $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!$this->general_library->header_token($audio['user_id'])) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
+        if (!empty($this->input->post('track_stems'))) {
+            $track_stems = $this->input->post("track_stems");
+            $audio['track_stems'] = $this->unzip_temp($track_stems);
+        } else {
+            $this->error = 'Provide track_stems file';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function unzip_temp($file) {
+        preg_match("/^data:file\/(.*);base64/i", $file, $match);
+        $ext = (!empty($match[1])) ? $match[1] : 'zip';
+        $rand_name = md5(uniqid(rand(), true));
+        $file_name = $rand_name . '.' . $ext;
+        //upload image to server 
+        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+        print_r($this->temp_dir . '/' . $file_name);
+        ## Extract the zip file ---- start
+        $zip = new ZipArchive;
+        $res = $zip->open($this->temp_dir . '/' . $file_name);
+        if ($res === TRUE) {
+            // Unzip path
+            //$extractpath = $this->temp_dir . '/' . "files/";
+            $extractpath = $this->temp_dir . '/' . $rand_name . '/';
+            // Extract file
+            $zip->extractTo($extractpath);
+            $zip->close();
+
+//            $this->session->set_flashdata('msg', 'Upload & Extract successfully.');
+            return true;
+        } else {
+//            $this->session->set_flashdata('msg', 'Failed to extract.');
+            return false;
+        }
+
+
+
+
+        //SAVE S3
+//        $this->s3_push($file_name, $this->s3_audio);
+//        return $file_name;
     }
 
 }
