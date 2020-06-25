@@ -251,7 +251,7 @@ class Audios extends RestController {
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
         $audio['kit_files_name'] = [];
-        $audio['kit_samples'] = 0;
+        //$audio['samples'] = 0;
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -332,7 +332,8 @@ class Audios extends RestController {
                             }
                         }
                     }
-                    $audio['kit_samples'] = count($audio['kit_files_name']);
+                    $audio['samples'] = count($audio['kit_files_name']);
+                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
                     //
                     unlink($this->temp_dir . '/' . $audio['track_stems']);
                 }
