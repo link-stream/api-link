@@ -116,8 +116,15 @@ class Streamy_model extends CI_Model {
     }
 
     public function insert_early_access($data) {
-        $this->db->insert('st_early_access', $data);
-        return $this->db->insert_id();
+        $this->db->from('st_early_access');
+        $this->db->where('email', $data['email']);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        if (empty($result)) {
+            $this->db->insert('st_early_access', $data);
+            //return $this->db->insert_id();
+        }
     }
 
     public function fetch_types() {

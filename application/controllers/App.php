@@ -1692,7 +1692,7 @@ class App extends CI_Controller {
         }
         if (!empty($phone)) {
             $this->load->library('Aws_pinpoint');
-            $this->aws_pinpoint->send($phone, "Welcome! Let's bring social media and streaming music together in 2020. Thanks for registering, we are giving free Pro accounts to all early birds ;) Stay tuned in, we will notify you as soon as you can start your stream! Reply “STOP” to cancel this reminder.");
+            $this->aws_pinpoint->send($phone, "Welcome! Let's bring social media and streaming music together in 2020. Thanks for registering. Stay tuned in, we will notify you as soon as you can start your stream! Reply “STOP” to cancel this reminder.");
         }
         $this->Streamy_model->insert_early_access(array('email' => $email, 'phone' => $phone));
         echo json_encode(array('status' => 'Success'));
@@ -1700,7 +1700,7 @@ class App extends CI_Controller {
 
     public function email_coming_soon() {
         $data = array();
-        $this->load->view('email/email_coming_soon', $data);
+        $this->load->view('app/email/email-coming-soon', $data);
     }
 
     public function email_register() {
@@ -2097,7 +2097,7 @@ class App extends CI_Controller {
         exec($cmd, $output);
         echo "<pre>";
         print_r($output);
-        echo "</pre>";//exit;
+        echo "</pre>"; //exit;
         $title = $output[0];
         $id = $output[1];
         $thumbnail_url = $output[2];
@@ -2122,8 +2122,8 @@ class App extends CI_Controller {
         echo 'Audio: ' . $final_filename;
         echo '<br>';
     }
-    
-     public function bs() {
+
+    public function bs() {
 //      $cmd = '/usr/local/Cellar/youtube-dl/2020.03.01/bin/youtube-dl -o "/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/%(id)s.%(ext)s" --extract-audio --audio-format mp3 "https://www.youtube.com/watch?v=BFaRWXEpFrs"'; 
         //exec($cmd . " 2>&1", $output);
 
@@ -2135,7 +2135,8 @@ class App extends CI_Controller {
         exec($cmd, $output);
         echo "<pre>";
         print_r($output);
-        echo "</pre>";exit;
+        echo "</pre>";
+        exit;
         $title = $output[0];
         $id = $output[1];
         $thumbnail_url = $output[2];
@@ -2527,6 +2528,119 @@ class App extends CI_Controller {
         print_r($response);
         echo '</pre>';
         echo '<br>';
+    }
+
+    public function zip_info() {
+        $zip_name = '94303c1d12cafd95fcd1a8ce45572d91.zip';
+        $temp_dir = $this->general_library->get_temp_dir();
+        $zip_file = $temp_dir . '/' . $zip_name;
+        echo $zip_file;
+        echo '<br>';
+        $zip = new ZipArchive;
+        $res = $zip->open($zip_file);
+//        if ($res === TRUE) {
+//            print_r($zip->statName('file_example_MP3_2MG.mp3'));
+//            $zip->close();
+//        } else {
+//            echo 'falló, código:' . $res;
+//        }
+//        //
+//        if ($zip->open($zip_file) == TRUE) {
+//            for ($i = 0; $i < $zip->numFiles; $i++) {
+//                $filename = $zip->getNameIndex($i);
+//                echo $filename;
+//                echo '<br>';
+//            }
+//        }
+        if ($res === TRUE) {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                $mystring = 'abc';
+                $findme = 'a';
+                $pos = strpos($filename, 'MACOSX/.');
+                if ($pos === false) {
+                    echo $filename;
+                    echo '<br>';
+                }
+//                else {
+//                    echo "La cadena '$findme' fue encontrada en la cadena '$mystring'";
+//                    echo " y existe en la posición $pos";
+//                }
+//                echo $filename;
+//                echo '<br>';
+            }
+        } else {
+            echo 'falló, código:' . $res;
+        }
+    }
+
+    public function unzip_temp() {
+        $zip_file = '94303c1d12cafd95fcd1a8ce45572d91.zip';
+        $folder = '94303c1d12cafd95fcd1a8ce45572d91';
+//        preg_match("/^data:file\/(.*);base64/i", $file, $match);
+//        $ext = (!empty($match[1])) ? $match[1] : 'zip';
+//        $rand_name = md5(uniqid(rand(), true));
+//        $file_name = $rand_name . '.' . $ext;
+        //upload image to server 
+//        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+//        print_r($this->temp_dir . '/' . $file_name);
+        ## Extract the zip file ---- start
+        $temp_dir = $this->general_library->get_temp_dir();
+        $zip = new ZipArchive;
+        $res = $zip->open($temp_dir . '/' . $zip_file);
+        if ($res === TRUE) {
+            // Unzip path
+            //$extractpath = $this->temp_dir . '/' . "files/";
+            $extractpath = $temp_dir . '/' . $folder . '/';
+            // Extract file
+            $zip->extractTo($extractpath);
+            $zip->close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function zip_file() {
+        $temp_dir = $this->general_library->get_temp_dir();
+        $zip_name = '94303c1d12cafd95fcd1a8ce45572d91.zip';
+        $zip_file = $temp_dir . '/' . $zip_name;
+        $zip = new ZipArchive;
+        if ($zip->open($zip_file) === TRUE) {
+            $data_file = $zip->getFromName('file_example_MP3_2MG.mp3');
+            $zip->close();
+            file_put_contents($temp_dir . '/' . 'file_example_MP3_2MG.mp3', $data_file);
+//            $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+//            $audio['data_image'] = $src;
+        } else {
+            echo 'falló';
+        }
+    }
+
+    public function zip_info_2() {
+        $zip_name = '94303c1d12cafd95fcd1a8ce45572d91.zip';
+        $path = (ENV == 'live') ? 'Prod/Audio/' : 'Dev/Audio/';
+        $zip_file = 'https://s3.us-east-2.amazonaws.com/files.link.stream/' . $path . $zip_name;
+//        $temp_dir = $this->general_library->get_temp_dir();
+//        $zip_file = $temp_dir . '/' . $zip_name;
+        echo $zip_file;
+        echo '<br>';
+        $zip = new ZipArchive;
+        $res = $zip->open($zip_file);
+        if ($res === TRUE) {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                $mystring = 'abc';
+                $findme = 'a';
+                $pos = strpos($filename, 'MACOSX/.');
+                if ($pos === false) {
+                    echo $filename;
+                    echo '<br>';
+                }
+            }
+        } else {
+            echo 'falló, código:' . $res;
+        }
     }
 
 }

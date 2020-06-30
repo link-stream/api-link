@@ -1667,6 +1667,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 
+                <hr>
+                <h3>Early Access:</h3>
+                <code>POST <?= base_url() ?>v1/landing/early_access</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>email</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>
