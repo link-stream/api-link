@@ -135,13 +135,13 @@
                         </div>            
                     </div>
                     <div align="center" class="sub-title">
-                        <h2>Making Your Streams Come True</h2>
+                        <h2>Making Your Stream Big!</h2>
                         <p class="content">LinkStream is going to bring social media and music together in 2020. Thanks for registering, we are giving free Pro accounts to all early birds ;). Stay tuned in, we will notify you as soon as you can start your stream!</p>
                         <!--<button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Call to Action</span></button></a>-->
                         <div class="line"></div>
                         <div class="instagram">
                             <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
-                            <a href="https://www.instagram.com/_linkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
+                            <a href="https://www.instagram.com/lnkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
                         </div>
                         <div align="center" class="all-rights" style="margin-top: 18px">©2020 LinkStream LLC. All Rights Reserved.</div>
                         <!--<div align="center" class="all-rights">You are receiving this email because you opted in via our website. You can&nbsp; <a href="#">update your preferences</a> &nbsp;or <a href="#">unsubscribe</a> from this list.</div>-->
