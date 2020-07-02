@@ -104,7 +104,7 @@
             }
             .instagram-txt {
                 height: 26px;	
-                width: 195px;	
+                width: 205px;	
                 color: #333333;	
                 font-family: "Source Sans Pro";	
                 font-size: 16px;	
@@ -112,6 +112,7 @@
                 line-height: 26px;
                 display:inline-block;
                 vertical-align:middle;
+                text-align: left;
             }
             .all-rights {
                 height: 50px;	
