@@ -153,7 +153,7 @@
                         <!--<button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Call to Action</span></button></a>-->
                         <div class="line"></div>
                         <div class="instagram">
-                            <img class="icon-instagram" src="https://img.icons8.com/metro/26/000000/instagram-new.png">
+                            <img class="icon-instagram" src="<?= base_url() ?>/assets/images/icons/icon-instagram.jpg">
                             <a href="https://www.instagram.com/lnkstream/" target="_blank"><span class="instagram-txt">Join the fam on Instagram!</span></a>
                         </div>
                         <div align="center" class="all-rights" style="margin-top: 18px">©2020 LinkStream LLC. All Rights Reserved.</div>
