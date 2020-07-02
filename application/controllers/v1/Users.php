@@ -334,7 +334,7 @@ class Users extends RestController {
         $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
         $url = $base . '/email-confirm/' . $email_e . '/' . $id_e;
         $body = $this->load->view('app/email/email-confirm', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
-        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
+        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@linkstream.com', "Register on LinkStream", $body);
     }
 
     public function email_confirm_post() {
@@ -560,7 +560,7 @@ class Users extends RestController {
         //$url = $base . '/reset-password/' . $email_e . '/' . $id_e . '/' . $date_e;
         $url = $base . '/reset-password/' . $email_e . '/' . $id_e;
         $body = $this->load->view('app/email/email-password-reset', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
-        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@link.stream', "Register on LinkStream", $body);
+        $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@linkstream.com', "Register on LinkStream", $body);
     }
 
     //https://dev-link-vue.link.stream/reset-password/cGF1bEBsaW5rLnN0cmVhbQ../MzU.
