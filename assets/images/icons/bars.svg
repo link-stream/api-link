@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 61.2 (101010) - https://sketch.com -->
+    <title>D3E7A9B7-BBF6-46FF-A081-2B9400AF2308</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <path d="M1.875,5.15625 L18.125,5.15625 C18.4701953,5.15625 18.75,4.87644531 18.75,4.53125 L18.75,2.96875 C18.75,2.62355469 18.4701953,2.34375 18.125,2.34375 L1.875,2.34375 C1.52980469,2.34375 1.25,2.62355469 1.25,2.96875 L1.25,4.53125 C1.25,4.87644531 1.52980469,5.15625 1.875,5.15625 Z M1.875,11.40625 L18.125,11.40625 C18.4701953,11.40625 18.75,11.1264453 18.75,10.78125 L18.75,9.21875 C18.75,8.87355469 18.4701953,8.59375 18.125,8.59375 L1.875,8.59375 C1.52980469,8.59375 1.25,8.87355469 1.25,9.21875 L1.25,10.78125 C1.25,11.1264453 1.52980469,11.40625 1.875,11.40625 Z M1.875,17.65625 L18.125,17.65625 C18.4701953,17.65625 18.75,17.3764453 18.75,17.03125 L18.75,15.46875 C18.75,15.1235547 18.4701953,14.84375 18.125,14.84375 L1.875,14.84375 C1.52980469,14.84375 1.25,15.1235547 1.25,15.46875 L1.25,17.03125 C1.25,17.3764453 1.52980469,17.65625 1.875,17.65625 Z" id="path-1"></path>
+    </defs>
+    <g id="Asset-Artboard-Page" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="bars-Solid/bars">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="Mask" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+            <g id="Color-Color/Purple" mask="url(#mask-2)" fill="#FFFFFF">
+                <rect id="Purple" x="0" y="0" width="20" height="20"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
