@@ -97,14 +97,14 @@
                 margin-top: 23px;
             }
             .icon-instagram {
-                height: 25.71px;	
+                height: 24px;	
                 width: 24px;
                 display:inline-block;
                 vertical-align:middle;
             }
             .instagram-txt {
                 height: 26px;	
-                width: 210px;	
+                width: 195px;	
                 color: #333333;	
                 font-family: "Source Sans Pro";	
                 font-size: 16px;	
@@ -142,7 +142,7 @@
                             LinkStream is not just another marketplace. It is a platform built by tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers. We brought together the best-of-the-best to build a platform that will help sound engineers, music producers and recording artists to create, grow and manage their businesses online.
                         </p>-->
                         <p class="content">
-                            <b><i>What is LinkStream?</i></b> Well, it's not just another online marketplace. It is a sales and marketing platform built by tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers.
+                            <b><i>What is LinkStream?</b> Well, it's not just another online marketplace. It is a sales and marketing platform built by tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers.
                         </p>
                         <p class="content">
                             LinkStream is loaded with tools and features to help music producers and sound engineers create, grow and manage their businesses online.
