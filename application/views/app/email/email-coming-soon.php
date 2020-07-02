@@ -58,13 +58,13 @@
                 margin-top: 40px;
             }            
             .content {
-                height: 112px;	
+                __height: 112px;	
                 width: 486px;	
                 color: #333333;	
                 font-family: Montserrat;	
                 font-size: 16px;	
                 line-height: 26px;	
-                text-align: center;
+                text-align: justify;
                 margin-top: 15px;
             }
             .btn-call {
@@ -136,9 +136,9 @@
                     </div>
                     <div align="center" class="sub-title">
                         <h2>Congratulations, You're In!</h2>
-                        <p class="content">If you're reading this, that's a good sign. It means you're going to receive our email notification that lets you be one of the first people to access the LinkStream platform.<br>LinkStream is a not just a beat marketplace. It is a platform built by real tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers. We brought together the best of the best to build a platform that will help audio engineers, music producers and recording artists create, grow and manage their instrumental and audio businesses online.</p>
+                        <p class="content">If you're reading this, that's a good sign. It means you're going to receive our email notification that lets you be one of the first people to access the LinkStream platform.</p>
+                        <p class="content">LinkStream is a not just a beat marketplace. It is a platform built by real tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers. We brought together the best of the best to build a platform that will help audio engineers, music producers and recording artists create, grow and manage their instrumental and audio businesses online.</p>
                         <p class="content"></p>
-                        <!--<p class="content"></p>-->
                         <!--<button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Call to Action</span></button></a>-->
                         <div class="line"></div>
                         <div class="instagram">
