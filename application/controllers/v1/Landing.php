@@ -49,7 +49,7 @@ class Landing extends RestController {
             $this->Streamy_model->insert_early_access(['email' => $email, 'phone' => '']);
             $data = [];
             $body = $this->load->view('app/email/email-coming-soon', $data, true);
-            $this->general_library->send_ses($email, $email, 'Streamy', 'noreply@linkstream.com', "You're In! Free Early Access Confirmed", $body);
+            $this->general_library->send_ses($email, $email, 'LinkStream', 'noreply@linkstream.com', "You're In! Free Early Access Confirmed", $body);
 
             $this->response(['status' => 'success', 'env' => ENV], RestController::HTTP_OK);
         } else {
