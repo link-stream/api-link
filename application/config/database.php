@@ -78,38 +78,53 @@ $query_builder = TRUE;
 //print_r($chk);echo '<br>';
 //print_r($chk[0]);echo '<br>';
 if (ENV == "dev") {
-    if (!defined('DB_HOST'))
+    if (!defined('DB_HOST')) {
         define('DB_HOST', 'db01.link.stream');
-    if (!defined('DB_USER'))
+    }
+    if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
-    if (!defined('DB_PASS'))
+    }
+    if (!defined('DB_PASS')) {
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
-    if (!defined('DB_TABLE'))
+    }
+    if (!defined('DB_TABLE')) {
         define('DB_TABLE', 'linkstream_dev');
-    if (!defined('DB_DEBUG'))
+    }
+    if (!defined('DB_DEBUG')) {
         define('DB_DEBUG', TRUE);
+    }
 } elseif (ENV == "staging") {
-    if (!defined('DB_HOST'))
+    if (!defined('DB_HOST')) {
         define('DB_HOST', 'db01.link.stream');
-    if (!defined('DB_USER'))
+    }
+    if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
-    if (!defined('DB_PASS'))
+    }
+    if (!defined('DB_PASS')) {
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
-    if (!defined('DB_TABLE'))
+    }
+    if (!defined('DB_TABLE')) {
         define('DB_TABLE', 'linkstream_dev');
-    if (!defined('DB_DEBUG'))
+    }
+    if (!defined('DB_DEBUG')) {
         define('DB_DEBUG', TRUE);
+    }
 } else {
-    if (!defined('DB_HOST'))
+    if (!defined('DB_HOST')) {
         define('DB_HOST', 'db01.link.stream');
-    if (!defined('DB_USER'))
+    }
+    if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
-    if (!defined('DB_PASS'))
+    }
+    if (!defined('DB_PASS')) {
         define('DB_PASS', 'e1e71bb468c3648954812eea911a0b25aba58a40');
-    if (!defined('DB_TABLE'))
-        define('DB_TABLE', 'linkstream_dev');
-    if (!defined('DB_DEBUG'))
+    }
+    if (!defined('DB_TABLE')) {
+        define('DB_TABLE', 'linkstream');
+    }
+    if (!defined('DB_DEBUG')) {
         define('DB_DEBUG', FALSE);
+    }
 }
 
 $db['default'] = array(
