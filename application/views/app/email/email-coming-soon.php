@@ -138,10 +138,18 @@
                         <h2>Congratulations, You're In!</h2>
                         <p class="content">
                             If you're reading this, that's a good sign. It means you're going to receive an email notification that gives you early access to the LinkStream platform.</p>
-                        <p class="content">
+<!--                        <p class="content">
                             LinkStream is not just another marketplace. It is a platform built by tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers. We brought together the best-of-the-best to build a platform that will help sound engineers, music producers and recording artists to create, grow and manage their businesses online.
+                        </p>-->
+                        <p class="content">
+                            What is LinkStream? Well, it's not just another online marketplace. It is a sales and marketing platform built by tech entrepreneurs, online marketing experts, top-tier designers and brilliant web developers.
                         </p>
-                        <p class="content"></p>
+                        <p class="content">
+                            LinkStream is loaded with tools and features to help music producers and sound engineers create, grow and manage their businesses online.
+                        </p>
+                        <p class="content">
+
+                        </p>
                         <!--<button class="btn-call"><a href="<?= (!empty($url)) ? $url : 'https://www.link.stream/' ?>" target="_blank" style="text-decoration: none;"><span class="btn-text">Call to Action</span></button></a>-->
                         <div class="line"></div>
                         <div class="instagram">
