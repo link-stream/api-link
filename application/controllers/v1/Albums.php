@@ -321,8 +321,10 @@ class Albums extends RestController {
             $id = $this->Album_model->insert_album($audio);
             if (!empty($beat_list)) {
                 //$beat_packs = ['1','2'];
+                $i = 1;
                 foreach ($beat_list as $beat) {
-                    $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat]);
+                    $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat, 'sort' => $i]);
+                    $i++;
                 }
             }
             //REPONSE
@@ -393,8 +395,10 @@ class Albums extends RestController {
                 $beat_list = (!empty($this->put('beats'))) ? json_decode($this->put('beats'), TRUE) : '';
                 if (!empty($beat_list)) {
                     $this->Album_model->delete_album_audio_by_album($id);
+                    $i = 1;
                     foreach ($beat_list as $beat) {
-                        $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat]);
+                        $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat, 'sort' => $i]);
+                        $i++;
                     }
                 }
 

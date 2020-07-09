@@ -303,6 +303,7 @@ class Album_model extends CI_Model {
         $this->db->select('id_audio');
         $this->db->from('st_album_audio');
         $this->db->where('id_album', $id_album);
+        $this->db->order_by('sort');
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
