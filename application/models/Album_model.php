@@ -18,18 +18,28 @@ class Album_model extends CI_Model {
         parent::__construct();
     }
 
-    public function insert_streamy($data) {
-        $this->db->insert('st_audio', $data);
+    public function insert_album($data) {
+        $this->db->insert('st_album', $data);
         return $this->db->insert_id();
     }
 
-    public function update_streamy($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('st_audio', $data);
+    public function fetch_max_album_sort($user_id) {
+        $this->db->select('MAX(sort) as Max');
+        $this->db->from('st_album');
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        $row = $query->row();
+        $query->free_result();
+        return $row->Max;
     }
 
-    public function fetch_streamy_by_id($id) {
-        $this->db->from('st_audio');
+    public function update_album($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_album', $data);
+    }
+
+    public function fetch_album_by_id($id) {
+        $this->db->from('st_album');
         $this->db->where('id', $id);
         $query = $this->db->get();
         $result = $query->row_array();
@@ -173,8 +183,8 @@ class Album_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_streamys_by_user_id($user_id, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
-        $this->db->from('st_audio');
+    public function fetch_albums_by_user_id($user_id, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
+        $this->db->from('st_album');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
             $this->db->where('status_id <> ', '3');
@@ -274,10 +284,25 @@ class Album_model extends CI_Model {
         $this->db->delete('st_album_audio');
     }
 
+    public function delete_album_audio_by_album($id) {
+        $this->db->where('id_album', $id);
+        $this->db->delete('st_album_audio');
+    }
+
     public function fetch_album_audio_by_id($id) {
         $this->db->select('id_album');
         $this->db->from('st_album_audio');
         $this->db->where('id_audio', $id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_album_audio_by_album_id($id_album) {
+        $this->db->select('id_audio');
+        $this->db->from('st_album_audio');
+        $this->db->where('id_album', $id_album);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();

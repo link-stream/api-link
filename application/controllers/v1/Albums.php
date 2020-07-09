@@ -56,16 +56,17 @@ class Albums extends RestController {
     }
 
 //
-//    private function image_decode_put($image) {
-//        preg_match("/^data:image\/(.*);base64/i", $image, $match);
-//        $ext = (!empty($match[1])) ? $match[1] : '.png';
-//        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
-//        //upload image to server 
-//        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
-//        //SAVE S3
-//        $this->s3_push($image_name, $this->s3_coverart);
-//        return $image_name;
-//    }
+    private function image_decode_put($image) {
+        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+        $ext = (!empty($match[1])) ? $match[1] : '.png';
+        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+        //upload image to server 
+        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //SAVE S3
+        $this->s3_push($image_name, $this->s3_coverart);
+        return $image_name;
+    }
+
 //
 //    private function audio_decode_put($file) {
 //        preg_match("/^data:image\/(.*);base64/i", $file, $match);
@@ -142,6 +143,326 @@ class Albums extends RestController {
 //            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
 //        }
 //    }
+//    
+//    
+
+    public function index_get($id = null, $audio_id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            //$limit = 0;
+            //$offset = 0;
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+                $limit = $page_size;
+                $streamys = $this->Album_model->fetch_albums_by_user_id($id, $audio_id, false, $limit, $offset);
+                $audios = [];
+                foreach ($streamys as $streamy) {
+                    $audios[] = $this->album_clean($streamy, $audio_id);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function album_clean($audio, $audio_id = null, $images = true) {
+
+        $audio['scheduled'] = true;
+        if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
+            $audio['scheduled'] = false;
+        }
+        $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
+        $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
+        $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
+        $audio['license_id'] = !empty($audio['license_id']) ? $audio['license_id'] : '';
+        $audio['data_image'] = '';
+
+
+//        $audio['url_user'] = '';
+//        $audio['url_title'] = '';
+        $audio['beats'] = '';
+//        $audio['licenses'] = '';
+//        $audio['collaborators'] = '';
+//        $audio['marketing'] = '';
+//        $audio['data_image'] = '';
+//        $audio['data_untagged_mp3'] = '';
+//        $audio['data_untagged_wav'] = '';
+//        $audio['data_track_stems'] = '';
+//        $audio['data_tagged_file'] = '';
+        //Coverart
+        $path = $this->s3_path . $this->s3_coverart;
+        if ($images) {
+            if (!empty($audio['coverart'])) {
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+                if (!empty($data_image)) {
+                    $img_file = $audio['coverart'];
+                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+                    $audio['data_image'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['coverart']);
+                }
+            }
+        }
+//        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
+        if (!empty($audio_id)) {
+            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
+//            $audio['url_user'] = $user['url'];
+//            $audio['url_title'] = url_title($audio['title']);
+            $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio_id);
+//            $audio['collaborators'] = [];
+//            $path = $this->s3_path . $this->s3_folder;
+//            $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
+//            foreach ($collaborators as $collaborator) {
+//                $collaborator['data_image'] = '';
+//                if (!empty($collaborator['image'])) {
+//                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
+//                    if (!empty($data_image)) {
+//                        $img_file = $collaborator['image'];
+//                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
+//                        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+//                        $collaborator['data_image'] = $src;
+//                        unlink($this->temp_dir . '/' . $collaborator['image']);
+//                    }
+//                }
+//                $audio['collaborators'][] = $collaborator;
+//            }
+//            $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
+//            $path = $this->s3_path . $this->s3_audio;
+//            if (!empty($audio['untagged_mp3'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['untagged_mp3'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_untagged_mp3'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
+//                }
+//            }
+//            if (!empty($audio['untagged_wav'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['untagged_wav'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_untagged_wav'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
+//                }
+//            }
+//            if (!empty($audio['track_stems'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['track_stems'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_track_stems'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
+//                }
+//            }
+//            if (!empty($audio['tagged_file'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['tagged_file'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_tagged_file'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
+//                }
+//            }
+        }
+//        unset($audio['publish_at']);
+//        unset($audio['price']);
+//        unset($audio['samples']);
+//        unset($audio['description']);
+        return $audio;
+    }
+
+    public function index_post() {
+        $audio = array();
+        $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $audio['status_id'] = '1';
+        $audio['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
+        if ((!empty($audio['user_id']) || !empty($audio['title']))) {
+            if (!$this->general_library->header_token($audio['user_id'])) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            if (!empty($this->input->post('image'))) {
+                $image = $this->input->post("image");
+                $audio['coverart'] = $this->image_decode_put($image);
+            }
+            $audio['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '1';
+            $scheduled = (!empty($this->input->post('scheduled'))) ? true : false;
+            if ($scheduled) {
+                $date = (!empty($this->input->post('date'))) ? substr($this->input->post('date'), 0, 10) : '0000-00-00';
+                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '00:00:00';
+                $audio['publish_at'] = $date . ' ' . $time;
+            } else {
+                $date = '0000-00-00';
+                $time = '00:00:00';
+                $audio['publish_at'] = $date . ' ' . $time;
+            }
+            $audio['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
+            $audio['track_type'] = '2';
+            $audio['price'] = (!empty($this->input->post('price'))) ? $this->input->post('price') : 0.00;
+            $audio['license_id'] = (!empty($this->input->post('license_id'))) ? $this->input->post('license_id') : '';
+            $audio['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
+            $audio['sort'] = $this->get_last_album_sort($audio['user_id']);
+            $audio['description'] = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
+            //List
+            $beat_list = (!empty($this->input->post('beats'))) ? json_decode($this->input->post('beats'), TRUE) : '';
+            $id = $this->Album_model->insert_album($audio);
+            if (!empty($beat_list)) {
+                //$beat_packs = ['1','2'];
+                foreach ($beat_list as $beat) {
+                    $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat]);
+                }
+            }
+            //REPONSE
+            $audio_response = $this->Album_model->fetch_album_by_id($id);
+            $audio_response = $this->album_clean($audio_response);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The album has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide complete album info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function index_put($id = null) {
+        if (!empty($id)) {
+            $audio = $this->Album_model->fetch_album_by_id($id);
+            if (!empty($audio)) {
+                if (!$this->general_library->header_token($audio['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if (!empty($this->put('title'))) {
+                    $audio['title'] = $this->put('title');
+                }
+                if (!empty($this->put('genre_id'))) {
+                    $audio['genre_id'] = $this->put('genre_id');
+                }
+                if (!empty($this->put('tags'))) {
+                    $audio['tags'] = $this->put('tags');
+                }
+//                if (!empty($this->put('bpm'))) {
+//                    $audio['bpm'] = $this->put('bpm');
+//                }
+//                if (!empty($this->put('key_id'))) {
+//                    $audio['key_id'] = $this->put('key_id');
+//                }
+                if ($this->put('price') !== null) {
+                    $audio['price'] = $this->put('price');
+                }
+                if ($this->put('license_id') !== null) {
+                    $audio['license_id'] = $this->put('license_id');
+                }
+                if ($this->put('description') !== null) {
+                    $audio['description'] = $this->put('description');
+                }
+                if (!empty($this->put('public'))) {
+                    $audio['public'] = $this->put('public');
+                }
+                if ($this->put('scheduled') !== null) {
+                    $scheduled = (!empty($this->put('scheduled'))) ? true : false;
+                    if ($scheduled) {
+                        $date = (!empty($this->put('date'))) ? substr($this->put('date'), 0, 10) : '0000-00-00';
+                        $time = (!empty($this->put('time'))) ? $this->put('time') : '00:00:00';
+                        $audio['publish_at'] = $date . ' ' . $time;
+                    } else {
+                        $date = '0000-00-00';
+                        $time = '00:00:00';
+                        $audio['publish_at'] = $date . ' ' . $time;
+                    }
+                }
+                if ($this->put('image') !== null) {
+                    if (!empty($this->put('image'))) {
+                        $image = $this->put("image");
+                        $audio['coverart'] = $this->image_decode_put($image);
+                    } else {
+                        $audio['coverart'] = '';
+                    }
+                }
+                //List
+                $beat_list = (!empty($this->put('beats'))) ? json_decode($this->put('beats'), TRUE) : '';
+                if (!empty($beat_list)) {
+                    $this->Album_model->delete_album_audio_by_album($id);
+                    foreach ($beat_list as $beat) {
+                        $this->Album_model->insert_album_audio(['id_album' => $id, 'id_audio' => $beat]);
+                    }
+                }
+
+                //
+                $this->Album_model->update_album($id, $audio);
+                $audio['date'] = $date;
+                $audio['time'] = $time;
+                $audio['scheduled'] = $scheduled;
+                $audio['public'] = ($audio['public'] == '3') ? '1' : $audio['public'];
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album info has been updated successfully.', 'data' => $audio), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Album Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Album ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function get_last_album_sort($user_id) {
+        $max = $this->Album_model->fetch_max_album_sort($user_id);
+        $sort = (empty($max)) ? '1' : ($max + 1);
+        return $sort;
+    }
+
+    public function sort_albums_post() {
+        $id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!$this->general_library->header_token($id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        if (!empty($list)) {
+            $videos = json_decode($list, true);
+            foreach ($videos as $video) {
+                $id = $video['id'];
+                $sort = $video['sort'];
+                $this->Album_model->update_album($id, array('sort' => $sort));
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the albums has been updated correctly'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide list of albums.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function index_delete($id = null) {
+        if (!empty($id)) {
+            $audio = $this->Album_model->fetch_album_by_id($id);
+            if (!empty($audio)) {
+                if (!$this->general_library->header_token($audio['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $this->Album_model->update_album($id, ['status_id' => '3']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album has been deleted successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Album Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Album ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+//    
+//    
+//    
 //    public function index_post() {
 //        $email = strip_tags($this->input->post('email'));
 //        $user_name = strip_tags($this->input->post('user_name'));

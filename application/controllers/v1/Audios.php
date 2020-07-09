@@ -251,7 +251,7 @@ class Audios extends RestController {
         //$audio['data_untagged_wav'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
-        
+
         //$audio['samples'] = 0;
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
@@ -456,8 +456,8 @@ class Audios extends RestController {
             $id = $this->Audio_model->insert_audio($audio);
             if (!empty($beat_packs)) {
                 //$beat_packs = ['1','2'];
-                foreach ($beat_packs as $beat_packs) {
-                    $this->Album_model->insert_album_audio(['id_album' => $beat_packs, 'id_audio' => $id]);
+                foreach ($beat_packs as $beat_pack) {
+                    $this->Album_model->insert_album_audio(['id_album' => $beat_pack, 'id_audio' => $id]);
                 }
             }
             if (!empty($collaborators)) {

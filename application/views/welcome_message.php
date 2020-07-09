@@ -1642,7 +1642,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                 <hr>
-                <h3>Name:</h3>
+                <h3>Get Sound Kit File:</h3>
                 <code>GET <?= base_url() ?>v1/audios/sound_kit_file/{user_id}/{audio_id}/{file_name}</code>
                 <h3>Parameters:</h3>
                 <ul>
@@ -1681,6 +1681,207 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Get Albums by User:</h3>
+                <code>GET <?= base_url() ?>v1/albums/{user_id}/{album_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>album_id (optional)</li>
+                    <li>?page={page}&page_size={page_size}</li>
+
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "4",
+            "created_at": "2020-07-09 01:31:20",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Album Title",
+            "coverart": null,
+            "public": "1",
+            "publish_at": "2020-07-10 10:00:00",
+            "genre_id": "1",
+            "track_type": "2",
+            "price": "10.00",
+            "license_id": "2",
+            "tags": "beat, linkstream, audio",
+            "sort": "3",
+            "description": "Album Description",
+            "scheduled": true,
+            "date": "2020-07-10",
+            "time": "10:00:00",
+            "data_image": "",
+            "beats": [
+                {
+                    "id_audio": "1"
+                },
+                {
+                    "id_audio": "2"
+                }
+            ]
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Insert Album:</h3>
+                <code>POST <?= base_url() ?>v1/albums</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>title</li>
+                    <li>image</li>
+                    <li>public</li>
+                    <li>scheduled</li>
+                    <li>date</li>
+                    <li>time</li>
+                    <li>genre_id</li>
+                    <li>price</li>
+                    <li>license_id</li>
+                    <li>tags (Text Example: beat, linkstream, audio)</li>
+                    <li>beats (JSON ENCODE Example: ["1","2"])</li>
+                    <li>description</li>
+                    <!--<li></li>-->
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The album has been created successfully.",
+    "id": 2,
+    "data": {
+        "id": "2",
+        "created_at": "2020-07-09 01:27:19",
+        "user_id": "35",
+        "status_id": "1",
+        "title": "Album Title",
+        "coverart": null,
+        "public": "1",
+        "publish_at": "2020-07-10 10:00:00",
+        "genre_id": "1",
+        "track_type": "2",
+        "price": "10.00",
+        "license_id": "2",
+        "tags": "beat, linkstream, audio",
+        "sort": "1",
+        "description": "Album Description",
+        "scheduled": true,
+        "date": "2020-07-10",
+        "time": "10:00:00",
+        "data_image": "",
+        "beats": ""
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Update Album:</h3>
+                <code>PUT <?= base_url() ?>v1/albums/{album_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>title</li>
+                    <li>image</li>
+                    <li>public</li>
+                    <li>scheduled</li>
+                    <li>date</li>
+                    <li>time</li>
+                    <li>genre_id</li>
+                    <li>price</li>
+                    <li>license_id</li>
+                    <li>tags (Text Example: beat, linkstream, audio)</li>
+                    <li>beats (JSON ENCODE Example: ["1","2"])</li>
+                    <li>description</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Album info has been updated successfully.",
+    "data": {
+        "id": "3",
+        "created_at": "2020-07-09 01:29:45",
+        "user_id": "35",
+        "status_id": "1",
+        "title": "Album Title PUT",
+        "coverart": "",
+        "public": "1",
+        "publish_at": "2020-07-13 13:00:00",
+        "genre_id": "3",
+        "track_type": "2",
+        "price": "15.00",
+        "license_id": "3",
+        "tags": "beat, linkstream, audio,  PUT",
+        "sort": "2",
+        "description": "Album Description  PUT",
+        "date": "2020-07-13",
+        "time": "13:00:00",
+        "scheduled": true
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Sort Albums:</h3>
+                <code>POST <?= base_url() ?>v1/albums/sort_albums</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>list (JSON Array. Example: [{"id":"10","sort":"1"},{"id":"1","sort":"2"}])</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The information of the albums has been updated correctly"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Delete Albums:</h3>
+                <code>DELETE <?= base_url() ?>v1/albums/{album_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Album has been deleted successfully."
 }');
                     echo '</pre>';
                     ?>
