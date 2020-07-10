@@ -213,12 +213,13 @@ class Albums extends RestController {
                 }
             }
         }
+        $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio_id);
 //        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
         if (!empty($audio_id)) {
-            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
+//            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
 //            $audio['url_user'] = $user['url'];
 //            $audio['url_title'] = url_title($audio['title']);
-            $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio_id);
+//            $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio_id);
 //            $audio['collaborators'] = [];
 //            $path = $this->s3_path . $this->s3_folder;
 //            $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
