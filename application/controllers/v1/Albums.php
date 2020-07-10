@@ -79,13 +79,14 @@ class Albums extends RestController {
 //        return $file_name;
 //    }
 //
-//    private function s3_push($file_name, $s3_folder) {
-//        //SAVE S3
-//        $source = $this->temp_dir . '/' . $file_name;
-//        $destination = $this->s3_path . $s3_folder . '/' . $file_name;
-//        $this->aws_s3->s3push($source, $destination, $this->bucket);
-//        unlink($this->temp_dir . '/' . $file_name);
-//    }
+    private function s3_push($file_name, $s3_folder) {
+        //SAVE S3
+        $source = $this->temp_dir . '/' . $file_name;
+        $destination = $this->s3_path . $s3_folder . '/' . $file_name;
+        $this->aws_s3->s3push($source, $destination, $this->bucket);
+        unlink($this->temp_dir . '/' . $file_name);
+    }
+
 //    private function album_clean($audio, $images = true) {
 //        $audio['scheduled'] = true;
 //        if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
