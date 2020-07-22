@@ -14,12 +14,13 @@ class Users extends RestController {
     private $bucket;
     private $s3_path;
     private $s3_folder;
+    private $s3_coverart;
     private $temp_dir;
 
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model("User_model");
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         //Helpers
@@ -29,6 +30,7 @@ class Users extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_folder = 'Profile';
+        $this->s3_coverart = 'Coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
     }
 
@@ -705,8 +707,34 @@ class Users extends RestController {
             }
             $purchases = $this->User_model->fetch_user_purchases($user_id);
             $response = [];
+            $path = $this->s3_path . $this->s3_coverart;
             foreach ($purchases as $invoice) {
-                $invoice['details'] = $this->User_model->fetch_user_purchases_details($invoice['id']);
+//                $invoice['details'] = $this->User_model->fetch_user_purchases_details($invoice['id']);
+//                $response[] = $invoice;
+                $details = $this->User_model->fetch_user_purchases_details($invoice['id']);
+                $response_details = [];
+                foreach ($details as $detail) {
+                    $item_id = $detail['item_id'];
+                    $item_track_type = $detail['item_track_type'];
+                    if ($item_track_type == '1' || $item_track_type == '2' || $item_track_type == '3') {
+                        $audio = $this->Audio_model->fetch_audio_by_id($item_id);
+                    } else {
+                        $audio = $this->Album_model->fetch_album_by_id($item_id);
+                    }
+                    $detail['data_image'] = '';
+                    if (!empty($audio['coverart'])) {
+                        $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+                        if (!empty($data_image)) {
+                            $img_file = $audio['coverart'];
+                            file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+                            $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+                            $detail['data_image'] = $src;
+                            unlink($this->temp_dir . '/' . $audio['coverart']);
+                        }
+                    }
+                    $response_details[] = $detail;
+                }
+                $invoice['details'] = $response_details;
                 $response[] = $invoice;
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
