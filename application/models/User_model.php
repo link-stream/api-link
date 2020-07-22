@@ -160,9 +160,10 @@ class User_model extends CI_Model {
     }
 
     public function fetch_user_purchases_details($invoice_id) {
-        $this->db->select('a.*, b.display_name');
+        $this->db->select('a.*, b.display_name, c.track_type');
         $this->db->from('st_user_invoice_detail a');
         $this->db->join('st_user b', 'a.producer_id = b.id');
+        $this->db->join('st_track_type c', 'a.item_track_type = c.id');
         $this->db->where('invoice_id', $invoice_id);
         $query = $this->db->get();
         $result = $query->result_array();
