@@ -1925,7 +1925,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "item_track_type": "2",
                     "item_table": "st_audio",
                     "producer_id": "35",
-                    "display_name": "Paolo_LinkStream"
+                    "display_name": "Paolo_LinkStream",
+                    "track_type": "Beat"
                 },
                 {
                     "id": "2",
@@ -1936,7 +1937,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "item_track_type": "2",
                     "item_table": "st_audio",
                     "producer_id": "35",
-                    "display_name": "Paolo_LinkStream"
+                    "display_name": "Paolo_LinkStream",
+                    "track_type": "Beat"
                 }
             ]
         },
@@ -1957,7 +1959,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "item_track_type": "3",
                     "item_table": "st_audio",
                     "producer_id": "94",
-                    "display_name": "Victor"
+                    "display_name": "Victor",
+                    "track_type": "Sound Kit"
                 },
                 {
                     "id": "4",
@@ -1968,7 +1971,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     "item_track_type": "4",
                     "item_table": "st_album",
                     "producer_id": "139",
-                    "display_name": "Noah Lozevski"
+                    "display_name": "Noah Lozevski",
+                    "track_type": "Beat Pack"
                 }
             ]
         }
