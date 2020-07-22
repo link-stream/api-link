@@ -150,6 +150,13 @@ class Users extends RestController {
                 if (!empty($this->put('email_confirmed'))) {
                     $register_user['email_confirmed'] = $this->put('email_confirmed');
                 }
+                if (!empty($this->put('current_password'))) {
+                    $current_password = $this->general_library->encrypt_txt($this->put('current_password'));
+                    if ($current_password != $register_user['password']) {
+                        $this->error = 'Current Password Not Match.';
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                }
                 if (!empty($this->put('password'))) {
                     $register_user['password'] = $this->general_library->encrypt_txt($this->put('password'));
                 }
@@ -187,6 +194,21 @@ class Users extends RestController {
                 }
                 if (!empty($this->put('country'))) {
                     $register_user['country'] = $this->put('country');
+                }
+                if (!empty($this->put('timezone'))) {
+                    $register_user['timezone'] = $this->put('timezone');
+                }
+                if (!empty($this->put('facebook'))) {
+                    $register_user['facebook'] = $this->put('facebook');
+                }
+                if (!empty($this->put('twitter'))) {
+                    $register_user['twitter'] = $this->put('twitter');
+                }
+                if (!empty($this->put('instagram'))) {
+                    $register_user['instagram'] = $this->put('instagram');
+                }
+                if (!empty($this->put('soundcloud'))) {
+                    $register_user['soundcloud'] = $this->put('soundcloud');
                 }
                 $this->User_model->update_user($id, $register_user);
                 $user_response = $this->user_clean($register_user);
@@ -672,6 +694,24 @@ class Users extends RestController {
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $collaborators_reponse), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID and Email';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function purchases_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $purchases = $this->User_model->fetch_user_purchases($user_id);
+            $response = [];
+            foreach ($purchases as $invoice) {
+                $invoice['details'] = $this->User_model->fetch_user_purchases_details($invoice['id']);
+                $response[] = $invoice;
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

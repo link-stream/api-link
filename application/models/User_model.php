@@ -150,4 +150,24 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_user_purchases($user_id) {
+        $this->db->from('st_user_invoice');
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_user_purchases_details($invoice_id) {
+        $this->db->select('a.*, b.display_name');
+        $this->db->from('st_user_invoice_detail a');
+        $this->db->join('st_user b', 'a.producer_id = b.id');
+        $this->db->where('invoice_id', $invoice_id);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

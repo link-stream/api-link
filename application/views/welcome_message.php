@@ -314,6 +314,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>display_name</li>
                     <li>email</li>
                     <li>email_confirmed</li>
+                    <li>current_password</li>
                     <li>password</li>
                     <li>status_id</li>
                     <li>plan_id</li>
@@ -326,6 +327,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>bio</li>
                     <li>city</li>
                     <li>country</li>
+                    <li>timezone</li>
+                    <li>facebook</li>
+                    <li>twitter</li>
+                    <li>instagram</li>
+                    <li>soundcloud</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -1882,6 +1888,91 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "message": "The Album has been deleted successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Get Purchases by User:</h3>
+                <code>GET <?= base_url() ?>v1/users/purchases/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "invoice_number": "LS0000001",
+            "created_at": "2020-07-22 02:02:49",
+            "user_id": "35",
+            "status": "COMPLETED",
+            "amount": "17.95",
+            "details": [
+                {
+                    "id": "1",
+                    "invoice_id": "1",
+                    "item_id": "155",
+                    "item_title": "Beat 01",
+                    "item_amount": "15.00",
+                    "item_track_type": "2",
+                    "item_table": "st_audio",
+                    "producer_id": "35",
+                    "display_name": "Paolo_LinkStream"
+                },
+                {
+                    "id": "2",
+                    "invoice_id": "1",
+                    "item_id": "156",
+                    "item_title": "Beat 02",
+                    "item_amount": "2.95",
+                    "item_track_type": "2",
+                    "item_table": "st_audio",
+                    "producer_id": "35",
+                    "display_name": "Paolo_LinkStream"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "invoice_number": "LS0000002",
+            "created_at": "2020-07-22 02:02:49",
+            "user_id": "35",
+            "status": "COMPLETED",
+            "amount": "25.00",
+            "details": [
+                {
+                    "id": "3",
+                    "invoice_id": "2",
+                    "item_id": "305",
+                    "item_title": "My Sound Kit",
+                    "item_amount": "15.00",
+                    "item_track_type": "3",
+                    "item_table": "st_audio",
+                    "producer_id": "94",
+                    "display_name": "Victor"
+                },
+                {
+                    "id": "4",
+                    "invoice_id": "2",
+                    "item_id": "23",
+                    "item_title": "My Beat Pack",
+                    "item_amount": "10.00",
+                    "item_track_type": "4",
+                    "item_table": "st_album",
+                    "producer_id": "139",
+                    "display_name": "Noah Lozevski"
+                }
+            ]
+        }
+    ]
 }');
                     echo '</pre>';
                     ?>
