@@ -744,4 +744,70 @@ class Users extends RestController {
         }
     }
 
+    public function payment_method_post() {
+        $payment_method = [];
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $first_name = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
+            $last_name = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
+            $cc_number = (!empty($this->input->post('cc_number'))) ? $this->input->post('cc_number') : '';
+            $expiration_date = (!empty($this->input->post('expiration_date'))) ? $this->input->post('expiration_date') : '';
+            $cvv = (!empty($this->input->post('cvv'))) ? $this->input->post('cvv') : '';
+            $exp_month = substr($expiration_date, 0, 2);
+            $exp_year = substr($expiration_date, 3);
+            //create_payment_method
+            //$this->load->library('Stripe');
+            $type = 'card';
+            $card = [
+                'number' => $cc_number,
+                'exp_month' => $exp_month,
+                'exp_year' => $exp_year,
+                'cvc' => $cvv,
+            ];
+            //$response = $this->stripe->create_payment_method($type, $card);
+            //response true Save in DB
+            $payment_method['user_id'] = $user_id;
+            $payment_method['status'] = 'ACTIVE';
+            $payment_method['first_name'] = $first_name;
+            $payment_method['last_name'] = $last_name;
+            $payment_method['first_cc_number'] = substr($cc_number, 0, 6);
+            $payment_method['last_cc_number'] = substr($cc_number, -4);
+            $payment_method['expiration_date'] = $expiration_date;
+            $payment_method['cvv'] = $cvv;
+            $payment_method['payment_method_key'] = '';
+            $this->User_model->insert_payment_method($payment_method);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
+            //else return error.
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function payment_method_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+            $response = [];
+            foreach ($payment_methods as $payment_method) {
+                $cc_number = (!empty($payment_method['first_cc_number']) && substr($payment_method['first_cc_number'], 0, 1) == '3') ? $payment_method['first_cc_number'] . '11111' . $payment_method['last_cc_number'] : $payment_method['first_cc_number'] . '111111' . $payment_method['last_cc_number'];
+                $response[] = [
+                    'cc_number' => $payment_method['last_cc_number'],
+                    'expiration_date' => $payment_method['expiration_date'],
+                    'is_default' => $payment_method['is_default'],
+                    'cc_type' => $this->general_library->card_type($cc_number)
+                ];
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }

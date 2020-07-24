@@ -390,7 +390,7 @@ class Audios extends RestController {
     }
 
     public function index_post() {
-        $audio = array();
+        $audio = [];
         $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio['status_id'] = '1';
         $audio['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';

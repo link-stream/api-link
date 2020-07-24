@@ -171,4 +171,33 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function insert_payment_method($data) {
+        $this->db->insert('st_user_payment_method', $data);
+        return $this->db->insert_id();
+    }
+
+    public function update_payment_method($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_payment_method', $data);
+    }
+
+    public function fetch_payment_method_by_id($id) {
+        $this->db->from('st_user_payment_method');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_payment_method_by_user_id($user_id) {
+        $this->db->from('st_user_payment_method');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status', 'ACTIVE');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

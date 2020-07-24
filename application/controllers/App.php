@@ -2643,4 +2643,318 @@ class App extends CI_Controller {
         }
     }
 
+    public function mp3_to_mp4() {
+        $file_name = 'file_example_MP3_2MG.mp3';
+        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
+        $file_mp3 = $path . $file_name;
+        $file_name_mp4 = 'file_example_MP3_2MG.mp4';
+        $file_mp4 = $path . $file_name_mp4;
+        $image_name = 'download.jpeg';
+        $image = $path . $image_name;
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a copy -c:v libx264 -shortest " . $file_mp4;
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -shortest -c:v libx264 -c:a copy " . $file_mp4;
+        ///////$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg " . " -i " . $file_mp3 . " " . $file_mp4;
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -framerate 1 " . " -i " . $image . " -i " . $file_mp3 . " -c copy -shortest " . $file_mp4;
+        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a libmp3lame -c:v libx264 -b:a 128k -shortest " . $file_mp4;
+        exec($cmd, $output);
+        echo "<pre>";
+        print_r($output);
+        echo "</pre>";
+        //ffmpeg -i filename.mp3 newfilename.wav newfilename.ogg newfilename.mp4
+        //ffmpeg -loop 1 -framerate 1 -i image.jpg -i music.mp3 -c copy -shortest output.mkv
+        //ffmpeg -framerate 1 -i input.mp3 -i cover.jpg -c:a copy -s 1280x720 output.mp4
+        //ffmpeg -i input.mp3 -i cover.jpg -map_metadata 0 -map 0 -map 1 output.mp3
+        //ffmpeg -loop 1 -i logo.jpg -i source.mp3 -c:a libmp3lame -c:v libx264 -b:a 128k -shortest output.mp4
+    }
+
+    public function google_beatstars_test() {
+        $html = @file_get_contents('https://main.v2.beatstars.com/musician?permalink=scottstyles/&fields=social_networks', true);
+        $beatstars_data = json_decode($html, TRUE);
+        echo '<pre>';
+        print_r($beatstars_data);
+        echo '</pre>';
+    }
+
+    public function google_beatstars() {
+
+        $num = 100; //Count of Record (100)
+        $start = 300; //Page: Page = Page + Num (0)
+        //LAST NUM 100, 300
+
+        $keyword = 'site:www.beatstars.com';
+        $url = "http://www.google.com/search?q=" . urlencode($keyword) . "&num=" . $num . "&start=" . $start;
+        //GOOGLE CURL
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 1); // set to 0 to eliminate header info from response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // Returns response data instead of TRUE(1)
+        $header = array();
+        $header[0] = "Accept: text/xml,application/xml,application/xhtml+xml,";
+        $header[0] .= "text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
+        $header[] = "Cache-Control: max-age=0";
+        $header[] = "Connection: keep-alive";
+        $header[] = "Keep-Alive: 300";
+        $header[] = "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7";
+        $header[] = "Accept-Language: en-us,en;q=0.5";
+        $header[] = "Pragma: "; // browsers keep this blank.
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        //curl_setopt($ch, CURLOPT_USERAGENT, $useragents[rand(0, sizeof($useragents) - 1)]);
+        $google_response = curl_exec($ch); //execute post and get results
+        curl_close($ch);
+        if (!empty($google_response)) {
+            $count = 0;
+            $bp = 0;
+            $table = '<table class="table table-striped">
+
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>';
+            while ($bp = strpos($google_response, "https://www.beatstars.com/", $bp + 1)) {
+                $count++;
+                $end = strpos($google_response, "&amp;sa=", $bp);
+                $beatstars_link = trim(substr($google_response, $bp, $end - $bp));
+//                echo '<pre>';
+//                print_r($beatstars_link);
+//                echo '</pre>';
+                $beatstars_profile = substr($beatstars_link, 26);
+
+                if (!empty($beatstars_profile)) {
+//                    echo '<b>';
+//                    print_r($beatstars_profile);
+//                    echo '</b></br>';
+////                    echo '<pre>';
+//                    print_r($beatstars_link);
+//                    echo '</br>';
+                    $beatstars_url = 'https://main.v2.beatstars.com/musician?permalink=' . $beatstars_profile . '&fields=social_networks';
+//                    echo '<pre>';
+//                    print_r($beatstars_url);
+//                    echo '</pre>';
+                    $html = @file_get_contents($beatstars_url, true);
+                    if (!empty($html)) {
+                        $beatstars_data = json_decode($html, TRUE);
+                        if (!empty($beatstars_data['response']['data']['social_networks'])) {
+//                        echo '<pre>';
+//                        print_r($beatstars_data['response']['data']['social_networks']);
+//                        echo '</pre>';
+                            $social_networks = $beatstars_data['response']['data']['social_networks'];
+                            $social = [];
+                            $social['Beatstars'] = $beatstars_link;
+                            $social['Youtube'] = '';
+                            $social['Instagram'] = '';
+                            $social['Facebook'] = '';
+                            $social['Twitter'] = '';
+                            $social['SoundCloud'] = '';
+                            $social['TikTok'] = '';
+                            foreach ($social_networks as $social_network) {
+//                            echo '<pre>';
+//                            print_r($social_network['uri']);
+//                             print_r($social_network['uri']);
+//                            echo '</br>';
+                                $social[$social_network['text']] = $social_network['uri'];
+                            }
+                            $table .= '
+    <tr>
+      <td scope="row">' . $social['Beatstars'] . '</td>
+      <td>' . $social['Youtube'] . '</td>
+      <td>' . $social['Instagram'] . '</td>
+      <td>' . $social['Facebook'] . '</td>
+      <td>' . $social['Twitter'] . '</td>
+      <td>' . $social['SoundCloud'] . '</td>
+      <td>' . $social['TikTok'] . '</td>
+    </tr>
+ ';
+                        }
+                    }
+
+//                    echo '<pre>';
+//                    print_r($social);
+//                    echo '</pre>';
+//                    echo '<pre>';
+//                    print_r(' ');
+//                    echo '</br>';
+                } else {
+//                    echo 'Empty' . '<br>';
+                }
+                $bp++;
+            }
+            $table .= '
+
+  
+  </tbody>
+</table>';
+        }
+        echo $table;
+    }
+
+    public function google_get() {
+        $keyword = 'site:www.beatstars.com';
+        usleep(400000 * rand(0, 16));
+        $url = "http://www.google.com/search?q=" . urlencode($keyword) . "&num=3";
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_HEADER, 1); // set to 0 to eliminate header info from response
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // Returns response data instead of TRUE(1)
+        $header = array();
+        $header[0] = "Accept: text/xml,application/xml,application/xhtml+xml,";
+        $header[0] .= "text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5";
+        $header[] = "Cache-Control: max-age=0";
+        $header[] = "Connection: keep-alive";
+        $header[] = "Keep-Alive: 300";
+        $header[] = "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7";
+        $header[] = "Accept-Language: en-us,en;q=0.5";
+        $header[] = "Pragma: "; // browsers keep this blank.
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        //curl_setopt($ch, CURLOPT_USERAGENT, $useragents[rand(0, sizeof($useragents) - 1)]);
+        $resp = curl_exec($ch); //execute post and get results
+
+        curl_close($ch);
+//        echo '<pre>';
+//        print_r($resp);
+//        echo '</pre>';
+//        $linkObjs = $resp->find('https://www.beatstars.com/');
+//        echo '<pre>';
+//        print_r($linkObjs);
+//        echo '</pre>';
+////        if (strpos($resp, "Location: http://sorry.google.com/sorry/") && strpos($resp, "302 Found"))
+////            return -200;
+        $count = 0;
+        $bp = 0;
+////
+//        echo '<pre>';
+//        print_r('beatstars');
+//        echo '</pre>';
+//        $pos = strpos($resp, "q=https://www.beatstars.com/");
+//        if ($pos === false) {
+//            echo "La cadena q=https://www.beatstars.com/ no fue encontrada";
+//        } else {
+//            echo "La cadena q=https://www.beatstars.com/ fue encontrada";
+//            echo " y existe en la posición $pos";
+//            $cadena2 = substr($resp, $pos, 50);
+//            echo $cadena2;
+//            $pos2 = strpos($cadena2, "sa=");
+//            if ($pos2 === false) {
+//                echo "La cadena &sa= no fue encontrada";
+//            } else {
+//                echo "La cadena &sa= fue encontrada";
+//                echo " y existe en la posición $pos";
+//            }
+//            $cadena3 = substr($cadena2, 0, $pos2-2);
+//            echo $cadena3;
+//        }
+////        $pos = strpos($resp, "&sa=");
+////        if ($pos === false) {
+////            echo "La cadena &sa= no fue encontrada";
+////        } else {
+////            echo "La cadena &sa= fue encontrada";
+////            echo " y existe en la posición $pos";
+////        }
+//        exit;
+
+        while ($bp = strpos($resp, "https://www.beatstars.com/", $bp + 1)) {
+            $count++;
+            $end = strpos($resp, "sa=", $bp);
+            $link = trim(substr($resp, $bp, $end - $bp));
+            $strlen = strlen($link);
+//             echo '<pre>';
+//            print_r($link);
+//            echo '</pre>';
+//            echo '<pre>';
+//            print_r($strlen);
+//            echo '</pre>';
+            $link2 = substr($link, 0, $strlen - 5);
+            $bp++;
+//            if (stripos($link, ">Local business results for") && stripos($link, "href=\"http://maps.google.com/")) {
+//                $count--;
+//            }
+//
+//            if (stripos($link, "http://" . $domain) || stripos($link, "https://" . $domain) || stripos($link, "http://www." . $domain) || stripos($link, "https://www." . $domain)) {
+//                $rank = $count;
+//            }
+            if ($count > 1) {
+                echo '<pre>';
+                print_r($link2);
+                echo '</pre>';
+                //
+//                $url = $link2 . '/about';
+                $url = 'https://main.v2.beatstars.com/musician?permalink=beatsbytalent&fields=social_networks';
+//                echo '<pre>';
+//                print_r($url);
+//                echo '</pre>';
+//                $this->load->helper('simple_html_dom');
+//                //$this->load->helper('dom');
+//                // Grab HTML From the URL
+//                $html = file_get_html($url);
+//                 echo '<pre>';
+//                print_r($html);
+//                echo '</pre>';
+//                exit;
+
+                $html = file_get_contents($url, true);
+                $data = json_decode($html, TRUE);
+//                echo '<pre>';
+//                print_r($data);
+//                echo '</pre>';
+                if (!empty($data['response']['data']['social_networks'])) {
+                    echo '<pre>';
+                    print_r($data['response']['data']['social_networks']);
+                    echo '</pre>';
+                }
+                exit;
+
+//                $opts = array('http' => array('method' => "GET", 'header' => "Accept-language: en\r\n" . "Cookie: foo=bar\r\n", 'user_agent' => 'simple_html_dom'));
+//                $context = stream_context_create($opts);
+//
+//                $html = file_get_html($url, FALSE, $context);
+                // find all link on Codeigniter Site
+                foreach ($html->find('div') as $e)
+                    echo $e->href . '<br>';
+
+//                $ch = curl_init();
+//                curl_setopt($ch, CURLOPT_URL, $url);
+//                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//                $dataFromExternalServer = curl_exec($ch);
+//                curl_close($ch);
+//                $data =  file_get_contents($url);
+//                $getValues = file_get_contents($url . '&iframe=true');
+//                print_r($getValues);
+//                echo '<br>';
+//                $pos = strpos($getValues, $search_link);
+//                echo '<br>';
+//                if ($pos === FALSE) {
+//                    echo 'No exist';
+//                } else {
+//                    echo 'Exist, Position: ' . $pos;
+//                }
+//                echo '<pre>';
+//                print_r($data);
+//                echo '</pre>';
+                exit;
+            }
+        }
+////        if (!$rank)
+////            $rank = 101;
+////        return $rank;
+        //$url = 'https://www.googleapis.com/customsearch/v1?key=[MY API KEY]&cx=[MY CX KEY]&q=lecture';
+//        $keyword = 'site:www.beatstars.com';
+//        $url = "http://www.google.com/search?q=" . urlencode($keyword) . "&num=10";
+//        $body = file_get_contents($url);
+//        $json = json_decode($body);
+//        echo '<pre>';
+//                print_r($json);
+//                echo '</pre>';
+//        if ($json->items) {
+//            foreach ($json->items as $item) {
+//                echo '<pre>';
+//                print_r($item);
+//                echo '</pre>';
+//            }
+//        }
+    }
+
 }

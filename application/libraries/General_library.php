@@ -289,4 +289,25 @@ class General_library {
         }
     }
 
+    public function card_type($card_number) {
+        $card_type = '';
+        $number = preg_replace('/[^\d]/', '', $card_number);
+        if (preg_match('/^3[47][0-9]{13}$/', $number)) {
+            $card_type = 'Amex';
+        } elseif (preg_match('/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/', $number)) {
+            $card_type = 'Diners Club';
+        } elseif (preg_match('/^6(?:011|5[0-9][0-9])[0-9]{12}$/', $number)) {
+            $card_type = 'Discover';
+        } elseif (preg_match('/^(?:2131|1800|35\d{3})\d{11}$/', $number)) {
+            $card_type = 'Jcb';
+        } elseif (preg_match('/^5[1-5][0-9]{14}$/', $number)) {
+            $card_type = 'Mastercard';
+        } elseif (preg_match('/^4[0-9]{12}(?:[0-9]{3})?$/', $number)) {
+            $card_type = 'Visa';
+        } else {
+            $card_type = 'Credit Card';
+        }
+        return $card_type;
+    }
+
 }
