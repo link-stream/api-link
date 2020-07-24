@@ -797,6 +797,7 @@ class Users extends RestController {
             foreach ($payment_methods as $payment_method) {
                 $cc_number = (!empty($payment_method['first_cc_number']) && substr($payment_method['first_cc_number'], 0, 1) == '3') ? $payment_method['first_cc_number'] . '11111' . $payment_method['last_cc_number'] : $payment_method['first_cc_number'] . '111111' . $payment_method['last_cc_number'];
                 $response[] = [
+                    'id' => $payment_method['id'],
                     'cc_number' => $payment_method['last_cc_number'],
                     'expiration_date' => $payment_method['expiration_date'],
                     'is_default' => $payment_method['is_default'],
@@ -806,6 +807,48 @@ class Users extends RestController {
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function payment_method_put($id = null) {
+        if (!empty($id)) {
+            $payment_method = $this->User_model->fetch_payment_method_by_id($id);
+            if (!empty($payment_method)) {
+                if (!$this->general_library->header_token($payment_method['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if ($this->put('is_default') !== null) {
+                    $is_default = (!empty($this->put('is_default'))) ? '1' : '0';
+                    $this->User_model->update_payment_method_by_user_id($payment_method['user_id'], ['is_default' => '0']);
+                    $this->User_model->update_payment_method($id, ['is_default' => $is_default]);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Payment Method info has been updated successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Payment Method Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Payment Method ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function payment_method_delete($id = null) {
+        if (!empty($id)) {
+            $payment_method = $this->User_model->fetch_payment_method_by_id($id);
+            if (!empty($payment_method)) {
+                if (!$this->general_library->header_token($payment_method['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $this->User_model->update_payment_method($id, ['status' => 'INACTIVE']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Payment Method has been deleted successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Payment Method Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Payment Method ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

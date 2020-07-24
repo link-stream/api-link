@@ -181,6 +181,11 @@ class User_model extends CI_Model {
         $this->db->update('st_user_payment_method', $data);
     }
 
+    public function update_payment_method_by_user_id($user_id, $data) {
+        $this->db->where('user_id', $user_id);
+        $this->db->update('st_user_payment_method', $data);
+    }
+
     public function fetch_payment_method_by_id($id) {
         $this->db->from('st_user_payment_method');
         $this->db->where('id', $id);

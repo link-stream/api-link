@@ -2027,22 +2027,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "data": [
         {
-            "cc_number": "8830",
+            "id": "2",
+            "cc_number": "8860",
             "expiration_date": "06/2021",
             "is_default": "1",
             "cc_type": "Visa"
         },
         {
-            "cc_number": "1009",
+            "id": "3",
+            "cc_number": "1018",
             "expiration_date": "06/2021",
             "is_default": "0",
             "cc_type": "Amex"
-        },
-        {
-            "cc_number": "9958",
-            "expiration_date": "06/2021",
-            "is_default": "0",
-            "cc_type": "Mastercard"
         }
     ]
 }');
@@ -2050,7 +2046,41 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Update Payment Method:</h3>
+                <code>PUT <?= base_url() ?>v1/users/payment_method/{payment_method_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>is_default(1)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Payment Method info has been updated successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
+                <hr>
+                <h3>Delete Payment Method:</h3>
+                <code>DELETE <?= base_url() ?>v1/users/payment_method/{payment_method_id}</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Payment Method has been deleted successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
                 <!-- EXAMPLE 
                 <hr>
