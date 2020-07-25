@@ -57,14 +57,16 @@ class Users extends RestController {
         unset($user['password']);
         unset($user['email_confirmed']);
         unset($user['status_id']);
-        unset($user['facebook']);
-        unset($user['instagram']);
-        unset($user['twitter']);
-        unset($user['soundcloud']);
-        unset($user['youtube']);
+        //unset($user['facebook']);
+        //unset($user['instagram']);
+        //unset($user['twitter']);
+        //unset($user['soundcloud']);
+        //unset($user['youtube']);
         unset($user['platform']);
         unset($user['platform_id']);
         unset($user['platform_token']);
+        unset($user['payment_processor']);
+        unset($user['payment_processor_key']);
         //Avatar & Banner
         $path = $this->s3_path . $this->s3_folder;
         $user['data_image'] = '';
@@ -759,7 +761,7 @@ class Users extends RestController {
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
             //create_payment_method
-            //$this->load->library('Stripe');
+            $this->load->library('Stripe_library');
             $type = 'card';
             $card = [
                 'number' => $cc_number,
@@ -767,19 +769,26 @@ class Users extends RestController {
                 'exp_year' => $exp_year,
                 'cvc' => $cvv,
             ];
-            //$response = $this->stripe->create_payment_method($type, $card);
-            //response true Save in DB
-            $payment_method['user_id'] = $user_id;
-            $payment_method['status'] = 'ACTIVE';
-            $payment_method['first_name'] = $first_name;
-            $payment_method['last_name'] = $last_name;
-            $payment_method['first_cc_number'] = substr($cc_number, 0, 6);
-            $payment_method['last_cc_number'] = substr($cc_number, -4);
-            $payment_method['expiration_date'] = $expiration_date;
-            $payment_method['cvv'] = $cvv;
-            $payment_method['payment_method_key'] = '';
-            $this->User_model->insert_payment_method($payment_method);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
+            $response = $this->stripe_library->create_payment_method($type, $card);
+            if ($response['status']) {
+                //response true Save in DB
+                $payment_method['user_id'] = $user_id;
+                $payment_method['status'] = 'ACTIVE';
+                $payment_method['first_name'] = $first_name;
+                $payment_method['last_name'] = $last_name;
+                $payment_method['first_cc_number'] = substr($cc_number, 0, 6);
+                $payment_method['last_cc_number'] = substr($cc_number, -4);
+                $payment_method['expiration_date'] = $expiration_date;
+                $payment_method['cvv'] = $cvv;
+                $payment_method['payment_method_key'] = $response['payment_method_id'];
+                $this->User_model->insert_payment_method($payment_method);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = $response['error'];
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+
+
             //else return error.
         } else {
             $this->error = 'Provide User ID.';

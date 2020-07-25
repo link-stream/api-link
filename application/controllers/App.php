@@ -2445,7 +2445,7 @@ class App extends CI_Controller {
 //    }
 
     public function create_payment_method() {
-        $this->load->library('Stripe');
+        $this->load->library('Stripe_library');
         $number = '4242424242424242';
         $exp_month = 6;
         $exp_year = 2021;
@@ -2459,7 +2459,7 @@ class App extends CI_Controller {
             'exp_year' => $exp_year,
             'cvc' => $cvc,
         ];
-        $response = $this->stripe->create_payment_method($type, $card);
+        $response = $this->stripe_library->create_payment_method($type, $card);
         echo '<pre>';
         print_r($response);
         echo '</pre>';
@@ -2467,7 +2467,7 @@ class App extends CI_Controller {
     }
 
     public function create_customer() {
-        $this->load->library('Stripe');
+        $this->load->library('Stripe_library');
         $email = 'paul@link.stream';
         $name = 'Paolo Test 01';
         $phone = '1111111111';
@@ -2479,27 +2479,27 @@ class App extends CI_Controller {
         $postal_code = '33312';
         $country = 'US';
         $address = [
-            'line1' => $line1,
-            'line2' => $line2,
-            'city' => $city,
-            'state' => $state,
-            'postal_code' => $postal_code,
-            'country' => $country
+//            'line1' => $line1,
+//            'line2' => $line2,
+//            'city' => $city,
+//            'state' => $state,
+//            'postal_code' => $postal_code,
+//            'country' => $country
         ];
         $shipping = [
-            'name' => $name,
-            'address' => [
-                'line1' => $line1,
-                'line2' => $line2,
-                'city' => $city,
-                'state' => $state,
-                'postal_code' => $postal_code,
-                'country' => $country
-            ]
+//            'name' => $name,
+//            'address' => [
+//                'line1' => $line1,
+//                'line2' => $line2,
+//                'city' => $city,
+//                'state' => $state,
+//                'postal_code' => $postal_code,
+//                'country' => $country
+//            ]
         ];
         $payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
         $metadata = ['ls_user_id' => '50'];
-        $response = $this->stripe->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
+        $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
         echo '<pre>';
         print_r($response);
         echo '</pre>';
