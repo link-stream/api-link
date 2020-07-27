@@ -47,15 +47,38 @@ class Stripe_library {
             $object = $this->stripe->customers->create([
                 'name' => $name,
                 'email' => $email,
-                'phone' => $phone,
+                //'phone' => $phone,
+                'payment_method' => $payment_method,
                 'description' => $description,
-                'metadata' => $metadata
+                'metadata' => $metadata,
+                'invoice_settings' => ['default_payment_method' => $payment_method],
             ]);
 //            echo '<pre>';
 //            print_r($object);
 //            echo '</pre>';
             $response['status'] = true;
             $response['customer_id'] = $object->id;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    public function create_subscription($customer_id, $plan, $price, $default_payment_method) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->subscriptions->create([
+                'customer' => $customer_id,
+                'items' => [['price' => $price]],
+            ]);
+            echo '<pre>';
+            print_r($object);
+            echo '</pre>';
+            $response['status'] = true;
+            $response['subscription_id'] = $object->id;
         } catch (Exception $e) {
             $this->api_error = $e->getMessage();
             $response['status'] = false;
