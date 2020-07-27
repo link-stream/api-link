@@ -761,8 +761,8 @@ class Users extends RestController {
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
             //Create_payment_method
-            echo 'Stripe_library_2';
-            $this->load->library('Stripe_library_2');
+            echo 'Stripe_library';
+            $this->load->library('Stripe_library');
             $type = 'card';
             $card = [
                 'number' => $cc_number,

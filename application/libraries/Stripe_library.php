@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Stripe_library_2 {
+class Stripe_library {
 
     private $api_error;
     private $publishable_key;
