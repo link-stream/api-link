@@ -22,7 +22,7 @@ class Users extends RestController {
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint','Stripe_library'));
         //Helpers
         $this->load->helper(array('email'));
         //VARS
@@ -761,7 +761,7 @@ class Users extends RestController {
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
             //Create_payment_method
-            $this->load->library('stripe_library');
+            //$this->load->library('stripe_library');
             $type = 'card';
             $card = [
                 'number' => $cc_number,
