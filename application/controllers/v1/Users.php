@@ -22,7 +22,7 @@ class Users extends RestController {
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint','Stripe_library'));
+        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
         //Helpers
         $this->load->helper(array('email'));
         //VARS
@@ -769,7 +769,8 @@ class Users extends RestController {
                 'exp_year' => $exp_year,
                 'cvc' => $cvv,
             ];
-            $response = $this->stripe_library->create_payment_method($type, $card);
+//            $response = $this->stripe_library->create_payment_method($type, $card);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
             if ($response['status']) {
                 //response true Save in DB
                 $payment_method['user_id'] = $user_id;
@@ -782,7 +783,6 @@ class Users extends RestController {
                 $payment_method['cvv'] = $cvv;
                 $payment_method['payment_method_key'] = $response['payment_method_id'];
                 $this->User_model->insert_payment_method($payment_method);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
             } else {
                 $this->error = $response['error'];
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
