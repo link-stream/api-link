@@ -2468,16 +2468,16 @@ class App extends CI_Controller {
 
     public function create_customer() {
         $this->load->library('Stripe_library');
-        $email = 'paul@link.stream';
-        $name = 'Paolo Test 01';
-        $phone = '1111111111';
+        $email = 'paul@linkstream.com';
+        $name = 'Paolo Test';
+        $phone = ''; //'1111111111';
         $description = 'My First Test Customer (created for API docs)';
-        $line1 = '2210 Coral Reef Ct';
-        $line2 = '';
-        $city = 'Fort Lauderdale';
-        $state = 'FL';
-        $postal_code = '33312';
-        $country = 'US';
+//        $line1 = '2210 Coral Reef Ct';
+//        $line2 = '';
+//        $city = 'Fort Lauderdale';
+//        $state = 'FL';
+//        $postal_code = '33312';
+//        $country = 'US';
         $address = [
 //            'line1' => $line1,
 //            'line2' => $line2,
@@ -2497,8 +2497,8 @@ class App extends CI_Controller {
 //                'country' => $country
 //            ]
         ];
-        $payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
-        $metadata = ['ls_user_id' => '50'];
+        $payment_method = 'pm_1H8dcTKagYlVQcNzZcbcv4T9';
+        $metadata = ['ls_user_id' => '35'];
         $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
         echo '<pre>';
         print_r($response);
@@ -2507,11 +2507,13 @@ class App extends CI_Controller {
     }
 
     public function create_subscription() {
-        $this->load->library('Stripe');
-        $customer_id = 'cus_HIsbVuMPkHrVe6';
-        $plan = 'plan_HGtTLCzgNfaGeM';
-        $default_payment_method = 'pm_1GkGm8KagYlVQcNzyZRliWIv';
-        $response = $this->stripe->create_subscription($customer_id, $plan, $default_payment_method);
+        $this->load->library('Stripe_library');
+        $customer_id = 'cus_Hi3lV5d9auUCg5';
+        $plan = '';
+        $price = 'price_1H8cVfKagYlVQcNztyGC8hdY';
+
+        $default_payment_method = '';
+        $response = $this->stripe_library->create_subscription($customer_id, $plan, $price, $default_payment_method);
         echo '<pre>';
         print_r($response);
         echo '</pre>';

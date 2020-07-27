@@ -760,7 +760,7 @@ class Users extends RestController {
             $cvv = (!empty($this->input->post('cvv'))) ? $this->input->post('cvv') : '';
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
-            //create_payment_method
+            //Create_payment_method
             $this->load->library('Stripe_library');
             $type = 'card';
             $card = [
