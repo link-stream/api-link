@@ -761,7 +761,6 @@ class Users extends RestController {
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
             //Create_payment_method
-            echo 'Stripe_library';
             $this->load->library('Stripe_library');
             $type = 'card';
             $card = [
@@ -770,8 +769,7 @@ class Users extends RestController {
                 'exp_year' => $exp_year,
                 'cvc' => $cvv,
             ];
-//            $response = $this->stripe_library->create_payment_method($type, $card);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
+            $response = $this->stripe_library->create_payment_method($type, $card);
             if ($response['status']) {
                 //response true Save in DB
                 $payment_method['user_id'] = $user_id;
@@ -784,13 +782,11 @@ class Users extends RestController {
                 $payment_method['cvv'] = $cvv;
                 $payment_method['payment_method_key'] = $response['payment_method_id'];
                 $this->User_model->insert_payment_method($payment_method);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
             } else {
                 $this->error = $response['error'];
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
-
-
-            //else return error.
         } else {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
