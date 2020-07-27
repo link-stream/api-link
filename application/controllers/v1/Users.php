@@ -22,7 +22,7 @@ class Users extends RestController {
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
+        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         //Helpers
         $this->load->helper(array('email'));
         //VARS
