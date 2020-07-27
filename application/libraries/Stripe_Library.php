@@ -11,7 +11,8 @@ class Stripe_library {
     private $stripe;
 
     public function __construct() {
-        require_once('application/libraries/stripe-php/init.php');
+        //require_once('application/libraries/stripe-php/init.php');
+        include_once dirname(__FILE__) . '/stripe-php/init.php';
         if (ENV == 'live') {
             $this->publishable_key = 'pk_live_xikoJK3piFoIvgUgvz8wfsN000CtztAYSd';
             $this->secret_key = 'sk_live_21yE6cimzdvqs1v4N1jcfUaU00jgxzh3s9';
