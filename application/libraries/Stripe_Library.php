@@ -16,7 +16,6 @@ class Stripe_library {
             $this->publishable_key = 'pk_test_PGu3tHgt28WnXtSyX5R8Yg4b004V9SJypw';
             $this->secret_key = 'sk_test_UsIQFzySI1SZUIXXejLPufm6002Oa44VfP';
         }
-        //$this->stripe = \Stripe\Stripe::setApiKey($this->secret_key);
     }
 
     public function create_payment_method($type, $card) {
