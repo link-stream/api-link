@@ -205,4 +205,33 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_notification_by_user_id($user_id) {
+        $this->db->from('st_user_notification');
+        $this->db->where('user_id', $user_id);
+        //$this->db->where('status', 'ACTIVE');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_notification($data) {
+        $this->db->insert('st_user_notification', $data);
+        return $this->db->insert_id();
+    }
+
+    public function fetch_notification_by_id($id) {
+        $this->db->from('st_user_notification');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_notification($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_notification', $data);
+    }
+
 }

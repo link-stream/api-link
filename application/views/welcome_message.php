@@ -2082,6 +2082,100 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Get Notification by User::</h3>
+                <code>GET <?= base_url() ?>v1/users/notification/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "user_id": "35",
+            "sales_email": "0",
+            "sales_push": "0",
+            "follows_email": "0",
+            "follows_push": "0",
+            "likes_email": "0",
+            "likes_push": "0",
+            "reposts_email": "0",
+            "reposts_push": "0",
+            "collaborations_email": "0",
+            "collaborations_push": "0",
+            "ls_features_email": "0",
+            "ls_features_push": "0",
+            "surveys_email": "0",
+            "surveys_push": "0",
+            "ls_newsletter_email": "0"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Update Notification:</h3>
+                <code>PUT <?= base_url() ?>v1/users/notification/{notification_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>sales_email</li>
+                    <li>sales_push</li>
+                    <li>follows_email</li>
+                    <li>follows_push</li>
+                    <li>likes_email</li>
+                    <li>likes_push</li>
+                    <li>reposts_email</li>
+                    <li>reposts_push</li>
+                    <li>collaborations_email</li>
+                    <li>collaborations_push</li>
+                    <li>ls_features_email</li>
+                    <li>ls_features_push</li>
+                    <li>surveys_email</li>
+                    <li>surveys_push</li>
+                    <li>ls_newsletter_email</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The Notification info has been updated successfully.",
+    "data": {
+        "id": "1",
+        "user_id": "35",
+        "sales_email": "1",
+        "sales_push": "1",
+        "follows_email": "0",
+        "follows_push": "0",
+        "likes_email": "0",
+        "likes_push": "0",
+        "reposts_email": "0",
+        "reposts_push": "0",
+        "collaborations_email": "0",
+        "collaborations_push": "0",
+        "ls_features_email": "0",
+        "ls_features_push": "0",
+        "surveys_email": "0",
+        "surveys_push": "0",
+        "ls_newsletter_email": "0"
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>

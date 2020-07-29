@@ -859,4 +859,89 @@ class Users extends RestController {
         }
     }
 
+    public function notification_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $notification = $this->User_model->fetch_notification_by_user_id($user_id);
+            //$response = [];
+            if (empty($notification)) {
+                $st_user_notification = [
+                    'user_id' => $user_id,
+                ];
+                $this->User_model->insert_notification($st_user_notification);
+                $notification = $this->User_model->fetch_notification_by_user_id($user_id);
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $notification), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function notification_put($id = null) {
+        if (!empty($id)) {
+            $notification = $this->User_model->fetch_notification_by_id($id);
+            if (!empty($notification)) {
+                if (!$this->general_library->header_token($notification['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if ($this->put('sales_email') !== null) {
+                    $notification['sales_email'] = (!empty($this->put('sales_email'))) ? '1' : '0';
+                }
+                if ($this->put('sales_push') !== null) {
+                    $notification['sales_push'] = (!empty($this->put('sales_push'))) ? '1' : '0';
+                }
+                if ($this->put('follows_email') !== null) {
+                    $notification['follows_email'] = (!empty($this->put('follows_email'))) ? '1' : '0';
+                }
+                if ($this->put('follows_push') !== null) {
+                    $notification['follows_push'] = (!empty($this->put('follows_push'))) ? '1' : '0';
+                }
+                if ($this->put('likes_email') !== null) {
+                    $notification['likes_email'] = (!empty($this->put('likes_email'))) ? '1' : '0';
+                }
+                if ($this->put('likes_push') !== null) {
+                    $notification['likes_push'] = (!empty($this->put('likes_push'))) ? '1' : '0';
+                }
+                if ($this->put('reposts_email') !== null) {
+                    $notification['reposts_email'] = (!empty($this->put('reposts_email'))) ? '1' : '0';
+                }
+                if ($this->put('reposts_push') !== null) {
+                    $notification['reposts_push'] = (!empty($this->put('reposts_push'))) ? '1' : '0';
+                }
+                if ($this->put('collaborations_email') !== null) {
+                    $notification['collaborations_email'] = (!empty($this->put('collaborations_email'))) ? '1' : '0';
+                }
+                if ($this->put('collaborations_push') !== null) {
+                    $notification['collaborations_push'] = (!empty($this->put('collaborations_push'))) ? '1' : '0';
+                }
+                if ($this->put('ls_features_email') !== null) {
+                    $notification['ls_features_email'] = (!empty($this->put('ls_features_email'))) ? '1' : '0';
+                }
+                if ($this->put('ls_features_push') !== null) {
+                    $notification['ls_features_push'] = (!empty($this->put('ls_features_push'))) ? '1' : '0';
+                }
+                if ($this->put('surveys_email') !== null) {
+                    $notification['surveys_email'] = (!empty($this->put('surveys_email'))) ? '1' : '0';
+                }
+                if ($this->put('surveys_push') !== null) {
+                    $notification['surveys_push'] = (!empty($this->put('surveys_push'))) ? '1' : '0';
+                }
+                if ($this->put('ls_newsletter_email') !== null) {
+                    $notification['ls_newsletter_email'] = (!empty($this->put('ls_newsletter_email'))) ? '1' : '0';
+                }
+                $this->User_model->update_notification($id, $notification);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Notification info has been updated successfully.', 'data' => $notification), RestController::HTTP_OK);
+            } else {
+                $this->error = 'NotificationNot Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Notification ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
