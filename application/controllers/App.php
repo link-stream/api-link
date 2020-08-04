@@ -2959,4 +2959,220 @@ class App extends CI_Controller {
 //        }
     }
 
+    public function paypal_token() {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.sandbox.paypal.com/v1/oauth2/token",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=client_credentials",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Basic QVhHRXRhYzQxZTJ3UjB5dDNGQk1rdElmNWt5TjNWRzhOUExVR3l0bnRFeHZHeVJNVTlLakdyazl4clhVSkhfdzJySldMWmVxUXZaWm9YbHc6RUpyZGc4X1B1ejRTV25aWHQ1TG55R1AzSkVPNmVpbUpEdDVCSjRXbFhXYm9zMGZRWkY3dG0tc2xsQUc0SmZ3M1hDZ2lHRElTS09OTmFfVXE=",
+                "Content-Type: application/x-www-form-urlencoded"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        //echo $response;
+        $object = json_decode($response, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+        echo $object['access_token'];
+    }
+
+    public function paypal_create_product() {
+        $ch = curl_init();
+        $param = [
+            'name' => 'TEST 001',
+            'type' => 'SERVICE',
+            'description' => 'Testing Paypal Plan',
+        ];
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/catalogs/products');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
+        //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $object = json_decode($result, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+        //echo $object['access_token'];
+    }
+
+    public function paypal_create_plan() {
+        $ch = curl_init();
+        $param = [
+            'product_id' => 'PROD-1L219312N62450026',
+            'name' => 'TEST 001',
+            'status' => 'ACTIVE',
+            'description' => 'Testing Paypal Plan',
+            'billing_cycles' => [
+                [
+                    'frequency' => [
+                        'interval_unit' => 'MONTH',
+                        'interval_count' => 1
+                    ],
+                    'tenure_type' => 'REGULAR', //TRIAL
+                    'sequence' => 1,
+                    'total_cycles' => 0,
+                    'pricing_scheme' => [
+                        'fixed_price' => [
+                            'value' => '10',
+                            'currency_code' => 'USD'
+                        ]
+                    ],
+                ]
+            ],
+            'payment_preferences' => [
+                'auto_bill_outstanding' => true,
+                'setup_fee' => [
+                    'value' => '10',
+                    'currency_code' => 'USD'
+                ],
+                'setup_fee_failure_action' => 'CONTINUE', //CANCEL
+                'payment_failure_threshold' => 3
+            ]
+        ];
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/billing/plans');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
+        //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $object = json_decode($result, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+        //echo $object['access_token'];
+    }
+
+    public function paypal_subscription() {
+        $ch = curl_init();
+        $param = [
+            'plan_id' => 'P-1VL02682SS657152EL4SCLZI',
+            'start_time' => '2020-08-01T00:00:00Z',
+            'quantity' => '1',
+            'subscriber' => [
+                'name' => [
+                    'given_name' => 'John',
+                    'surname' => 'Doe'
+                ],
+                'email_address' => 'sb-4ac4711806191@personal.example.com'
+            ],
+            'application_context' => [
+                'brand_name' => 'LinkStream',
+                'locale' => 'en-US',
+                'user_action' => 'SUBSCRIBE_NOW',
+                'payment_method' => [
+                    'payer_selected' => 'PAYPAL',
+                    'payee_preferred' => 'IMMEDIATE_PAYMENT_REQUIRED'
+                ],
+                'setup_fee_failure_action' => 'CONTINUE', //CANCEL
+                'payment_failure_threshold' => 3
+            ]
+        ];
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/billing/subscriptions');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($param));
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
+        //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $object = json_decode($result, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+        //echo $object['access_token'];
+    }
+
+    public function paypal_button() {
+//        print_r(
+//                '<div id="paypal-button-container"></div>
+//<script src="https://www.paypal.com/sdk/js?client-id=AYsKfkDo19DuHtP2I7ZamBKgrW6d4_4wc8JIpWQ6k48BxtRw2cy1gn1o6INdYu3d22z4QqnfqP4VgMqv&vault=true" data-sdk-integration-source="button-factory"></script>
+//' . "<script>
+//  paypal.Buttons({
+//      style: {
+//          shape: 'rect',
+//          color: 'gold',
+//          layout: 'vertical',
+//          label: 'subscribe',
+//          
+//      },
+//      createSubscription: function(data, actions) {
+//        return actions.subscription.create({
+//          'plan_id': 'P-1VL02682SS657152EL4SCLZI'
+//        });
+//      },
+//      onApprove: function(data, actions) {
+//        alert(data.subscriptionID);
+//      }
+//  }).render('#paypal-button-container');
+//</script>"
+//        );
+        print_r("<span id='cwppButton'></span>
+<script src='https://www.paypalobjects.com/js/external/connect/api.js'></script>" .
+                '<script>
+paypal.use( ["login"], function (login) {
+  login.render ({
+    "appid":"AXGEtac41e2wR0yt3FBMktIf5kyN3VG8NPLUGytntExvGyRMU9KjGrk9xrXUJH_w2rJWLZeqQvZZoXlw",
+    "authend":"sandbox",
+    "scopes":"openid",
+    "containerid":"cwppButton",
+    "responseType":"code",
+    "locale":"en-us",
+    "buttonType":"CWP",
+    "buttonShape":"pill",
+    "buttonSize":"lg",
+    "fullPage":"true",
+    "returnurl":"https://api-dev.link.stream/app/paypal_return"
+  });
+});
+</script>');
+
+        //"returnurl":"https://dev-link-vue.link.stream/app/account/payments"
+    }
+
+    public function paypal_return() {
+        
+    }
+
 }
