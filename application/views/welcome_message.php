@@ -2255,7 +2255,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>video_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={tag}&genre={genre}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
