@@ -113,4 +113,34 @@ class Link_model extends CI_Model {
         return $row->Max;
     }
 
+    //PUBLIC PROFILE
+    public function fetch_links_by_profile($id, $user_id, $tag, $sort = 'default', $limit = 0, $offset = 0) {
+        $this->db->from('st_link');
+        if (!empty($id)) {
+            $this->db->where('id', $id);
+        }
+        if (!empty($user_id)) {
+            $this->db->where('user_id', $user_id);
+        }
+        if (!empty($tag)) {
+            $this->db->like('title', $tag);
+        }
+        $this->db->where('status_id <> ', '3');
+        $this->db->where('public', '1');
+        if ($sort == 'default') {
+            $this->db->order_by('sort');
+        } elseif ($sort == 'new') {
+            $this->db->order_by('id', 'DESC');
+        } else {
+            $this->db->order_by('sort');
+        }
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

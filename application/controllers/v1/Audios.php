@@ -643,7 +643,7 @@ class Audios extends RestController {
                 //REPONSE
                 $audio_response = $this->Audio_model->fetch_audio_by_id($id);
                 $audio_response = $this->audio_clean($audio_response);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Audio or Beat info has been updated successfully.', 'data' => $audio_response), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Beat/Sound Kit info has been updated successfully.', 'data' => $audio_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Audio Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);

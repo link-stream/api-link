@@ -555,13 +555,15 @@ class Profiles extends RestController {
         if (!empty($id)) {
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            $sort = (!empty($this->input->get('sort'))) ? $this->input->get('sort') : '';
+            $tag = (!empty($this->input->get('tag'))) ? $this->input->get('tag') : '';
             if (!is_int($page) || !is_int($page_size)) {
                 $this->error = 'Parameters page and page_size can only have integer values';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $links = $this->Link_model->fetch_links_by_user_id($id, $link_id, false, $limit, $offset);
+                $links = $this->Link_model->fetch_links_by_profile($link_id, $id, $tag, $sort, $limit, $offset);
                 $links_reponse = [];
                 foreach ($links as $link) {
                     $link_reponse = $this->link_clean($link);
