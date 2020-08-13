@@ -2255,7 +2255,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>video_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={tag}&genre={genre}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2293,7 +2293,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>kit_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high}&tag={tag}&genre={genre}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2334,8 +2334,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                 <hr>
-                <h3>GET Profile Beats/Sound Kit:</h3>
-                <code>GET <?= base_url() ?>v1/profiles/audios/{producer_id}/{track_type}/{audio_id}</code>
+                <h3>GET Profile Beats:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/audios/{producer_id}/{beats_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>producer_id</li>

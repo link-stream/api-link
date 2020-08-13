@@ -123,7 +123,9 @@ class Video_model extends CI_Model {
             $this->db->where('id', $video_id);
         }
         if (!empty($genre)) {
-            $this->db->where('genre_id', $genre);
+            //$this->db->where('genre_id', $genre);
+            $genres = explode(',', $genre);
+            $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
             $this->db->like('title', $tag);
