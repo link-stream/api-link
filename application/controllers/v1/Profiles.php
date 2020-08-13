@@ -363,7 +363,7 @@ class Profiles extends RestController {
         return $audio;
     }
 
-    public function sound_kit_get($id = null, $audio_id = null) {
+    public function sound_kits_get($id = null, $audio_id = null) {
         if (!empty($id)) {
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
@@ -377,6 +377,37 @@ class Profiles extends RestController {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
                 $streamys = $this->Audio_model->fetch_sound_kit_by_profile($id, $audio_id, $genre, $tag, $sort, $limit, $offset);
+                $audios = [];
+                foreach ($streamys as $streamy) {
+                    $audio_response = $this->audio_clean($streamy, $audio_id);
+                    if (!empty($audio_response)) {
+                        $audios[] = $audio_response;
+                    }
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide Peoducer ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function beats_get($id = null, $audio_id = null, $beat_type = null) {
+        if (!empty($id)) {
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            $sort = (!empty($this->input->get('sort'))) ? $this->input->get('sort') : 'default';
+            $tag = (!empty($this->input->get('tag'))) ? $this->input->get('tag') : '';
+            $genre = (!empty($this->input->get('genre'))) ? $this->input->get('genre') : '';
+            $bpm_min = (!empty($this->input->get('bpm_min'))) ? $this->input->get('bpm_min') : '';
+            $bpm_max = (!empty($this->input->get('bpm_max'))) ? $this->input->get('bpm_max') : '';
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+                $limit = $page_size;
+                $streamys = $this->Audio_model->fetch_beat_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $sort, $limit, $offset);
                 $audios = [];
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean($streamy, $audio_id);

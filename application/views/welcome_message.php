@@ -2287,13 +2287,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
                 <hr>
-                <h3>GET Profile Sound Kit:</h3>
-                <code>GET <?= base_url() ?>v1/profiles/sound_kit/{producer_id}/{kit_id}</code>
+                <h3>GET Profile Sound Kits:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/sound_kits/{producer_id}/{kit_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>producer_id</li>
                     <li>kit_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2335,13 +2335,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>GET Profile Beats:</h3>
-                <code>GET <?= base_url() ?>v1/profiles/audios/{producer_id}/{beats_id}</code>
+                <!--<code>GET <?= base_url() ?>v1/profiles/beats/{producer_id}/{beats_id}/{beat_type}</code>-->
+                <code>GET <?= base_url() ?>v1/profiles/beats/{producer_id}/{beats_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>producer_id</li>
-                    <li>track_type (1=Song, 2=Beat, 3=Sound Kit)</li>
-                    <li>audio_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}</li>
+                    <li>beats_id (optional)</li>
+                    <!--<li>beat_type (required when beat_id is passed) - (1 = Beat, 2 = Beat_Pack)</li>-->
+                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}&bpm_min={bpm_min}&bpm_max={bpm_max}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

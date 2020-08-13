@@ -357,7 +357,7 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
-    //PUBLIC PROFILE
+    //PUBLIC PROFILE - track_type (1=Song, 2=Beat, 3=Sound Kit)
     public function fetch_sound_kit_by_profile($user_id, $audio_id, $genre, $tag, $sort = 'default', $limit = 0, $offset = 0) {
         $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
@@ -384,6 +384,54 @@ class Audio_model extends CI_Model {
             $this->db->order_by('price');
         } elseif ($sort == 'price_high') {
             $this->db->order_by('price', 'DESC');
+        } elseif ($sort == 'best') {
+            $this->db->order_by('sort'); //TEMP
+        } else {
+            $this->db->order_by('sort');
+        }
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_beat_by_profile($user_id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $sort = 'default', $limit = 0, $offset = 0) {
+        $this->db->from('st_audio');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status_id <> ', '3');
+        $this->db->where('public', '1');
+        $this->db->where('track_type', '2');
+        if (!empty($audio_id)) {
+            $this->db->where('id', $audio_id);
+        }
+        if (!empty($genre)) {
+            //$this->db->where('genre_id', $genre);
+            $genres = explode(',', $genre);
+            $this->db->where_in('genre_id', $genres);
+        }
+        if (!empty($tag)) {
+            $this->db->like('title', $tag);
+            $this->db->or_like('tags', $tag);
+        }
+        if (!empty($bpm_min)) {
+            $this->db->where('bpm >= ', $bpm_min);
+        }
+        if (!empty($bpm_max)) {
+            $this->db->where('bpm <= ', $bpm_max);
+        }
+        if ($sort == 'default') {
+            $this->db->order_by('sort');
+        } elseif ($sort == 'new') {
+            $this->db->order_by('id', 'DESC');
+        } elseif ($sort == 'price_low') {
+            $this->db->order_by('price');
+        } elseif ($sort == 'price_high') {
+            $this->db->order_by('price', 'DESC');
+        } elseif ($sort == 'best') {
+            $this->db->order_by('sort'); //TEMP
         } else {
             $this->db->order_by('sort');
         }
