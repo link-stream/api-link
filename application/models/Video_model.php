@@ -113,4 +113,35 @@ class Video_model extends CI_Model {
         return $row->Max;
     }
 
+    //PUBLIC PROFILE
+    public function fetch_video_by_profile($user_id, $video_id, $genre, $tag, $sort = 'default', $limit = 0, $offset = 0) {
+        $this->db->from('st_video');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status_id <> ', '3');
+        $this->db->where('public', '1');
+        if (!empty($video_id)) {
+            $this->db->where('id', $video_id);
+        }
+        if (!empty($genre)) {
+            $this->db->where('genre_id', $genre);
+        }
+        if (!empty($tag)) {
+            $this->db->like('title', $tag);
+        }
+        if ($sort == 'default') {
+            $this->db->order_by('sort');
+        } elseif ($sort == 'new') {
+            $this->db->order_by('id', 'DESC');
+        } else {
+            $this->db->order_by('sort');
+        }
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
