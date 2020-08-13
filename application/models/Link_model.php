@@ -116,17 +116,15 @@ class Link_model extends CI_Model {
     //PUBLIC PROFILE
     public function fetch_links_by_profile($id, $user_id, $tag, $sort = 'default', $limit = 0, $offset = 0) {
         $this->db->from('st_link');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status_id <> ', '3');
+        $this->db->where('public', '1');
         if (!empty($id)) {
             $this->db->where('id', $id);
-        }
-        if (!empty($user_id)) {
-            $this->db->where('user_id', $user_id);
         }
         if (!empty($tag)) {
             $this->db->like('title', $tag);
         }
-        $this->db->where('status_id <> ', '3');
-        $this->db->where('public', '1');
         if ($sort == 'default') {
             $this->db->order_by('sort');
         } elseif ($sort == 'new') {
