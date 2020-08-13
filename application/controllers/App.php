@@ -2286,14 +2286,54 @@ class App extends CI_Controller {
         print_r($response);
     }
 
+    public function create_account() {
+
+        $this->load->library('Stripe_library');
+        //$type = 'custom'; //API custom
+        $country = 'US';
+        $currency = 'USD';
+        $account_holder_name = 'Paul Ferra';
+        $account_holder_type = 'individual'; //company
+        $routing_number = '111000000';
+        $account_number = '000123456789';
+        $email = 'paul@linkstream.com';
+
+//            $requested_capabilities = [
+//                'card_payments',
+//                'transfers',
+//            ];
+        $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+        $external_account = [
+            'object' => 'bank_account',
+            'country' => $country,
+            'currency' => $currency,
+            'account_holder_name' => $account_holder_name,
+            'account_holder_type' => $account_holder_type,
+            'routing_number' => $routing_number,
+            'account_number' => $account_number
+        ];
+        $response = $this->stripe_library->create_account($country, $email, $business_type, $external_account);
+        print_r($response);
+    }
+
+    public function connect_stripe() {
+        $data = [];
+        $this->load->view($this->loc_path . 'example/account', $data);
+    }
+
 //    public function create_account() {
 //        if ($this->input->post()) {
-//            $this->load->library('Stripe');
+//            $this->load->library('Stripe_library');
+//            //$type = 'custom'; //API custom
 //            $country = 'US';
 //            $email = 'paul@linkstream.com';
-//            $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+////            $requested_capabilities = [
+////                'card_payments',
+////                'transfers',
+////            ];
+//            $business_type = ''; //'individual'; //individual-company-non_profit-government_entity(US only)
 //
-//            $response = $this->stripe->create_account($country, $email, $business_type);
+//            $response = $this->Stripe_library->create_account($country, $email);
 //            print_r($response);
 //        } else {
 //            $data = [];
@@ -2959,7 +2999,7 @@ class App extends CI_Controller {
 //        }
     }
 
-    public function paypal_token() {
+    public function paypal_login() {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -2989,12 +3029,12 @@ class App extends CI_Controller {
         echo $object['access_token'];
     }
 
-    public function paypal_create_product() {
+    public function paypal_create_product($token) {
         $ch = curl_init();
         $param = [
-            'name' => 'TEST 001',
+            'name' => 'LS PRODUCT TEST 001',
             'type' => 'SERVICE',
-            'description' => 'Testing Paypal Plan',
+            'description' => 'Testing Paypal Product',
         ];
         curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/catalogs/products');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -3003,7 +3043,7 @@ class App extends CI_Controller {
 
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
+        $headers[] = 'Authorization: Bearer ' . $token;
         //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -3019,11 +3059,11 @@ class App extends CI_Controller {
         //echo $object['access_token'];
     }
 
-    public function paypal_create_plan() {
+    public function paypal_create_plan($product, $token) {
         $ch = curl_init();
         $param = [
-            'product_id' => 'PROD-1L219312N62450026',
-            'name' => 'TEST 001',
+            'product_id' => $product,
+            'name' => 'LS PLAN TEST 001',
             'status' => 'ACTIVE',
             'description' => 'Testing Paypal Plan',
             'billing_cycles' => [
@@ -3060,7 +3100,7 @@ class App extends CI_Controller {
 
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
+        $headers[] = 'Authorization: Bearer ' . $token;
         //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -3076,27 +3116,31 @@ class App extends CI_Controller {
         //echo $object['access_token'];
     }
 
-    public function paypal_subscription() {
+    public function paypal_subscription($plan, $token) {
         $ch = curl_init();
         $param = [
-            'plan_id' => 'P-1VL02682SS657152EL4SCLZI',
-            'start_time' => '2020-08-01T00:00:00Z',
+            'plan_id' => $plan,
+            'start_time' => '2020-08-05T00:00:00Z',
             'quantity' => '1',
             'subscriber' => [
                 'name' => [
                     'given_name' => 'John',
                     'surname' => 'Doe'
                 ],
-                'email_address' => 'sb-4ac4711806191@personal.example.com'
+                'email_address' => 'sb-4ac4711806191@personal.example.com',
+                'payer_id' => 'L7Z2DLTJBYTHN'
             ],
             'application_context' => [
                 'brand_name' => 'LinkStream',
                 'locale' => 'en-US',
+                "shipping_preference" => "SET_PROVIDED_ADDRESS",
                 'user_action' => 'SUBSCRIBE_NOW',
                 'payment_method' => [
                     'payer_selected' => 'PAYPAL',
                     'payee_preferred' => 'IMMEDIATE_PAYMENT_REQUIRED'
                 ],
+                "return_url" => "https://example.com/returnUrl",
+                "cancel_url" => "https://example.com/cancelUrl",
                 'setup_fee_failure_action' => 'CONTINUE', //CANCEL
                 'payment_failure_threshold' => 3
             ]
@@ -3108,8 +3152,9 @@ class App extends CI_Controller {
 
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer A21AAHxDfaKnD9Rofl5mIUyIxLoSuR5N19pc-o4NvsNeMa5tJfjqYhnL1uqjW473WmKC93wCmSyJUecfbTdg57cZMKzsMEbKQ';
-        //$headers[] = 'Paypal-Request-Id: PLAN-18062019-001';
+        $headers[] = 'Authorization: Bearer ' . $token;
+        $headers[] = 'Prefer: return=representation';
+        //$headers[] = 'Paypal-Request-Id: SUBSCRIPTION-21092020-001';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
@@ -3122,6 +3167,30 @@ class App extends CI_Controller {
         print_r($object);
         echo '<pre>';
         //echo $object['access_token'];
+    }
+
+    public function paypal_get_subscription() {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/billing/subscriptions/I-DSXUN4ES9FJX');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer A21AAGs2Nz1sI4HSMgz0p0_0l3g8lxYaVXmzKVLym0mRqaqQ9nGnYs8EEoN2utwB8BDwEXIwY7AZY7S43iKAkJetrhlUjKR_A';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $object = json_decode($result, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
     }
 
     public function paypal_button() {
@@ -3153,26 +3222,115 @@ class App extends CI_Controller {
                 '<script>
 paypal.use( ["login"], function (login) {
   login.render ({
-    "appid":"AXGEtac41e2wR0yt3FBMktIf5kyN3VG8NPLUGytntExvGyRMU9KjGrk9xrXUJH_w2rJWLZeqQvZZoXlw",
+   "appid":"AXGEtac41e2wR0yt3FBMktIf5kyN3VG8NPLUGytntExvGyRMU9KjGrk9xrXUJH_w2rJWLZeqQvZZoXlw",
     "authend":"sandbox",
     "scopes":"openid",
     "containerid":"cwppButton",
-    "responseType":"code",
+    "responseType":"code id_Token",
     "locale":"en-us",
     "buttonType":"CWP",
     "buttonShape":"pill",
-    "buttonSize":"lg",
-    "fullPage":"true",
+    "buttonSize":"md",
+    "fullPage":"false",
     "returnurl":"https://api-dev.link.stream/app/paypal_return"
   });
 });
 </script>');
-
-        //"returnurl":"https://dev-link-vue.link.stream/app/account/payments"
     }
 
     public function paypal_return() {
         
+    }
+
+    public function paypal_user_token($code) {
+        echo $code;
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.sandbox.paypal.com/v1/oauth2/token",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=authorization_code&code={$code}",
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: Basic QVhHRXRhYzQxZTJ3UjB5dDNGQk1rdElmNWt5TjNWRzhOUExVR3l0bnRFeHZHeVJNVTlLakdyazl4clhVSkhfdzJySldMWmVxUXZaWm9YbHc6RUpyZGc4X1B1ejRTV25aWHQ1TG55R1AzSkVPNmVpbUpEdDVCSjRXbFhXYm9zMGZRWkY3dG0tc2xsQUc0SmZ3M1hDZ2lHRElTS09OTmFfVXE=",
+                "Content-Type: application/x-www-form-urlencoded"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        //echo $response;
+        $object = json_decode($response, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+        echo $object['access_token'];
+    }
+
+    public function paypal_user_id($token) {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.paypal.com/v1/identity/oauth2/userinfo?schema=paypalv1.1');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer ' . $token;
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        $object = json_decode($result, TRUE);
+        echo '<pre>';
+        print_r($object);
+        echo '<pre>';
+    }
+
+    public function paypal_suscriber() {
+//       print_r(' <div id="paypal-button-container"></div>
+//<script src="https://www.paypal.com/sdk/js?client-id=AYsKfkDo19DuHtP2I7ZamBKgrW6d4_4wc8JIpWQ6k48BxtRw2cy1gn1o6INdYu3d22z4QqnfqP4VgMqv&vault=true" data-sdk-integration-source="button-factory"></script>
+//'."<script>
+//  paypal.Buttons({
+//      style: {
+//          shape: 'rect',
+//          color: 'gold',
+//          layout: 'vertical',
+//          label: 'subscribe',
+//          
+//      },
+//      createSubscription: function(data, actions) {
+//        return actions.subscription.create({
+//          'plan_id': 'P-1VL02682SS657152EL4SCLZI'
+//        });
+//      },
+//      onApprove: function(data, actions) {
+//        alert(data.subscriptionID);
+//      }
+//  }).render('#paypal-button-container');
+//</script>");
+
+        print_r('<body>
+  <script
+       src="https://www.paypal.com/sdk/js?client-id=AYsKfkDo19DuHtP2I7ZamBKgrW6d4_4wc8JIpWQ6k48BxtRw2cy1gn1o6INdYu3d22z4QqnfqP4VgMqv&vault=true">
+  </script>
+
+  <div id="paypal-button-container"></div>
+' . "
+  <script>
+    paypal.Buttons().render('#paypal-button-container');
+  </script>
+</body>");
     }
 
 }
