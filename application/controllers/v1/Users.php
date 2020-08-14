@@ -236,13 +236,15 @@ class Users extends RestController {
             $this->error = 'Value is Required';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } elseif ($type != 'username' && $type != 'email' && $type != 'url') {
-            $this->error = 'Type ' . $type . ' is now allowed, only username or email are allowed as type';
+            $this->error = 'Type ' . $type . ' is not allowed, only username,email or url are allowed as type';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         } else {
             if ($type == 'username') {
                 $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $value));
             } elseif ($type == 'email') {
                 $register_user = $this->User_model->fetch_user_by_search(array('email' => $value));
+            } elseif ($type == 'url') {
+                $register_user = $this->User_model->fetch_user_by_search(array('url' => $value));
             } else {
                 if (!empty($id)) {
                     $register_user = $this->User_model->fetch_user_url_availability($id, $value);
