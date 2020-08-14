@@ -373,8 +373,9 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-            $this->db->like('title', $tag);
-            $this->db->or_like('tags', $tag);
+//            $this->db->like('title', $tag);
+//            $this->db->or_like('tags', $tag);
+            $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
         }
         if ($sort == 'default') {
             $this->db->order_by('sort');
@@ -413,8 +414,9 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-            $this->db->like('title', $tag);
-            $this->db->or_like('tags', $tag);
+            //$this->db->like('title', $tag);
+            //$this->db->or_like('tags', $tag);
+            $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
         }
         if (!empty($bpm_min)) {
             $this->db->where('bpm >= ', $bpm_min);
