@@ -2223,7 +2223,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>link_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={tag}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={title}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2255,7 +2255,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>video_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new}&tag={title}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2293,7 +2293,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <ul>
                     <li>producer_id</li>
                     <li>kit_id (optional)</li>
-                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag or title}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2342,7 +2342,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>producer_id</li>
                     <li>beats_id (optional)</li>
                     <!--<li>beat_type (required when beat_id is passed) - (1 = Beat, 2 = Beat_Pack)</li>-->
-                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}&bpm_min={bpm_min}&bpm_max={bpm_max}</li>
+                    <li>?page={page}&page_size={page_size}&sort={default or new or price_low or price_high or best}&tag={tag or title}&genre={can be a simple id like 1 or 2, can be a list of genres like 1,2,3,4}&bpm_min={bpm_min}&bpm_max={bpm_max}&type={beat, pack or empty in case the end user select both or none}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

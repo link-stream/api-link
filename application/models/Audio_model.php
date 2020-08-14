@@ -373,8 +373,6 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-//            $this->db->like('title', $tag);
-//            $this->db->or_like('tags', $tag);
             $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
         }
         if ($sort == 'default') {
@@ -414,8 +412,6 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-            //$this->db->like('title', $tag);
-            //$this->db->or_like('tags', $tag);
             $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
         }
         if (!empty($bpm_min)) {
@@ -441,6 +437,78 @@ class Audio_model extends CI_Model {
             $this->db->limit($limit, $offset);
         }
         $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_beats_by_profile($user_id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort = 'default', $limit = 0, $offset = 0) {
+        //
+        $query_beat = "SELECT ";
+        $query_beat .= "id, created_at, user_id, status_id, title, bpm, key_id, coverart, public, publish_at, sort, genre_id, track_type, tags, untagged_mp3, untagged_wav_name, untagged_wav, track_stems_name, track_stems, tagged_file_name, tagged_file, price, samples, description, '' as license_id, 'beat' as type ";
+        $query_beat .= "FROM st_audio ";
+        $query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
+        if (!empty($audio_id)) {
+            $query_beat .= "AND id = '" . $audio_id . "' ";
+        }
+        if (!empty($genre)) {
+            $genres = explode(',', $genre);
+            $query_beat .= "AND genre_id in ('" . $genres . "') ";
+        }
+        if (!empty($tag)) {
+            $query_beat .= "AND (title LIKE '%" . $tag . "%' OR tags LIKE '%" . $tag . "%') ";
+        }
+        if (!empty($bpm_min)) {
+            $query_beat .= "AND bpm >= '" . $bpm_min . "' ";
+        }
+        if (!empty($bpm_max)) {
+            $query_beat .= "AND bpm <= '" . $bpm_max . "' ";
+        }
+        //
+        //
+        //
+        $query_pack = "SELECT ";
+        $query_pack .= "id, created_at, user_id, status_id, title, '' as bpm, '' as key_id, coverart, public, publish_at, sort, genre_id, track_type, tags, '' as untagged_mp3, '' as untagged_wav_name, '' as untagged_wav, '' as track_stems_name, '' as track_stems, '' as tagged_file_name, '' as tagged_file, price, '' as samples, description, license_id, 'pack' as type ";
+        $query_pack .= "FROM st_album ";
+        $query_pack .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
+        if (!empty($audio_id)) {
+            $query_pack .= "id = '" . $audio_id . "'";
+        }
+        if (!empty($genre)) {
+            $genres = explode(',', $genre);
+            $query_pack .= "AND genre_id in ('" . $genres . "') ";
+        }
+        if (!empty($tag)) {
+            $query_pack .= "AND (title LIKE '%" . $tag . "%' OR tags LIKE '%" . $tag . "%') ";
+        }
+        //END QUERY
+        if ($beat_type == 'beat') {
+            $sql = $query_beat;
+        } elseif ($beat_type == 'pack') {
+            $sql = $query_pack;
+        } else {
+            $sql = "SELECT * FROM ( " . $query_beat . " UNION ALL " . $query_pack . ") Beats ";
+        }
+        if ($sort == 'default') {
+            $sql .= " order by sort";
+        } elseif ($sort == 'new') {
+            $sql .= " order by id DESC ";
+        } elseif ($sort == 'price_low') {
+            $sql .= " order by price";
+        } elseif ($sort == 'price_high') {
+            $sql .= " order by price DESC";
+        } elseif ($sort == 'best') {
+            $sql .= " order by sort"; //TEMP UNTIL DEFINE BEST
+        } else {
+            $this->db->order_by('sort');
+            $sql .= " order by sort";
+        }
+        if (!empty($limit)) {
+            $sql .= " limit " . $offset . " , " . $limit;
+        }
+
+
+        $query = $this->db->query($sql);
         $result = $query->result_array();
         $query->free_result();
         return $result;
