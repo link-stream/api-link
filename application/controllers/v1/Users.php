@@ -243,8 +243,6 @@ class Users extends RestController {
                 $register_user = $this->User_model->fetch_user_by_search(array('user_name' => $value));
             } elseif ($type == 'email') {
                 $register_user = $this->User_model->fetch_user_by_search(array('email' => $value));
-            } elseif ($type == 'url') {
-                $register_user = $this->User_model->fetch_user_by_search(array('url' => $value));
             } else {
                 if (!empty($id)) {
                     $register_user = $this->User_model->fetch_user_url_availability($id, $value);
