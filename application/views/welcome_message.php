@@ -2406,6 +2406,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>GET Profile Genres:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/genres/{producer_id}/{type}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>producer_id</li>
+                    <li>type {beats or kits or videos}</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "2",
+            "genre": "Custom"
+        },
+        {
+            "id": "3",
+            "genre": "Hip-hop & Rap"
+        },
+        {
+            "id": "4",
+            "genre": "Alternative Rock"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
 
 

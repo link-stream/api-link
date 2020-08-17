@@ -146,4 +146,12 @@ class Video_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_videos_genres_by_profile($user_id) {
+        $sql = "SELECT b.id, b.genre FROM st_video a inner join st_genre b on a.genre_id = b.id where a.user_id = '" . $user_id . "' AND a.status_id <> '3' AND a.public = '1'  group by b.id ";
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

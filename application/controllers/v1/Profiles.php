@@ -711,4 +711,21 @@ class Profiles extends RestController {
         }
     }
 
+    public function genres_get($id = null, $type = null) {
+        if (!empty($id) && !empty($type)) {
+            $genres = [];
+            if ($type == 'beats') {
+                $genres = $this->Audio_model->fetch_beats_genres_by_profile($id);
+            } elseif ($type == 'kits') {
+                $genres = $this->Audio_model->fetch_sound_kits_genres_by_profile($id);
+            } elseif ($type == 'videos') {
+                $genres = $this->Video_model->fetch_videos_genres_by_profile($id);
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID AND/OR Type';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
