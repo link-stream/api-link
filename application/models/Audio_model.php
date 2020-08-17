@@ -453,6 +453,7 @@ class Audio_model extends CI_Model {
         }
         if (!empty($genre)) {
             $genres = explode(',', $genre);
+            $genres = implode(",", $genres);
             $query_beat .= "AND genre_id in ('" . $genres . "') ";
         }
         if (!empty($tag)) {
@@ -476,6 +477,7 @@ class Audio_model extends CI_Model {
         }
         if (!empty($genre)) {
             $genres = explode(',', $genre);
+            $genres = implode(",", $genres);
             $query_pack .= "AND genre_id in ('" . $genres . "') ";
         }
         if (!empty($tag)) {
