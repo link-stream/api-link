@@ -452,8 +452,13 @@ class Audio_model extends CI_Model {
             $query_beat .= "AND id = '" . $audio_id . "' ";
         }
         if (!empty($genre)) {
+            //print_r($genre);
             $genres = explode(',', $genre);
-            $genres = implode(",", $genres);
+            //print_r($genres);
+            $genres = implode("','", $genres);
+            //print_r($genres);
+            //$genres = "'".$genres."'";
+            //print_r($genres);
             $query_beat .= "AND genre_id in ('" . $genres . "') ";
         }
         if (!empty($tag)) {
@@ -476,8 +481,13 @@ class Audio_model extends CI_Model {
             $query_pack .= "id = '" . $audio_id . "'";
         }
         if (!empty($genre)) {
+             //print_r($genre);
             $genres = explode(',', $genre);
-            $genres = implode(",", $genres);
+            //print_r($genres);
+            $genres = implode("','", $genres);
+            //print_r($genres);
+            //$genres = "'".$genres."'";
+            //print_r($genres);
             $query_pack .= "AND genre_id in ('" . $genres . "') ";
         }
         if (!empty($tag)) {
