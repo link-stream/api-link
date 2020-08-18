@@ -332,7 +332,7 @@ class Albums extends RestController {
             //REPONSE
             $audio_response = $this->Album_model->fetch_album_by_id($id);
             $audio_response = $this->album_clean($audio_response);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The album has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album/Beat Pack has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide complete album info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -413,7 +413,7 @@ class Albums extends RestController {
                 //REPONSE
                 $audio_response = $this->Album_model->fetch_album_by_id($id);
                 $audio_response = $this->album_clean($audio_response);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album info has been updated successfully.', 'data' => $audio_response), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album/Beat Pack info has been updated successfully.', 'data' => $audio_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Album Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -443,7 +443,7 @@ class Albums extends RestController {
                 $sort = $video['sort'];
                 $this->Album_model->update_album($id, array('sort' => $sort));
             }
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the albums has been updated correctly'), RestController::HTTP_OK);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The information of the Album/Beat Pack has been updated correctly'), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide list of albums.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -458,7 +458,7 @@ class Albums extends RestController {
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
                 }
                 $this->Album_model->update_album($id, ['status_id' => '3']);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album has been deleted successfully.'), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Album/Beat Pack has been deleted successfully.'), RestController::HTTP_OK);
             } else {
                 $this->error = 'Album Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
