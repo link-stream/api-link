@@ -16,6 +16,7 @@ class Profiles extends RestController {
     private $s3_folder;
     private $s3_coverart;
     private $temp_dir;
+    private $s3_audio;
 
     public function __construct() {
         parent::__construct();
@@ -31,6 +32,7 @@ class Profiles extends RestController {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_folder = 'Profile';
         $this->s3_coverart = 'Coverart';
+        $this->s3_audio = 'Audio';
         $this->temp_dir = $this->general_library->get_temp_dir();
     }
 
@@ -526,6 +528,15 @@ class Profiles extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
+                if (!empty($audio_id)) {
+                    if (empty($beat_type)) {
+                        $this->error = 'Provide Type';
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    } elseif ($beat_type != 'beat' & $beat_type != 'pack') {
+                        $this->error = 'Provide a Valid Type';
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                }
                 //$streamys = $this->Audio_model->fetch_beat_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $sort, $limit, $offset);
                 $streamys = $this->Audio_model->fetch_beats_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort, $limit, $offset);
                 $audios = [];

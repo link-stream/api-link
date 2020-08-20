@@ -478,7 +478,7 @@ class Audio_model extends CI_Model {
         $query_pack .= "FROM st_album ";
         $query_pack .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
         if (!empty($audio_id)) {
-            $query_pack .= "id = '" . $audio_id . "'";
+            $query_pack .= "AND id = '" . $audio_id . "'";
         }
         if (!empty($genre)) {
              //print_r($genre);
