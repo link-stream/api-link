@@ -21,7 +21,7 @@ class Profiles extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Video_model', 'Link_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Video_model', 'Link_model','License_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         //Helpers
@@ -735,6 +735,27 @@ class Profiles extends RestController {
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $genres), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID AND/OR Type';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function licenses_get($id = null, $license_id = null) {
+        if (!empty($id)) {
+            $licenses = $this->License_model->fetch_licenses_by_user_id($id, $license_id);
+            $licenses_reponse = [];
+            if (!empty($licenses)) {
+                foreach ($licenses as $license) {
+                    //Define if user can use the license (PENDING) ***** 
+                    $license['license_available'] = true;
+                    $licenses_reponse[] = $license;
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $licenses_reponse), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Licenses Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

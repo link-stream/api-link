@@ -2440,6 +2440,49 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>GET Profile Licenses:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/licenses/{producer_id}/{license_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>producer_id</li>
+                    <li>license_id (optional)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "user_id": "35",
+            "status_id": "1",
+            "title": "Standard License",
+            "descripcion": "Untagged MP3",
+            "price": "30.00",
+            "mp3": "1",
+            "wav": "0",
+            "trackout_stems": "0",
+            "distribution_copies": "0",
+            "free_download": "0",
+            "audio_streams": "0",
+            "music_videos": "0",
+            "video_streams": "0",
+            "broadcasting_rights": "0",
+            "radio_station": "0",
+            "paid_performances": "0",
+            "non_profit_performances": "Unlimited",
+            "license_available": true
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
 
 
