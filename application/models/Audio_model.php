@@ -511,6 +511,8 @@ class Audio_model extends CI_Model {
             $sql .= " order by price DESC";
         } elseif ($sort == 'best') {
             $sql .= " order by sort"; //TEMP UNTIL DEFINE BEST
+        }elseif ($sort == 'random') {
+            $sql .= " order by RAND()"; 
         } else {
             $this->db->order_by('sort');
             $sql .= " order by sort";
