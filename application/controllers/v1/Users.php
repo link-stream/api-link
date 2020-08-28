@@ -22,7 +22,7 @@ class Users extends RestController {
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
         //Helpers
         $this->load->helper(array('email'));
         //VARS
@@ -761,7 +761,6 @@ class Users extends RestController {
             $exp_month = substr($expiration_date, 0, 2);
             $exp_year = substr($expiration_date, 3);
             //Create_payment_method
-            $this->load->library('Stripe_library');
             $type = 'card';
             $card = [
                 'number' => $cc_number,
@@ -769,6 +768,10 @@ class Users extends RestController {
                 'exp_year' => $exp_year,
                 'cvc' => $cvv,
             ];
+            $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+            if (empty($payment_methods)) {
+                $payment_method['is_default'] = 1;
+            }
             $response = $this->stripe_library->create_payment_method($type, $card);
             if ($response['status']) {
                 //response true Save in DB
@@ -942,6 +945,21 @@ class Users extends RestController {
             $this->error = 'Provide Notification ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function create_stripe_customer($user_id) {
+        $register_user = $this->User_model->fetch_user_by_id($user_id);
+        $email = $register_user['email'];
+        $name = $register_user['first_name'] . ' ' . $register_user['last_name'];
+        $phone = '';
+        $description = 'LinkStream Customer ' . $user_id;
+        $address = [];
+        $shipping = [];
+        $metadata = ['linkstream_user_id' => $user_id];
+        $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+
+        $payment_method = 'pm_1HKwSBKagYlVQcNzKWfBxuZd';
+        $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
     }
 
 }
