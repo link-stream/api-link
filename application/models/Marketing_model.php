@@ -41,7 +41,7 @@ class Marketing_model extends CI_Model {
         $this->db->insert('st_marketing_messages', $data);
         return $this->db->insert_id();
     }
-    
+
     public function fetch_message_by_id($id) {
         $this->db->from('st_marketing_messages');
         $this->db->where('id', $id);
@@ -50,10 +50,62 @@ class Marketing_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
-     public function update_message($id, $data) {
+
+    public function update_message($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('st_marketing_messages', $data);
+    }
+
+    public function fetch_subscribers_by_user_id($user_id, $subscriber_id, $search, $deleted = false, $limit = 0, $offset = 0) {
+        $this->db->from('st_marketing_subscribers');
+        $this->db->where('user_id', $user_id);
+//        if (!$deleted) {
+//            $this->db->where('status <> ', 'Deleted');
+//        }
+        if (!empty($subscriber_id)) {
+            $this->db->where('id', $subscriber_id);
+        }
+        if (!empty($search)) {
+            $this->db->where("(`name` LIKE '%$search%' OR `email` LIKE '%$search%' OR `phone` LIKE '%$search%')", null, false);
+        }
+        $this->db->order_by('name');
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_subscriber($data) {
+        $this->db->insert('st_marketing_subscribers', $data);
+        return $this->db->insert_id();
+    }
+
+    public function fetch_subscriber_by_id($id) {
+        $this->db->from('st_marketing_subscribers');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_subscriber($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_marketing_subscribers', $data);
+    }
+
+    public function fetch_subscribers_tags_by_user_id($user_id) {
+        $this->db->select('tags');
+        $this->db->from('st_marketing_subscribers');
+        $this->db->where('user_id', $user_id);
+        $this->db->group_by('tags');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
     }
 
     public function insert_link($data) {

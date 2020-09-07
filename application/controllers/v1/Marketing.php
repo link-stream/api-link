@@ -165,7 +165,7 @@ class Marketing extends RestController {
                 //REPONSE
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The message info has been updated successfully.', 'data' => $message_cleaned), RestController::HTTP_OK);
             } else {
-                $this->error = 'Meessage Not Found.';
+                $this->error = 'Message Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } else {
@@ -193,17 +193,26 @@ class Marketing extends RestController {
         }
     }
 
-    public function subscribers_sent_to_get($id = null) {
+    public function messages_sent_to_get($id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             //ACTIONS
             $list = [
-                'all' => 'All Subscribers in Audience',
-                'new' => 'New Subscribers'
+                'all-subscribers' => 'All Subscribers in Audience',
+                'new-subscribers' => 'New Subscribers'
             ];
             //ADD Tags Subscriber to $list
+            $tags_list = $this->Marketing_model->fetch_subscribers_tags_by_user_id($id);
+            foreach ($tags_list as $tags) {
+                if (!empty($tags['tags'])) {
+                    $tags_ar = explode(',', $tags['tags']);
+                    foreach ($tags_ar as $tag) {
+                        $list[trim(strtolower($tag))] = trim(strtolower($tag));
+                    }
+                }
+            }
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $list), RestController::HTTP_OK);
             //END ACTIONS
         } else {
@@ -211,6 +220,95 @@ class Marketing extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+
+    public function subscribers_get($id = null, $subscriber_id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            //ACTIONS
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            $search = (!empty($this->input->get('search'))) ? $this->input->get('search', TRUE) : '';
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+            $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+            $limit = $page_size;
+            $subscribers = $this->Marketing_model->fetch_subscribers_by_user_id($id, $subscriber_id, $search, false, $limit, $offset);
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $subscribers), RestController::HTTP_OK);
+            //END ACTIONS
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function subscribers_post() {
+        $subscriber = [];
+        $subscriber['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $subscriber['email'] = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
+        $subscriber['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
+        if ((!empty($subscriber['user_id']) && (!empty($subscriber['email']) || !empty($subscriber['phone'])))) {
+            if (!$this->general_library->header_token($subscriber['user_id'])) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $subscriber['name'] = (!empty($this->input->post('name'))) ? $this->input->post('name') : '';
+            $subscriber['birthday'] = (!empty($this->input->post('birthday'))) ? $this->input->post('birthday') : '';
+            $subscriber['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
+            $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
+            $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
+            $subscriber['id'] = $this->Marketing_model->insert_subscriber($subscriber);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The subscriber has been created successfully.', 'id' => $subscriber['id'], 'data' => $subscriber), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide complete subscriber info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function subscribers_put($id = null) {
+        if (!empty($id)) {
+            $subscriber = $this->Marketing_model->fetch_subscriber_by_id($id);
+            if (!empty($subscriber)) {
+                if (!$this->general_library->header_token($subscriber['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if (!empty($this->put('email'))) {
+                    $subscriber['email'] = $this->put('email');
+                }
+                if (!empty($this->put('phone'))) {
+                    $subscriber['phone'] = $this->put('phone');
+                }
+                if (!empty($this->put('name'))) {
+                    $subscriber['name'] = $this->put('name');
+                }
+                if (!empty($this->put('birthday'))) {
+                    $subscriber['birthday'] = $this->put('birthday');
+                }
+                if (!empty($this->put('tags'))) {
+                    $subscriber['tags'] = $this->put('tags');
+                }
+                $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
+                $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
+
+                $this->Marketing_model->update_subscriber($id, $subscriber);
+                //REPONSE
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The subscriber info has been updated successfully.', 'data' => $subscriber), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Subscriber Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Subscriber ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    //
+    //
+    //
+    //
 
     private function image_decode_put($image) {
         preg_match("/^data:image\/(.*);base64/i", $image, $match);
