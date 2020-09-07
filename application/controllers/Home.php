@@ -207,4 +207,6 @@ class Home extends CI_Controller {
         $this->load->view($this->loc_path . '/legal', $data);
     }
 
+    
+
 }

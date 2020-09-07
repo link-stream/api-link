@@ -1230,6 +1230,10 @@ class App extends CI_Controller {
         }
     }
 
+    public function confirm_account() {
+        echo 'AAAA';
+    }
+
     public function audio_content($name = null) {
         $path = (ENV == 'live') ? 'Prod/Audio/' : 'Dev/Audio/';
         $file = 'https://s3.us-east-2.amazonaws.com/files.link.stream/' . $path . $name;
@@ -2484,81 +2488,11 @@ class App extends CI_Controller {
 //        echo '<br>';
 //    }
 
-    public function create_payment_method() {
-        $this->load->library('Stripe_library');
-        $number = '4242424242424242';
-        $exp_month = 6;
-        $exp_year = 2021;
-        $cvc = '314';
-        //$name = 'Paolo Maledeto';
-        //$zip = '33312';
-        $type = 'card';
-        $card = [
-            'number' => $number,
-            'exp_month' => $exp_month,
-            'exp_year' => $exp_year,
-            'cvc' => $cvc,
-        ];
-        $response = $this->stripe_library->create_payment_method($type, $card);
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-        echo '<br>';
-    }
 
-    public function create_customer() {
-        $this->load->library('Stripe_library');
-        $email = 'paul@linkstream.com';
-        $name = 'Paolo Test';
-        $phone = ''; //'1111111111';
-        $description = 'My First Test Customer (created for API docs)';
-//        $line1 = '2210 Coral Reef Ct';
-//        $line2 = '';
-//        $city = 'Fort Lauderdale';
-//        $state = 'FL';
-//        $postal_code = '33312';
-//        $country = 'US';
-        $address = [
-//            'line1' => $line1,
-//            'line2' => $line2,
-//            'city' => $city,
-//            'state' => $state,
-//            'postal_code' => $postal_code,
-//            'country' => $country
-        ];
-        $shipping = [
-//            'name' => $name,
-//            'address' => [
-//                'line1' => $line1,
-//                'line2' => $line2,
-//                'city' => $city,
-//                'state' => $state,
-//                'postal_code' => $postal_code,
-//                'country' => $country
-//            ]
-        ];
-        $payment_method = 'pm_1H8dcTKagYlVQcNzZcbcv4T9';
-        $metadata = ['ls_user_id' => '35'];
-        $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-        echo '<br>';
-    }
 
-    public function create_subscription() {
-        $this->load->library('Stripe_library');
-        $customer_id = 'cus_Hi3lV5d9auUCg5';
-        $plan = '';
-        $price = 'price_1H8cVfKagYlVQcNztyGC8hdY';
 
-        $default_payment_method = '';
-        $response = $this->stripe_library->create_subscription($customer_id, $plan, $price, $default_payment_method);
-        echo '<pre>';
-        print_r($response);
-        echo '</pre>';
-        echo '<br>';
-    }
+
+
 
     public function fetch_subscription() {
         $this->load->library('Stripe');
@@ -3333,4 +3267,155 @@ paypal.use( ["login"], function (login) {
 </body>");
     }
 
+    //STRIPE FINAL
+    //PASO 1 Crear payment_method por cada credit card 
+    public function create_payment_method() {
+        $this->load->library('Stripe_library');
+        $number = '4242424242424242';
+        $exp_month = 6;
+        $exp_year = 2021;
+        $cvc = '314';
+        //$name = 'Paolo Maledeto';
+        //$zip = '33312';
+        $type = 'card';
+        $card = [
+            'number' => $number,
+            'exp_month' => $exp_month,
+            'exp_year' => $exp_year,
+            'cvc' => $cvc,
+        ];
+        $response = $this->stripe_library->create_payment_method($type, $card);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    //PASO 2 Suscribirse
+    //2.1 Crear el Cliente con el Metodo de pago seleccionado.
+    //EN LA APP Cuando el cliente agrega un payment method se crear el cliente(si ya no existe) y guardar el cliente en tabla????
+    public function create_customer() {
+        $this->load->library('Stripe_library');
+        $email = 'paul@linkstream.com';
+        $name = 'Paolo Test';
+        $phone = ''; //'1111111111';
+        $description = 'My First Test Customer (created for API docs)';
+//        $line1 = '2210 Coral Reef Ct';
+//        $line2 = '';
+//        $city = 'Fort Lauderdale';
+//        $state = 'FL';
+//        $postal_code = '33312';
+//        $country = 'US';
+        $address = [
+//            'line1' => $line1,
+//            'line2' => $line2,
+//            'city' => $city,
+//            'state' => $state,
+//            'postal_code' => $postal_code,
+//            'country' => $country
+        ];
+        $shipping = [
+//            'name' => $name,
+//            'address' => [
+//                'line1' => $line1,
+//                'line2' => $line2,
+//                'city' => $city,
+//                'state' => $state,
+//                'postal_code' => $postal_code,
+//                'country' => $country
+//            ]
+        ];
+        $payment_method = 'pm_1HKwSBKagYlVQcNzKWfBxuZd';
+        $metadata = ['ls_user_id' => '100'];
+        $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    //2.2 CREAR SUSCRIPCION CON CUSTOMER ID Y CON PRODUCTO definido previamente en stripe
+    //*LOS PRODUCTOS Y PRECIOS DEBEN ESTAR DEFINIDOS EN LA TABLA user_plan(agregar prod id y price id de stripe)
+    //PRICES: prod_HumHoGxSvPjFr9 - price_1HKwjDKagYlVQcNzDE7TlNaL - $ 49.99 
+    //AL CREAR LA SUSCRIPCION UNA VEZ EL CLIENTE SELECCIONA EL PLAN Y SELECCIONA EL METODO DE PAGO SE OBTIENE EL Subscription ID EXAMPLE (sub_HumMuAwWYqxxkT) guardar en tabla???
+    public function create_subscription() {
+        $this->load->library('Stripe_library');
+        $customer_id = 'cus_Hum2ongahI9IfG';
+        $plan = '';
+        $price = 'price_1HKwjDKagYlVQcNzDE7TlNaL';
+
+        $default_payment_method = '';
+        $response = $this->stripe_library->create_subscription($customer_id, $plan, $price, $default_payment_method);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    //
+    //
+    //CREA LA CUENTA EN STRIPE. - GUARDAR LA INFO EN TABLA?
+    public function express_account_complex() {
+        $this->load->library('Stripe_library');
+        $country = 'US';
+        $email = 'paolofq@gmail.com';
+        $first_name = 'Paul';
+        $last_name = 'Ferra';
+        $url = 'link.stream/paolo_linkstream';
+
+
+        $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+        $account_holder_name = $first_name . ' ' . $last_name;
+        $account_holder_type = 'individual'; //company
+        $routing_number = '111000000';
+        $account_number = '000123456789';
+        $external_account = [
+            'object' => 'bank_account',
+            'country' => $country,
+            //'currency' => $currency,
+            'account_holder_name' => $account_holder_name,
+            'account_holder_type' => $account_holder_type,
+            'routing_number' => $routing_number,
+            'account_number' => $account_number
+        ];
+        $business_profile = [
+            'url' => $url,
+            'name' => $account_holder_name
+        ];
+        $individual = [
+            'first_name' => $first_name,
+            'last_name' => $last_name
+        ];
+        $tos_acceptance = [
+            'date' => time(),
+            'ip' => $_SERVER['REMOTE_ADDR'], // Assumes you're not using a proxy
+        ];
+        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    public function express_account() {
+        $this->load->library('Stripe_library');
+        $country = 'US';
+        $response = $this->stripe_library->express_account($country);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    public function account_link() {
+        $this->load->library('Stripe_library');
+        $account = 'acct_1HJ6phHN6DGoTPKH';
+        $response = $this->stripe_library->account_link($account);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
+    //END STRIPE FINAL
 }

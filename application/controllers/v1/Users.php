@@ -785,7 +785,10 @@ class Users extends RestController {
                 $payment_method['cvv'] = $cvv;
                 $payment_method['payment_method_key'] = $response['payment_method_id'];
                 $this->User_model->insert_payment_method($payment_method);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.'), RestController::HTTP_OK);
+                //STRIPE CUSTOMER
+                $customer_response = $this->create_stripe_customer($user_id);
+                //
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.', 'customer' => $customer_response), RestController::HTTP_OK);
             } else {
                 $this->error = $response['error'];
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -948,6 +951,7 @@ class Users extends RestController {
     }
 
     private function create_stripe_customer($user_id) {
+        $response = [];
         $register_user = $this->User_model->fetch_user_by_id($user_id);
         $email = $register_user['email'];
         $name = $register_user['first_name'] . ' ' . $register_user['last_name'];
@@ -956,10 +960,103 @@ class Users extends RestController {
         $address = [];
         $shipping = [];
         $metadata = ['linkstream_user_id' => $user_id];
+        $payment_method_key = '';
         $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+        if (!empty($payment_methods)) {
+            foreach ($payment_methods as $cc) {
+                if ($cc['is_default']) {
+                    $payment_method_key = $cc['payment_method_key'];
+                }
+            }
+            $subscription_account = $this->User_model->fetch_user_subscriptions_by_user_id($user_id, 'Stripe');
+            if (empty($subscription_account)) {
+                $customer = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method_key, $description, $metadata);
+                if ($customer['status']) {
+                    $response = ['status' => true, 'customer_id' => $customer['customer_id']];
+                    $this->User_model->insert_user_subscriptions(['customer_id' => $customer['customer_id'], 'user_id' => $user_id, 'processor' => 'Stripe', 'status' => 'ACTIVE']);
+                    //$this->User_model->update_subscriptions_by_user_id($user_id, ['customer_id' => $customer['customer_id']]);
+                } else {
+                    $response = ['status' => false, 'msg' => $customer['error']];
+                }
+            } else {
+                $response = ['status' => false, 'msg' => 'Exist Subscription Account'];
+            }
+        } else {
+            $response = ['status' => false, 'msg' => 'No Payment Method'];
+        }
+        return $response;
+    }
 
-        $payment_method = 'pm_1HKwSBKagYlVQcNzKWfBxuZd';
-        $response = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method, $description, $metadata);
+    public function connect_account_post() {
+        $connect_account = [];
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $holder_name = (!empty($this->input->post('holder_name'))) ? $this->input->post('holder_name') : '';
+            $routing_number = (!empty($this->input->post('routing_number'))) ? $this->input->post('routing_number') : '';
+            $account_number = (!empty($this->input->post('account_number'))) ? $this->input->post('account_number') : '';
+            //Connect Account
+            $express_account = $this->express_account_complex($user_id, $holder_name, $routing_number, $account_number);
+            if ($express_account['status']) {
+                $connect_account['account_id'] = $express_account['account_id'];
+                $connect_account['user_id'] = $user_id;
+                //$this->User_model->insert_payment_method($payment_method);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The account has been connected successfully.', 'account' => $express_account), RestController::HTTP_OK);
+            } else {
+                $this->error = $express_account['error'];
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function express_account_complex($user_id, $holder_name, $routing_number, $account_number) {
+        $response = [];
+        $register_user = $this->User_model->fetch_user_by_id($user_id);
+        $country = $register_user['country'];
+        $email = $register_user['email'];
+        $first_name = $register_user['first_name'];
+        $last_name = $register_user['last_name'];
+        $url = 'https://linkstream.com/' . $register_user['url'];
+//        $email = 'paolofq@gmail.com';
+//        $first_name = 'Paul';
+//        $last_name = 'Ferra';
+//        $url = 'link.stream/paolo_linkstream';
+        $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+        $account_holder_name = $holder_name;
+        $account_holder_type = 'individual'; //company
+        $routing_number = $routing_number;
+        $account_number = $account_number;
+//        $routing_number = '111000000';
+//        $account_number = '000123456789';
+        $external_account = [
+            'object' => 'bank_account',
+            'country' => $country,
+            //'currency' => $currency,
+            'account_holder_name' => $account_holder_name,
+            'account_holder_type' => $account_holder_type,
+            'routing_number' => $routing_number,
+            'account_number' => $account_number
+        ];
+        $business_profile = [
+            'url' => $url,
+            'name' => $account_holder_name,
+        ];
+        $individual = [
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email
+        ];
+        $tos_acceptance = [
+            'date' => time(),
+            'ip' => $_SERVER['REMOTE_ADDR'], // Assumes you're not using a proxy
+        ];
+        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
+        return $response;
     }
 
 }

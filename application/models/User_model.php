@@ -234,4 +234,26 @@ class User_model extends CI_Model {
         $this->db->update('st_user_notification', $data);
     }
 
+    //Subscriptions
+    public function fetch_user_subscriptions_by_user_id($user_id, $processor = 'Stripe') {
+        $this->db->from('st_user_subscriptions');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status', 'ACTIVE');
+        $this->db->where('processor', $processor);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_subscriptions_by_user_id($user_id, $data) {
+        $this->db->where('user_id', $user_id);
+        $this->db->update('st_user_subscriptions', $data);
+    }
+
+    public function insert_user_subscriptions($data) {
+        $this->db->insert('st_user_subscriptions', $data);
+        return $this->db->insert_id();
+    }
+
 }

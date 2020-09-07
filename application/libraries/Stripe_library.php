@@ -90,4 +90,111 @@ class Stripe_library {
         return $response;
     }
 
+    public function create_account($country, $email, $business_type, $external_account) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        $type = 'custom'; //API custom
+        $requested_capabilities = [
+            'card_payments',
+            'transfers',
+        ];
+        try {
+            $object = $this->stripe->accounts->create([
+                'type' => $type,
+                'country' => $country,
+                'email' => $email,
+                'business_type' => $business_type,
+                'requested_capabilities' => $requested_capabilities,
+                'external_account' => $external_account
+            ]);
+            echo '<pre>';
+            print_r($object);
+            echo '</pre>';
+//            $response['status'] = true;
+//            $response['payment_method_id'] = $object->id;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    //
+    public function express_account($country) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->accounts->create([
+                'country' => $country,
+                'type' => 'express',
+            ]);
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['account_id'] = $object->id;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    public function express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        $requested_capabilities = [
+            //'card_payments',
+            'transfers',
+        ];
+        try {
+            $object = $this->stripe->accounts->create([
+                'country' => $country,
+                'type' => 'custom',
+                'email' => $email,
+                'requested_capabilities' => $requested_capabilities,
+                'business_type' => $business_type,
+                'external_account' => $external_account,
+                'business_profile' => $business_profile,
+                'individual' => $individual,
+                'tos_acceptance' => $tos_acceptance
+            ]);
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['account_id'] = $object->id;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    public function account_link($account) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->accountLinks->create([
+                'account' => $account,
+                'refresh_url' => 'http://localhost/api.link.stream',
+                'return_url' => 'http://localhost/api.link.stream/app/confirm_account',
+                'type' => 'account_onboarding',
+            ]);
+            echo '<pre>';
+            print_r($object);
+            echo '</pre>';
+            $response['status'] = true;
+            $response['account_url'] = $object->url;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
 }
