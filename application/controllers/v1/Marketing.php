@@ -201,7 +201,9 @@ class Marketing extends RestController {
             //ACTIONS
             $list = [
                 'all-subscribers' => 'All Subscribers in Audience',
-                'new-subscribers' => 'New Subscribers'
+                'new-subscribers' => 'New Subscribers',
+                'purchase' => 'Has made a purchase',
+                'no-purchase' => "Hasn't Purchased yet"
             ];
             //ADD Tags Subscriber to $list
             $tags_list = $this->Marketing_model->fetch_subscribers_tags_by_user_id($id);
