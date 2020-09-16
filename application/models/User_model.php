@@ -256,4 +256,14 @@ class User_model extends CI_Model {
         return $this->db->insert_id();
     }
 
+    public function insert_user_connect($data) {
+        $this->db->insert('st_user_connect', $data);
+        return $this->db->insert_id();
+    }
+
+    public function update_connect_by_user_id($user_id, $account_id, $data) {
+        $this->db->where(array('user_id' => $user_id, 'account_id' => $account_id));
+        $this->db->update('st_user_connect', $data);
+    }
+
 }

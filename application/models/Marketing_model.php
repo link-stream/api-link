@@ -108,6 +108,38 @@ class Marketing_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_media_files_by_user_id($user_id, $media_id) {
+        $this->db->from('st_user_media_files');
+        $this->db->where('user_id', $user_id);
+        if (!empty($media_id)) {
+            $this->db->where('id', $media_id);
+        }
+        $this->db->where('status', 'ACTIVE');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_media_file($data) {
+        $this->db->insert('st_user_media_files', $data);
+        return $this->db->insert_id();
+    }
+
+    public function fetch_media_files_by_id($id) {
+        $this->db->from('st_user_media_files');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_media_files($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_media_files', $data);
+    }
+
     public function insert_link($data) {
         $this->db->insert('st_link', $data);
         return $this->db->insert_id();

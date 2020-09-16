@@ -987,25 +987,34 @@ class Users extends RestController {
         return $response;
     }
 
-    public function connect_account_post() {
-        $connect_account = [];
+    public function connect_stripe_account_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
-            $holder_name = (!empty($this->input->post('holder_name'))) ? $this->input->post('holder_name') : '';
-            $routing_number = (!empty($this->input->post('routing_number'))) ? $this->input->post('routing_number') : '';
-            $account_number = (!empty($this->input->post('account_number'))) ? $this->input->post('account_number') : '';
-            //Connect Account
-            $express_account = $this->express_account_complex($user_id, $holder_name, $routing_number, $account_number);
-            if ($express_account['status']) {
-                $connect_account['account_id'] = $express_account['account_id'];
-                $connect_account['user_id'] = $user_id;
-                //$this->User_model->insert_payment_method($payment_method);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The account has been connected successfully.', 'account' => $express_account), RestController::HTTP_OK);
+            $register_user = $this->User_model->fetch_user_by_id($user_id);
+            if (!empty($register_user)) {
+                $stripe_response = $this->stripe_library->express_account($register_user['country'], $register_user['email']);
+                if ($stripe_response['status']) {
+                    $account_id = $stripe_response['account_id'];
+                    //Guardar Account ID **
+                    $this->User_model->insert_user_connect(['user_id' => $user_id, 'processor' => 'Stripe', 'account_id' => $account_id]);
+                    //Crear Link
+                    $stripe_response = $this->stripe_library->account_link($account_id);
+                    if ($stripe_response['status']) {
+                        $account_url = $stripe_response['account_url'];
+                        $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'account_url' => $account_url), RestController::HTTP_OK);
+                    } else {
+                        $this->error = $stripe_response['error'];
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $this->error = $stripe_response['error'];
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
             } else {
-                $this->error = $express_account['error'];
+                $this->error = 'User Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } else {
@@ -1014,49 +1023,111 @@ class Users extends RestController {
         }
     }
 
-    private function express_account_complex($user_id, $holder_name, $routing_number, $account_number) {
-        $response = [];
-        $register_user = $this->User_model->fetch_user_by_id($user_id);
-        $country = $register_user['country'];
-        $email = $register_user['email'];
-        $first_name = $register_user['first_name'];
-        $last_name = $register_user['last_name'];
-        $url = 'https://linkstream.com/' . $register_user['url'];
-//        $email = 'paolofq@gmail.com';
-//        $first_name = 'Paul';
-//        $last_name = 'Ferra';
-//        $url = 'link.stream/paolo_linkstream';
-        $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
-        $account_holder_name = $holder_name;
-        $account_holder_type = 'individual'; //company
-        $routing_number = $routing_number;
-        $account_number = $account_number;
-//        $routing_number = '111000000';
-//        $account_number = '000123456789';
-        $external_account = [
-            'object' => 'bank_account',
-            'country' => $country,
-            //'currency' => $currency,
-            'account_holder_name' => $account_holder_name,
-            'account_holder_type' => $account_holder_type,
-            'routing_number' => $routing_number,
-            'account_number' => $account_number
-        ];
-        $business_profile = [
-            'url' => $url,
-            'name' => $account_holder_name,
-        ];
-        $individual = [
-            'first_name' => $first_name,
-            'last_name' => $last_name,
-            'email' => $email
-        ];
-        $tos_acceptance = [
-            'date' => time(),
-            'ip' => $_SERVER['REMOTE_ADDR'], // Assumes you're not using a proxy
-        ];
-        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
-        return $response;
+    public function confirm_stripe_account_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $account_id = (!empty($this->input->post('account_id'))) ? $this->input->post('account_id') : '';
+        if (!empty($user_id) || !empty($account_id)) {
+            //LLAMAR API PARA CONFIRMAR ACCOUNT.
+            $stripe_response = $this->stripe_library->retrieve_account($account_id);
+            if ($stripe_response['status']) {
+                if ($stripe_response['payouts_enabled']) {
+                    //UPDATE Account ID
+                    $this->User_model->update_connect_by_user_id($user_id, $account_id, ['payouts_enabled' => 1, 'status' => 'ACTIVE']);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'payouts_enabled' => $stripe_response['payouts_enabled']), RestController::HTTP_OK);
+            } else {
+                $this->error = $stripe_response['error'];
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID and/or Account ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
+    public function decline_stripe_account_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $account_id = (!empty($this->input->post('account_id'))) ? $this->input->post('account_id') : '';
+        if (!empty($user_id) || !empty($account_id)) {
+
+            //UPDATE Account ID
+            $this->User_model->update_connect_by_user_id($user_id, $account_id, ['status' => 'DECLINED']);
+            $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID and/or Account ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+//    public function connect_account_post() {
+//        $connect_account = [];
+//        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+//        if (!empty($user_id)) {
+//            if (!$this->general_library->header_token($user_id)) {
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//            }
+//            $holder_name = (!empty($this->input->post('holder_name'))) ? $this->input->post('holder_name') : '';
+//            $routing_number = (!empty($this->input->post('routing_number'))) ? $this->input->post('routing_number') : '';
+//            $account_number = (!empty($this->input->post('account_number'))) ? $this->input->post('account_number') : '';
+//            //Connect Account
+//            $express_account = $this->express_account_complex($user_id, $holder_name, $routing_number, $account_number);
+//            if ($express_account['status']) {
+//                $connect_account['account_id'] = $express_account['account_id'];
+//                $connect_account['user_id'] = $user_id;
+//                //$this->User_model->insert_payment_method($payment_method);
+//                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The account has been connected successfully.', 'account' => $express_account), RestController::HTTP_OK);
+//            } else {
+//                $this->error = $express_account['error'];
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//            }
+//        } else {
+//            $this->error = 'Provide User ID.';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        }
+//    }
+//
+//    private function express_account_complex($user_id, $holder_name, $routing_number, $account_number) {
+//        $response = [];
+//        $register_user = $this->User_model->fetch_user_by_id($user_id);
+//        $country = $register_user['country'];
+//        $email = $register_user['email'];
+//        $first_name = $register_user['first_name'];
+//        $last_name = $register_user['last_name'];
+//        $url = 'https://linkstream.com/' . $register_user['url'];
+////        $email = 'paolofq@gmail.com';
+////        $first_name = 'Paul';
+////        $last_name = 'Ferra';
+////        $url = 'link.stream/paolo_linkstream';
+//        $business_type = 'individual'; //individual-company-non_profit-government_entity(US only)
+//        $account_holder_name = $holder_name;
+//        $account_holder_type = 'individual'; //company
+//        $routing_number = $routing_number;
+//        $account_number = $account_number;
+////        $routing_number = '111000000';
+////        $account_number = '000123456789';
+//        $external_account = [
+//            'object' => 'bank_account',
+//            'country' => $country,
+//            //'currency' => $currency,
+//            'account_holder_name' => $account_holder_name,
+//            'account_holder_type' => $account_holder_type,
+//            'routing_number' => $routing_number,
+//            'account_number' => $account_number
+//        ];
+//        $business_profile = [
+//            'url' => $url,
+//            'name' => $account_holder_name,
+//        ];
+//        $individual = [
+//            'first_name' => $first_name,
+//            'last_name' => $last_name,
+//            'email' => $email
+//        ];
+//        $tos_acceptance = [
+//            'date' => time(),
+//            'ip' => $_SERVER['REMOTE_ADDR'], // Assumes you're not using a proxy
+//        ];
+//        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
+//        return $response;
+//    }
 }

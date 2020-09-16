@@ -15,6 +15,7 @@ class Marketing extends RestController {
     private $s3_path;
     private $s3_folder;
     private $temp_dir;
+    private $server_url = '';
 
     public function __construct() {
         parent::__construct();
@@ -28,8 +29,9 @@ class Marketing extends RestController {
         $this->error = '';
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $this->s3_folder = 'Coverart';
+        $this->s3_folder = 'Media';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
 //    public function example_get($id = null) {
@@ -56,6 +58,25 @@ class Marketing extends RestController {
         unset($message['publish_at']);
         unset($message['publish_end']);
         return $message;
+    }
+
+    private function image_decode_put($image, $user_id = null) {
+        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+        $ext = (!empty($match[1])) ? $match[1] : 'png';
+        $image_name = $user_id . '_' . md5(uniqid(rand(), true)) . '.' . $ext;
+        //upload image to server 
+        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //SAVE S3
+        $this->s3_push($image_name, $this->s3_folder);
+        return $image_name;
+    }
+
+    private function s3_push($file_name, $s3_folder) {
+        //SAVE S3
+        $source = $this->temp_dir . '/' . $file_name;
+        $destination = $this->s3_path . $s3_folder . '/' . $file_name;
+        $this->aws_s3->s3push($source, $destination, $this->bucket);
+        unlink($this->temp_dir . '/' . $file_name);
     }
 
     public function messages_get($id = null, $message_id = null) {
@@ -311,29 +332,82 @@ class Marketing extends RestController {
         }
     }
 
-    //
-    //
-    //
-    //
-
-    private function image_decode_put($image) {
-        preg_match("/^data:image\/(.*);base64/i", $image, $match);
-        $ext = (!empty($match[1])) ? $match[1] : '.png';
-        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
-        //upload image to server 
-        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
-        //SAVE S3
-        $this->s3_push($image_name);
-        return $image_name;
+    public function user_media_files_get($id = null, $media_id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            //ACTIONS
+            $files = $this->Marketing_model->fetch_media_files_by_user_id($id, $media_id);
+            $response = [];
+            foreach ($files as $file) {
+                $file['image_url'] = $this->server_url . $file['image_url'] . '/';
+                $response[] = $file;
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
+            //END ACTIONS
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
-    private function s3_push($image_name) {
-        //SAVE S3
-        $source = $this->temp_dir . '/' . $image_name;
-        $destination = $this->s3_path . $this->s3_folder . '/' . $image_name;
-        $this->aws_s3->s3push($source, $destination, $this->bucket);
-        unlink($this->temp_dir . '/' . $image_name);
+    public function user_media_files_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $media = (!empty($this->input->post('media'))) ? $this->input->post('media') : '';
+        if ((!empty($user_id) && !empty($media))) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $media_file = [];
+            $media_file['image_name'] = $this->image_decode_put($media, $user_id);
+            $media_file['image_url'] = $this->s3_path . $this->s3_folder;
+            $media_file['user_id'] = $user_id;
+            $media_file['status'] = 'ACTIVE';
+            $media_file['id'] = $this->Marketing_model->insert_media_file($media_file);
+            $media_file['image_url'] = $this->server_url . $media_file['image_url'] . '/';
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The media has been created successfully.', 'data' => $media_file), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide complete media info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
+
+    public function user_media_files_delete($id = null) {
+        if (!empty($id)) {
+            $message = $this->Marketing_model->fetch_media_files_by_id($id);
+            if (!empty($message)) {
+                if (!$this->general_library->header_token($message['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $this->Marketing_model->update_media_files($id, ['status' => 'DELETED']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The media has been deleted successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Media Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Media ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    //
+    //
+    //
+    //
+//    private function image_decode_put($image) {
+//        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+//        $ext = (!empty($match[1])) ? $match[1] : '.png';
+//        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+//        //upload image to server 
+//        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+//        //SAVE S3
+//        $this->s3_push($image_name);
+//        return $image_name;
+//    }
+
+
 
     private function link_clean($link, $images = true) {
         $link['scheduled'] = true;

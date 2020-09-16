@@ -121,13 +121,22 @@ class Stripe_library {
     }
 
     //
-    public function express_account($country) {
+    public function express_account($country, $email) {
         $response = [];
         $this->stripe = new \Stripe\StripeClient($this->secret_key);
         try {
+            $requested_capabilities = [
+                //'card_payments',
+                'transfers',
+            ];
             $object = $this->stripe->accounts->create([
+//                'country' => $country,
+//                'type' => 'custom',
+//                'email' => $email,
+//                'requested_capabilities' => $requested_capabilities,
+//                
                 'country' => $country,
-                'type' => 'express',
+                'type' => 'express'
             ]);
 //            echo '<pre>';
 //            print_r($object);
@@ -184,11 +193,31 @@ class Stripe_library {
                 'return_url' => 'http://localhost/api.link.stream/app/confirm_account',
                 'type' => 'account_onboarding',
             ]);
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['account_url'] = $object->url;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    public function retrieve_account($account) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->accounts->retrieve(
+                    $account
+            );
             echo '<pre>';
             print_r($object);
             echo '</pre>';
             $response['status'] = true;
-            $response['account_url'] = $object->url;
+            $response['payouts_enabled'] = $object->payouts_enabled;
         } catch (Exception $e) {
             $this->api_error = $e->getMessage();
             $response['status'] = false;
