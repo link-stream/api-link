@@ -101,6 +101,7 @@ class Marketing extends RestController {
             }
             $message['campaing_name'] = (!empty($this->input->post('campaing_name'))) ? $this->input->post('campaing_name') : '';
             $message['send_to'] = (!empty($this->input->post('send_to'))) ? $this->input->post('send_to') : '';
+            $message['reply_to_name'] = (!empty($this->input->post('reply_to_name'))) ? $this->input->post('reply_to_name') : '';
             $message['reply_to'] = (!empty($this->input->post('reply_to'))) ? $this->input->post('reply_to') : '';
             $message['subject'] = (!empty($this->input->post('subject'))) ? $this->input->post('subject') : '';
             $message['content'] = (!empty($this->input->post('content'))) ? $this->input->post('content') : '';
@@ -135,6 +136,9 @@ class Marketing extends RestController {
                 }
                 if (!empty($this->put('send_to'))) {
                     $message['send_to'] = $this->put('send_to');
+                }
+                if (!empty($this->put('reply_to_name'))) {
+                    $message['reply_to_name'] = $this->put('reply_to_name');
                 }
                 if (!empty($this->put('reply_to'))) {
                     $message['reply_to'] = $this->put('reply_to');
