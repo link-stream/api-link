@@ -248,6 +248,31 @@ class Marketing extends RestController {
         }
     }
 
+    public function tags_get($id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            //ACTIONS
+            $list = [];
+            //ADD Tags Subscriber to $list
+            $tags_list = $this->Marketing_model->fetch_subscribers_tags_by_user_id($id);
+            foreach ($tags_list as $tags) {
+                if (!empty($tags['tags'])) {
+                    $tags_ar = explode(',', $tags['tags']);
+                    foreach ($tags_ar as $tag) {
+                        $list[trim(strtolower($tag))] = trim(strtolower($tag));
+                    }
+                }
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $list), RestController::HTTP_OK);
+            //END ACTIONS
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function subscribers_get($id = null, $subscriber_id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
