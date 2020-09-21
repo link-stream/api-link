@@ -93,9 +93,23 @@ class Audios extends RestController {
         $ext = (!empty($match[1])) ? $match[1] : 'zip';
         $file_name = md5(uniqid(rand(), true)) . '.' . $ext;
         //upload image to server 
+        echo 'CREA: ' . $file_name;
+        echo '<br>';
+        //exit;
+        ///$file_data = file_get_contents($file);
+        ///file_put_contents($this->temp_dir . '/' . $file_name, $file_data);
         file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+        echo 'SALVA';
+        echo '<br>';
+        echo 'S3 INIT: ' . date("h:i:sa");
+        echo '<br>';
         //SAVE S3
-        $this->s3_push($file_name, $this->s3_audio);
+        //exit;
+        ////$this->s3_push($file_name, $this->s3_audio);
+        ////$this->s3_upload($file_name, $this->s3_audio, $file_data);
+        echo 'S3 END: ' . date("h:i:sa");
+        echo '<br>';
+        exit;
         return $file_name;
     }
 
@@ -104,6 +118,15 @@ class Audios extends RestController {
         $source = $this->temp_dir . '/' . $file_name;
         $destination = $this->s3_path . $s3_folder . '/' . $file_name;
         $this->aws_s3->s3push($source, $destination, $this->bucket);
+        unlink($this->temp_dir . '/' . $file_name);
+    }
+    
+    //
+    private function s3_upload($file_name, $s3_folder, $data) {
+        //SAVE S3
+        $source = $this->temp_dir . '/' . $file_name;
+        $destination = $this->s3_path . $s3_folder;
+        $this->aws_s3->s3_upload($this->bucket, $destination, $file_name, $data);
         unlink($this->temp_dir . '/' . $file_name);
     }
 
@@ -394,7 +417,7 @@ class Audios extends RestController {
         $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio['status_id'] = '1';
         $audio['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
-        if ((!empty($audio['user_id']) || !empty($audio['title']))) {
+        if ((!empty($audio['user_id']) && !empty($audio['title']))) {
             if (!$this->general_library->header_token($audio['user_id'])) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
