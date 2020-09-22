@@ -327,7 +327,7 @@ class Audios extends RestController {
                     $img_file = $audio['track_stems'];
                     file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
                     $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_track_stems'] = $src;
+                    $audio['data_track_stems'] = '';
 
                     //Audio List.
                     $zip = new ZipArchive;
