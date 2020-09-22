@@ -89,28 +89,14 @@ class Audios extends RestController {
     }
 
     private function file_decode_put($file) {
-        preg_match("/^data:file\/(.*);base64/i", $file, $match);
-        $ext = (!empty($match[1])) ? $match[1] : 'zip';
-        $file_name = md5(uniqid(rand(), true)) . '.' . $ext;
-        //upload image to server 
-        //echo 'CREA: ' . $file_name;
-        //echo '<br>';
-        //exit;
-        ///$file_data = file_get_contents($file);
-        ///file_put_contents($this->temp_dir . '/' . $file_name, $file_data);
-        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
-        //echo 'SALVA';
-        //echo '<br>';
-        //echo 'S3 INIT: ' . date("h:i:sa");
-        //echo '<br>';
-        //SAVE S3
-        //exit;
-        $this->s3_push($file_name, $this->s3_audio);
-        ////$this->s3_upload($file_name, $this->s3_audio, $file_data);
-        //echo 'S3 END: ' . date("h:i:sa");
-        //echo '<br>';
-        //exit;
-        return $file_name;
+//        preg_match("/^data:file\/(.*);base64/i", $file, $match);
+//        $ext = (!empty($match[1])) ? $match[1] : 'zip';
+//        $file_name = md5(uniqid(rand(), true)) . '.' . $ext;
+//        //upload image to server 
+//        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+//        $this->s3_push($file_name, $this->s3_audio);
+//        return $file_name;
+       return 'name.zip';
     }
 
     private function s3_push($file_name, $s3_folder) {
