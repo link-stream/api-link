@@ -381,6 +381,28 @@ class Marketing extends RestController {
         }
     }
 
+    public function subscribers_action_bulk_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : ''; //id list
+        if (!empty($user_id) && !empty($action) && !empty($list)) {
+            if ($action == 'unsubscribe' || $action == 'resubscribe') {
+                $links = json_decode($list, true);
+                foreach ($list as $id) {
+                    $status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
+                    $this->Marketing_model->update_subscriber($id, ['email_status' => $status, 'sms_status' => $status]);
+                    $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers updated successfully.'), RestController::HTTP_OK);
+                }
+            } else {
+                $this->error = 'Provide a valid action';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide complete subscriber info to update';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function user_media_files_get($id = null, $media_id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
