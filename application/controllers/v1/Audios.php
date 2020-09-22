@@ -96,7 +96,7 @@ class Audios extends RestController {
 //        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
 //        $this->s3_push($file_name, $this->s3_audio);
 //        return $file_name;
-       return 'name.zip';
+        return 'name.zip';
     }
 
     private function s3_push($file_name, $s3_folder) {
@@ -399,103 +399,108 @@ class Audios extends RestController {
     }
 
     public function index_post() {
-        ini_set('post_max_size', '64M');
-        ini_set('upload_max_filesize', '64M');
         $audio = [];
         $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio['status_id'] = '1';
         $audio['title'] = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
-        if ((!empty($audio['user_id']) && !empty($audio['title']))) {
-            if (!$this->general_library->header_token($audio['user_id'])) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-            }
-            if (!empty($this->input->post('image'))) {
-                $image = $this->input->post("image");
-                $audio['coverart'] = $this->image_decode_put($image);
-            }
-            $audio['track_type'] = (!empty($this->input->post('track_type'))) ? $this->input->post('track_type') : '';
-            $audio['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
-            $audio['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
-            $audio['bpm'] = (!empty($this->input->post('bpm'))) ? $this->input->post('bpm') : '';
-            $audio['key_id'] = (!empty($this->input->post('key_id'))) ? $this->input->post('key_id') : '';
-            $audio['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '1';
-            $scheduled = (!empty($this->input->post('scheduled'))) ? true : false;
-            if ($scheduled) {
-                $date = (!empty($this->input->post('date'))) ? substr($this->input->post('date'), 0, 10) : '0000-00-00';
-                $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '00:00:00';
-                $audio['publish_at'] = $date . ' ' . $time;
+        try {
+            // normal flow
+            if ((!empty($audio['user_id']) && !empty($audio['title']))) {
+                if (!$this->general_library->header_token($audio['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                if (!empty($this->input->post('image'))) {
+                    $image = $this->input->post("image");
+                    $audio['coverart'] = $this->image_decode_put($image);
+                }
+                $audio['track_type'] = (!empty($this->input->post('track_type'))) ? $this->input->post('track_type') : '';
+                $audio['genre_id'] = (!empty($this->input->post('genre_id'))) ? $this->input->post('genre_id') : '';
+                $audio['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
+                $audio['bpm'] = (!empty($this->input->post('bpm'))) ? $this->input->post('bpm') : '';
+                $audio['key_id'] = (!empty($this->input->post('key_id'))) ? $this->input->post('key_id') : '';
+                $audio['public'] = (!empty($this->input->post('public'))) ? $this->input->post('public') : '1';
+                $scheduled = (!empty($this->input->post('scheduled'))) ? true : false;
+                if ($scheduled) {
+                    $date = (!empty($this->input->post('date'))) ? substr($this->input->post('date'), 0, 10) : '0000-00-00';
+                    $time = (!empty($this->input->post('time'))) ? $this->input->post('time') : '00:00:00';
+                    $audio['publish_at'] = $date . ' ' . $time;
+                } else {
+                    $date = '0000-00-00';
+                    $time = '00:00:00';
+                    $audio['publish_at'] = $date . ' ' . $time;
+                }
+                $audio['sort'] = $this->get_last_audio_sort($audio['user_id']);
+                //List
+                $beat_packs = (!empty($this->input->post('beat_packs'))) ? json_decode($this->input->post('beat_packs'), TRUE) : '';
+                //List
+                $collaborators = (!empty($this->input->post('collaborators'))) ? json_decode($this->input->post('collaborators'), TRUE) : '';
+                //List
+                $licenses = (!empty($this->input->post('licenses'))) ? json_decode($this->input->post('licenses'), TRUE) : '';
+                //Marketing
+                $marketing = (!empty($this->input->post('marketing'))) ? json_decode($this->input->post('marketing'), TRUE) : '';
+                //Audios
+                $audio['untagged_mp3_name'] = (!empty($this->input->post('untagged_mp3_name'))) ? $this->input->post('untagged_mp3_name') : '';
+                if (!empty($this->input->post('untagged_mp3'))) {
+                    $untagged_mp3 = $this->input->post("untagged_mp3");
+                    $audio['untagged_mp3'] = $this->audio_decode_put($untagged_mp3);
+                }
+                $audio['untagged_wav_name'] = (!empty($this->input->post('untagged_wav_name'))) ? $this->input->post('untagged_wav_name') : '';
+                if (!empty($this->input->post('untagged_wav'))) {
+                    $untagged_wav = $this->input->post("untagged_wav");
+                    $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
+                }
+                $audio['track_stems_name'] = (!empty($this->input->post('track_stems_name'))) ? $this->input->post('track_stems_name') : '';
+                if (!empty($this->input->post('track_stems'))) {
+                    $track_stems = $this->input->post("track_stems");
+                    $audio['track_stems'] = $this->file_decode_put($track_stems);
+                }
+                $audio['tagged_file_name'] = (!empty($this->input->post('tagged_file_name'))) ? $this->input->post('tagged_file_name') : '';
+                if (!empty($this->input->post('tagged_file'))) {
+                    $tagged_file = $this->input->post("tagged_file");
+                    $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
+                }
+                //Sound Kit
+                $audio['price'] = (!empty($this->input->post('price'))) ? $this->input->post('price') : 0.00;
+                $audio['samples'] = (!empty($this->input->post('samples'))) ? $this->input->post('samples') : 0;
+                $audio['description'] = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
+                //
+                $id = $this->Audio_model->insert_audio($audio);
+                if (!empty($beat_packs)) {
+                    //$beat_packs = ['1','2'];
+                    foreach ($beat_packs as $beat_pack) {
+                        $this->Album_model->insert_album_audio(['id_album' => $beat_pack, 'id_audio' => $id]);
+                    }
+                }
+                if (!empty($collaborators)) {
+                    foreach ($collaborators as $collaborator) {
+                        $collaborator['audio_id'] = $id;
+                        $this->Audio_model->insert_audio_collaborator($collaborator);
+                    }
+                }
+                if (!empty($licenses)) {
+                    foreach ($licenses as $license) {
+                        $license['audio_id'] = $id;
+                        $this->Audio_model->insert_audio_license($license);
+                    }
+                }
+                if (!empty($marketing)) {
+                    foreach ($marketing as $item) {
+                        $item['audio_id'] = $id;
+                        $this->Audio_model->insert_audio_marketing($item);
+                    }
+                }
+                //REPONSE
+                $audio_response = $this->Audio_model->fetch_audio_by_id($id);
+                $audio_response = $this->audio_clean($audio_response);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio or beat has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
             } else {
-                $date = '0000-00-00';
-                $time = '00:00:00';
-                $audio['publish_at'] = $date . ' ' . $time;
+                $this->error = 'Provide complete audio or beat info to add';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
-            $audio['sort'] = $this->get_last_audio_sort($audio['user_id']);
-            //List
-            $beat_packs = (!empty($this->input->post('beat_packs'))) ? json_decode($this->input->post('beat_packs'), TRUE) : '';
-            //List
-            $collaborators = (!empty($this->input->post('collaborators'))) ? json_decode($this->input->post('collaborators'), TRUE) : '';
-            //List
-            $licenses = (!empty($this->input->post('licenses'))) ? json_decode($this->input->post('licenses'), TRUE) : '';
-            //Marketing
-            $marketing = (!empty($this->input->post('marketing'))) ? json_decode($this->input->post('marketing'), TRUE) : '';
-            //Audios
-            $audio['untagged_mp3_name'] = (!empty($this->input->post('untagged_mp3_name'))) ? $this->input->post('untagged_mp3_name') : '';
-            if (!empty($this->input->post('untagged_mp3'))) {
-                $untagged_mp3 = $this->input->post("untagged_mp3");
-                $audio['untagged_mp3'] = $this->audio_decode_put($untagged_mp3);
-            }
-            $audio['untagged_wav_name'] = (!empty($this->input->post('untagged_wav_name'))) ? $this->input->post('untagged_wav_name') : '';
-            if (!empty($this->input->post('untagged_wav'))) {
-                $untagged_wav = $this->input->post("untagged_wav");
-                $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
-            }
-            $audio['track_stems_name'] = (!empty($this->input->post('track_stems_name'))) ? $this->input->post('track_stems_name') : '';
-            if (!empty($this->input->post('track_stems'))) {
-                $track_stems = $this->input->post("track_stems");
-                $audio['track_stems'] = $this->file_decode_put($track_stems);
-            }
-            $audio['tagged_file_name'] = (!empty($this->input->post('tagged_file_name'))) ? $this->input->post('tagged_file_name') : '';
-            if (!empty($this->input->post('tagged_file'))) {
-                $tagged_file = $this->input->post("tagged_file");
-                $audio['tagged_file'] = $this->audio_decode_put($tagged_file);
-            }
-            //Sound Kit
-            $audio['price'] = (!empty($this->input->post('price'))) ? $this->input->post('price') : 0.00;
-            $audio['samples'] = (!empty($this->input->post('samples'))) ? $this->input->post('samples') : 0;
-            $audio['description'] = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
-            //
-            $id = $this->Audio_model->insert_audio($audio);
-            if (!empty($beat_packs)) {
-                //$beat_packs = ['1','2'];
-                foreach ($beat_packs as $beat_pack) {
-                    $this->Album_model->insert_album_audio(['id_album' => $beat_pack, 'id_audio' => $id]);
-                }
-            }
-            if (!empty($collaborators)) {
-                foreach ($collaborators as $collaborator) {
-                    $collaborator['audio_id'] = $id;
-                    $this->Audio_model->insert_audio_collaborator($collaborator);
-                }
-            }
-            if (!empty($licenses)) {
-                foreach ($licenses as $license) {
-                    $license['audio_id'] = $id;
-                    $this->Audio_model->insert_audio_license($license);
-                }
-            }
-            if (!empty($marketing)) {
-                foreach ($marketing as $item) {
-                    $item['audio_id'] = $id;
-                    $this->Audio_model->insert_audio_marketing($item);
-                }
-            }
-            //REPONSE
-            $audio_response = $this->Audio_model->fetch_audio_by_id($id);
-            $audio_response = $this->audio_clean($audio_response);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio or beat has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
-        } else {
-            $this->error = 'Provide complete audio or beat info to add';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } catch (Exception $e) {
+            //log_message('error', $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            // on error
+            print_r($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
         }
     }
 
