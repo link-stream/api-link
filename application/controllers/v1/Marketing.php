@@ -272,6 +272,58 @@ class Marketing extends RestController {
         }
     }
 
+    public function messages_report_get($id = null, $message_id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            if (empty($message_id)) {
+                $this->error = 'Provide Message ID.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+            $message = $this->Marketing_model->fetch_message_by_id($message_id);
+            if (empty($message)) {
+                $this->error = 'Message not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $message_cleaned = $this->message_clean($message);
+                //ACTIONS
+                $data = [
+                    'Message' => $message_cleaned,
+                    'Overview' => [
+                        'Total' => '1000',
+                        'Open_rate' => '24%',
+                        'Click_rate' => '4.66%',
+                        'Orders' => '2',
+                        'Revenue' => '$33',
+                        'Unsubscribed' => '1',
+                        'Hours' => [
+                            '0000' => ['Open' => '20', 'Click' => '1'],
+                            '0100' => ['Open' => '20', 'Click' => '1'],
+                            '0200' => ['Open' => '20', 'Click' => '1'],
+                            '0300' => ['Open' => '20', 'Click' => '1'],
+                            '1500' => ['Open' => '20', 'Click' => '1']
+                        ],
+                    ],
+                    'Activity' => [
+                        '05/23/2020 15:37' => 'Open',
+                        '05/23/2020 15:00' => 'Open',
+                        '05/23/2020 14:21' => 'Click: https://www.linkstream.com/',
+                        '05/23/2020 14:20' => 'Open',
+                        '05/23/2020 13:37' => 'Open',
+                        '05/23/2020 13:00' => 'Open',
+                        '05/23/2020 12:20' => 'Open',
+                    ]
+                ];
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
+                //END ACTIONS 
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function tags_get($id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
