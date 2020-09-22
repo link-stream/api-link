@@ -98,7 +98,7 @@ class Audios extends RestController {
         //exit;
         ///$file_data = file_get_contents($file);
         ///file_put_contents($this->temp_dir . '/' . $file_name, $file_data);
-        file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
+        //file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
         echo 'SALVA';
         echo '<br>';
         echo 'S3 INIT: ' . date("h:i:sa");
