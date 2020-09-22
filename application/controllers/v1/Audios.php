@@ -413,6 +413,8 @@ class Audios extends RestController {
     }
 
     public function index_post() {
+        ini_set('post_max_size', '64M');
+ini_set('upload_max_filesize', '64M');
         $audio = [];
         $audio['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio['status_id'] = '1';
