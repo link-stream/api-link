@@ -136,6 +136,11 @@ class Marketing extends RestController {
                 $time = '00:00:00';
                 $message['publish_at'] = $date . ' ' . $time;
             }
+            $message['logo'] = (!empty($this->input->post('logo'))) ? $this->input->post('logo') : '';
+            $message['artwork'] = (!empty($this->input->post('artwork'))) ? $this->input->post('artwork') : '';
+            $message['button_color'] = (!empty($this->input->post('button_color'))) ? $this->input->post('button_color') : '';
+            $message['background_color'] = (!empty($this->input->post('background_color'))) ? $this->input->post('background_color') : '';
+            $message['background_image'] = (!empty($this->input->post('background_image'))) ? $this->input->post('background_image') : '';
             $message['id'] = $this->Marketing_model->insert_message($message);
             $message_cleaned = $this->message_clean($message);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The message has been created successfully.', 'id' => $message['id'], 'data' => $message_cleaned), RestController::HTTP_OK);
@@ -184,6 +189,21 @@ class Marketing extends RestController {
                         $time = '00:00:00';
                         $message['publish_at'] = $date . ' ' . $time;
                     }
+                }
+                if (!empty($this->put('logo'))) {
+                    $message['logo'] = $this->put('logo');
+                }
+                if (!empty($this->put('artwork'))) {
+                    $message['artwork'] = $this->put('artwork');
+                }
+                if (!empty($this->put('button_color'))) {
+                    $message['button_color'] = $this->put('button_color');
+                }
+                if (!empty($this->put('background_color'))) {
+                    $message['background_color'] = $this->put('background_color');
+                }
+                if (!empty($this->put('background_image'))) {
+                    $message['background_image'] = $this->put('background_image');
                 }
                 $this->Marketing_model->update_message($id, $message);
                 $message_cleaned = $this->message_clean($message);
