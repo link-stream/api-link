@@ -3457,14 +3457,13 @@ paypal.use( ["login"], function (login) {
         $file_name = 'SoundKit.zip';
         $file = file_get_contents($this->temp_dir . '/' . $file_name);
         $src = 'data:' . mime_content_type($this->temp_dir . '/' . $file_name) . ';base64,' . base64_encode($file);
-        $src_encode = //echo $src;
 
 
 
-                $curl = curl_init();
+        $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            //CURLOPT_URL => "localhost/api.link.stream/v1/audios",
+            CURLOPT_URL => "localhost/api.link.stream/v1/audios",
             CURLOPT_URL => "https://api-dev.link.stream/v1/audios",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -3477,7 +3476,7 @@ paypal.use( ["login"], function (login) {
             CURLOPT_HTTPHEADER => array(
                 "X-API-KEY: F5CE12A3-27BD-4186-866C-D9D019E85076",
                 //"Content-Type: application/x-www-form-urlencoded",
-                "Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMzUiLCJ0b2tlbiI6IjZjZTE5OGYzMzc0M2I0MzkwNmE0YjhiMmJhNmY4YTViZTZkOWE0YjQzNzNiYWY1Mzc1OWM4M2Y5NTA3ZTc1MDU4ZTEwZjAyY2FiYTJjNmRhNmJhNWMwYWE2MTM3ZWQ4NDA0MTUwNzgwMmQ2MzE1Y2Q4NWNiZDVmNzlhYmFiYjU0IiwiZXhwaXJlcyI6IjIwMjAtMDktMjIgMDU6MjQ6NTAifQ.xxgzPqE_thETLUWrIrX1pKx_VAUTCIaIrrJXkozaEf4",
+                "Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMzUiLCJ0b2tlbiI6ImVkNWQwZGNhY2IzZjA0YTIzYTQxYTBiNmI5YjNmMGE4OTgzYTYwMzI2MDM0OTZhYTQyZDZiZjg4MzA3OGMzY2ZjNjgxZTk5ZDU1NGM3Y2UyYjRhODY3M2I5ZmI2NmFmNDQ3ZjFlMDkyMTdmYmI1ODZjNmQ4ZjdjNGQ3N2MxMGJhIiwiZXhwaXJlcyI6IjIwMjAtMDktMjIgMjE6MjE6NDIifQ.1kuSnpSwINhnBPoDpn2KkeMQi-68VLMrFCPU8Z-KREs",
                 "Authorization: Basic bGlua3N0cmVhbTpMaW5rU3RyZWFtRGV2QDIwMjA=",
                 "Cookie: ci_session=50178370578c3265abc802d2aacedf1f1e9b1b44"
             ),
