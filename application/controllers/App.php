@@ -3400,7 +3400,8 @@ paypal.use( ["login"], function (login) {
     public function express_account() {
         $this->load->library('Stripe_library');
         $country = 'US';
-        $response = $this->stripe_library->express_account($country);
+        $email = 'paolofq@gmail.com';
+        $response = $this->stripe_library->express_account($country, $email);
         echo '<pre>';
         print_r($response);
         echo '</pre>';
@@ -3409,7 +3410,7 @@ paypal.use( ["login"], function (login) {
 
     public function account_link() {
         $this->load->library('Stripe_library');
-        $account = 'acct_1HJ6phHN6DGoTPKH';
+        $account = 'acct_1HP421DsXWkQeiuJ';
         $response = $this->stripe_library->account_link($account);
         echo '<pre>';
         print_r($response);
@@ -3417,5 +3418,83 @@ paypal.use( ["login"], function (login) {
         echo '<br>';
     }
 
+    public function retrieve_account() {
+        $this->load->library('Stripe_library');
+        $account = 'acct_1HP9vyCs1GUpNRzD';
+        $response = $this->stripe_library->retrieve_account($account);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<br>';
+    }
+
     //END STRIPE FINAL
+    //TEST SES
+    public function multi_email() {
+//        $data = array();
+//        $body = $this->load->view('app/email/email-template', $data, true);
+//        $this->general_library->send_ses('Paul Ferra', 'paul@link.stream', 'Streamy', 'noreply@link.stream', 'Email Test', $body);
+
+        $this->load->library('Aws_ses');
+        //$this->aws_ses->verify_email();
+        //$this->aws_ses->send();
+        $sender_email = 'LinkStream <paul@linkstream.com>';
+        $reply_to = 'paul@linkstream.com';
+        $recipient_emails = ['paolofq@gmail.com'];
+        $subject = 'Amazon SES test (AWS SDK for PHP)';
+        //$plaintext_body = 'This email was sent with Amazon SES using the AWS SDK for PHP.';
+        $html_body = '<h1>AWS Amazon Simple Email Service Test Email</h1>' .
+                '<p>This email was sent with <a href="https://aws.amazon.com/ses/">' .
+                'Amazon SES</a> using the <a href="https://aws.amazon.com/sdk-for-php/">' .
+                'AWS SDK for PHP</a>.</p>';
+        foreach ($recipient_emails as $recipient_email) {
+            $this->aws_ses->send_email($sender_email, $reply_to, $recipient_email, $subject, $html_body, 'UTF-8');
+        }
+    }
+
+    public function testing_file() {
+        $this->temp_dir = FCPATH . 'tmp';
+        $file_name = 'SoundKit.zip';
+        $file = file_get_contents($this->temp_dir . '/' . $file_name);
+        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $file_name) . ';base64,' . base64_encode($file);
+        $src_encode = //echo $src;
+
+
+
+                $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            //CURLOPT_URL => "localhost/api.link.stream/v1/audios",
+            CURLOPT_URL => "https://api-dev.link.stream/v1/audios",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            //CURLOPT_POSTFIELDS => json_encode("user_id=35&title=Testing%20KIT&track_stems=".$src),
+            CURLOPT_HTTPHEADER => array(
+                "X-API-KEY: F5CE12A3-27BD-4186-866C-D9D019E85076",
+                //"Content-Type: application/x-www-form-urlencoded",
+                "Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMzUiLCJ0b2tlbiI6IjZjZTE5OGYzMzc0M2I0MzkwNmE0YjhiMmJhNmY4YTViZTZkOWE0YjQzNzNiYWY1Mzc1OWM4M2Y5NTA3ZTc1MDU4ZTEwZjAyY2FiYTJjNmRhNmJhNWMwYWE2MTM3ZWQ4NDA0MTUwNzgwMmQ2MzE1Y2Q4NWNiZDVmNzlhYmFiYjU0IiwiZXhwaXJlcyI6IjIwMjAtMDktMjIgMDU6MjQ6NTAifQ.xxgzPqE_thETLUWrIrX1pKx_VAUTCIaIrrJXkozaEf4",
+                "Authorization: Basic bGlua3N0cmVhbTpMaW5rU3RyZWFtRGV2QDIwMjA=",
+                "Cookie: ci_session=50178370578c3265abc802d2aacedf1f1e9b1b44"
+            ),
+        ));
+        $post = array(
+            "user_id" => "35",
+            "title" => "Testing",
+            "track_stems" => $src
+        );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+    }
+
 }
