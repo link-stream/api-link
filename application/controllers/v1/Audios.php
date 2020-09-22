@@ -447,10 +447,10 @@ class Audios extends RestController {
                 $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
             }
             $audio['track_stems_name'] = (!empty($this->input->post('track_stems_name'))) ? $this->input->post('track_stems_name') : '';
-            if (!empty($this->input->post('track_stems'))) {
-                $track_stems = $this->input->post("track_stems");
-                $audio['track_stems'] = $this->file_decode_put($track_stems);
-            }
+//            if (!empty($this->input->post('track_stems'))) {
+//                $track_stems = $this->input->post("track_stems");
+//                $audio['track_stems'] = $this->file_decode_put($track_stems);
+//            }
             $audio['tagged_file_name'] = (!empty($this->input->post('tagged_file_name'))) ? $this->input->post('tagged_file_name') : '';
             if (!empty($this->input->post('tagged_file'))) {
                 $tagged_file = $this->input->post("tagged_file");
