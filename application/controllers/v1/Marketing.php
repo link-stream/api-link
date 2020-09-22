@@ -136,6 +136,7 @@ class Marketing extends RestController {
                 $time = '00:00:00';
                 $message['publish_at'] = $date . ' ' . $time;
             }
+            $message['status'] = (!empty($this->input->post('status'))) ? $this->input->post('status') : $message['status'];
             $message['logo'] = (!empty($this->input->post('logo'))) ? $this->input->post('logo') : '';
             $message['artwork'] = (!empty($this->input->post('artwork'))) ? $this->input->post('artwork') : '';
             $message['button_color'] = (!empty($this->input->post('button_color'))) ? $this->input->post('button_color') : '';
@@ -204,6 +205,9 @@ class Marketing extends RestController {
                 }
                 if (!empty($this->put('background_image'))) {
                     $message['background_image'] = $this->put('background_image');
+                }
+                if (!empty($this->put('status'))) {
+                    $message['status'] = $this->put('status');
                 }
                 $this->Marketing_model->update_message($id, $message);
                 $message_cleaned = $this->message_clean($message);
