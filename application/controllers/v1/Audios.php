@@ -403,7 +403,7 @@ class Audios extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['url_user'] = '';
         $audio['url_title'] = '';
-        $audio['kit_files_name'] = [];
+        //$audio['kit_files_name'] = '';
         $audio['data_image'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
@@ -422,7 +422,7 @@ class Audios extends RestController {
             $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['track_stems'])) {
                 $audio['data_track_stems'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['track_stems'];
-                $audio['kit_files_name'] = gzuncompress($audio['kit_files_name']);
+                $audio['kit_files_name'] = (!empty($audio['kit_files_name'])) ? gzuncompress(json_decode($audio['kit_files_name'])) : '';
 //                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
 //                if (!empty($data_file)) {
 //                    $img_file = $audio['track_stems'];
@@ -483,7 +483,7 @@ class Audios extends RestController {
                     }
                 }
                 $audio['samples'] = count($audio['kit_files_name']);
-                $kit_files_name = gzcompress($audio['kit_files_name'], 9);
+                $kit_files_name = (!empty($audio['kit_files_name'])) ? gzcompress(json_encode($audio['kit_files_name']), 9) : '';
                 $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
                 //
                 unlink($this->temp_dir . '/' . $audio['track_stems']);
