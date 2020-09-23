@@ -987,6 +987,9 @@ class Users extends RestController {
         return $response;
     }
 
+    //STRIPE CONNECT//
+    //
+
     public function connect_stripe_account_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         if (!empty($user_id)) {
@@ -995,11 +998,24 @@ class Users extends RestController {
             }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
-                $stripe_response = $this->stripe_library->express_account($register_user['country'], $register_user['email']);
-                if ($stripe_response['status']) {
-                    $account_id = $stripe_response['account_id'];
-                    //Guardar Account ID **
-                    $this->User_model->insert_user_connect(['user_id' => $user_id, 'processor' => 'Stripe', 'account_id' => $account_id]);
+                $temp_stripe_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Stripe');
+                if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'ACTIVE') {
+                    $this->error = 'Stripe Account Already Created and Activated';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
+                    $account_id = $temp_stripe_account['account_id'];
+                } else {
+                    $stripe_response = $this->stripe_library->express_account($register_user['country'], $register_user['email']);
+                    if ($stripe_response['status']) {
+                        $account_id = $stripe_response['account_id'];
+                        //Guardar Account ID **
+                        $this->User_model->insert_user_connect(['user_id' => $user_id, 'processor' => 'Stripe', 'account_id' => $account_id]);
+                    } else {
+                        $this->error = $stripe_response['error'];
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                }
+                if (!empty($account_id)) {
                     //Crear Link
                     $stripe_response = $this->stripe_library->account_link($account_id);
                     if ($stripe_response['status']) {
@@ -1010,7 +1026,7 @@ class Users extends RestController {
                         $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                     }
                 } else {
-                    $this->error = $stripe_response['error'];
+                    $this->error = 'Stripe Error - Account Not Found.';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 }
             } else {
@@ -1059,6 +1075,38 @@ class Users extends RestController {
         }
     }
 
+    public function stripe_account_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $temp_stripe_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Stripe');
+            if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
+                $account_id = $temp_stripe_account['account_id'];
+                //LLAMAR API PARA CONFIRMAR ACCOUNT.
+                $stripe_response = $this->stripe_library->retrieve_account($account_id);
+                if ($stripe_response['status']) {
+                    if ($stripe_response['payouts_enabled']) {
+                        //UPDATE Account ID
+                        $this->User_model->update_connect_by_user_id($user_id, $account_id, ['payouts_enabled' => 1, 'status' => 'ACTIVE']);
+                        $temp_stripe_account['payouts_enabled'] = 1;
+                        $temp_stripe_account['status'] = 'ACTIVE';
+                    }
+                } else {
+                    $this->error = $stripe_response['error'];
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $temp_stripe_account), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    //END STRIPE CONNECT//
+    //
+    //
 //    public function connect_account_post() {
 //        $connect_account = [];
 //        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';

@@ -265,5 +265,16 @@ class User_model extends CI_Model {
         $this->db->where(array('user_id' => $user_id, 'account_id' => $account_id));
         $this->db->update('st_user_connect', $data);
     }
+    
+    public function fetch_stripe_account_by_user_id($user_id, $processor = 'Stripe') {
+        $this->db->from('st_user_connect');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status <> ', 'DECLINED');
+        $this->db->where('processor', $processor);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
 
 }

@@ -213,9 +213,9 @@ class Stripe_library {
             $object = $this->stripe->accounts->retrieve(
                     $account
             );
-            echo '<pre>';
-            print_r($object);
-            echo '</pre>';
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
             $response['status'] = true;
             $response['payouts_enabled'] = $object->payouts_enabled;
         } catch (Exception $e) {
