@@ -421,29 +421,30 @@ class Audios extends RestController {
             $audio['url_title'] = url_title($audio['title']);
             $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['track_stems'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['track_stems'];
-                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_track_stems'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['track_stems']; //Optimization 2
-                    //Audio List.
-                    $zip = new ZipArchive;
-                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
-                    if ($res === TRUE) {
-                        for ($i = 0; $i < $zip->numFiles; $i++) {
-                            $filename = $zip->getNameIndex($i);
-                            $pos = strpos($filename, 'MACOSX/.');
-                            if ($pos === false) {
-                                $audio['kit_files_name'][] = $filename;
-                            }
-                        }
-                    }
-                    $audio['samples'] = count($audio['kit_files_name']);
-                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
-                    //
-                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-                }
+                $audio['data_track_stems'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['track_stems'];
+                $audio['kit_files_name'] = gzuncompress($audio['kit_files_name']);
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['track_stems'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+//                    //Audio List.
+//                    $zip = new ZipArchive;
+//                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
+//                    if ($res === TRUE) {
+//                        for ($i = 0; $i < $zip->numFiles; $i++) {
+//                            $filename = $zip->getNameIndex($i);
+//                            $pos = strpos($filename, 'MACOSX/.');
+//                            if ($pos === false) {
+//                                $audio['kit_files_name'][] = $filename;
+//                            }
+//                        }
+//                    }
+//                    $audio['samples'] = count($audio['kit_files_name']);
+//                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
+//                    //
+//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
+//                }
             }
             if (!empty($audio['tagged_file'])) {
                 $audio['data_tagged_file'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['tagged_file'];
@@ -458,6 +459,37 @@ class Audios extends RestController {
         unset($audio['untagged_wav']);
         unset($audio['key_id']);
         return $audio;
+    }
+
+    public function sound_kit_zip_files($audio_id, $track_stems_name, $track_type) {
+        if (!empty($track_stems_name) && $track_type == '3') {
+            $audio = [];
+            $audio['kit_files_name'] = '';
+            $path = $this->s3_path . $this->s3_audio;
+            $data_file = $this->aws_s3->s3_read($this->bucket, $path, $track_stems_name);
+            if (!empty($data_file)) {
+                file_put_contents($this->temp_dir . '/' . $track_stems_name, $data_file);
+                $src = 'data:' . mime_content_type($this->temp_dir . '/' . $track_stems_name) . ';base64,' . base64_encode($data_file);
+                //Audio List.
+                $zip = new ZipArchive;
+                $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
+                if ($res === TRUE) {
+                    for ($i = 0; $i < $zip->numFiles; $i++) {
+                        $filename = $zip->getNameIndex($i);
+                        $pos = strpos($filename, 'MACOSX/.');
+                        if ($pos === false) {
+                            $audio['kit_files_name'][] = $filename;
+                        }
+                    }
+                }
+                $audio['samples'] = count($audio['kit_files_name']);
+                $kit_files_name = gzcompress($audio['kit_files_name'], 9);
+                $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
+                //
+                unlink($this->temp_dir . '/' . $audio['track_stems']);
+            }
+        }
+        return true;
     }
 
     public function index_get($id = null, $track_type = null, $audio_id = null) {
@@ -538,6 +570,7 @@ class Audios extends RestController {
                 $audio['untagged_wav'] = $this->audio_decode_put($untagged_wav);
             }
             $audio['track_stems_name'] = (!empty($this->input->post('track_stems_name'))) ? $this->input->post('track_stems_name') : '';
+            $audio['track_stems'] = '';
             if (!empty($this->input->post('track_stems'))) {
                 $track_stems = $this->input->post("track_stems");
                 $audio['track_stems'] = $this->file_decode_put($track_stems);
@@ -577,7 +610,8 @@ class Audios extends RestController {
                     $this->Audio_model->insert_audio_marketing($item);
                 }
             }
-            //REPONSE
+            //RESPONSE
+            $this->sound_kit_zip_files($id, $audio['track_stems'], $audio['track_type']);
             $audio_response = $this->Audio_model->fetch_audio_by_id($id);
             $audio_response = $this->audio_clean($audio_response);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio or beat has been created successfully.', 'id' => $id, 'data' => $audio_response), RestController::HTTP_OK);
@@ -740,6 +774,7 @@ class Audios extends RestController {
 //                $audio['scheduled'] = $scheduled;
 //                $audio['public'] = ($audio['public'] == '3') ? '1' : $audio['public'];
                 //REPONSE
+                $this->sound_kit_zip_files($id, $audio['track_stems'], $audio['track_type']);
                 $audio_response = $this->Audio_model->fetch_audio_by_id($id);
                 $audio_response = $this->audio_clean($audio_response);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The Beat/Sound Kit info has been updated successfully.', 'data' => $audio_response), RestController::HTTP_OK);
