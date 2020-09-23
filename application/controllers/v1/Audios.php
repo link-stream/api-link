@@ -464,7 +464,7 @@ class Audios extends RestController {
     public function sound_kit_zip_files($audio_id, $track_stems_name, $track_type) {
         if (!empty($track_stems_name) && $track_type == '3') {
             $audio = [];
-            $audio['kit_files_name'] = '';
+            $audio['kit_files_name'] = [];
             $path = $this->s3_path . $this->s3_audio;
             $data_file = $this->aws_s3->s3_read($this->bucket, $path, $track_stems_name);
             if (!empty($data_file)) {
