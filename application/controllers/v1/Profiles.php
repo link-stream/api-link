@@ -306,42 +306,42 @@ class Profiles extends RestController {
             $audio['url_title'] = url_title($audio['title']);
             //$path = $this->s3_path . $this->s3_folder;
             $path = $this->s3_path . $this->s3_audio;
-            if (!empty($audio['track_stems'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['track_stems'];
-                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_track_stems'] = $src;
-
-                    //Audio List.
-                    $zip = new ZipArchive;
-                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
-                    if ($res === TRUE) {
-                        for ($i = 0; $i < $zip->numFiles; $i++) {
-                            $filename = $zip->getNameIndex($i);
-                            $pos = strpos($filename, 'MACOSX/.');
-                            if ($pos === false) {
-                                $audio['kit_files_name'][] = $filename;
-                            }
-                        }
-                    }
-                    $audio['samples'] = count($audio['kit_files_name']);
-                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
-                    //
-                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-                }
-            }
-//            if (!empty($audio['tagged_file'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+//            if (!empty($audio['track_stems'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
 //                if (!empty($data_file)) {
-//                    $img_file = $audio['tagged_file'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_tagged_file'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
+//                    $img_file = $audio['track_stems'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_track_stems'] = $src;
+//
+//                    //Audio List.
+//                    $zip = new ZipArchive;
+//                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
+//                    if ($res === TRUE) {
+//                        for ($i = 0; $i < $zip->numFiles; $i++) {
+//                            $filename = $zip->getNameIndex($i);
+//                            $pos = strpos($filename, 'MACOSX/.');
+//                            if ($pos === false) {
+//                                $audio['kit_files_name'][] = $filename;
+//                            }
+//                        }
+//                    }
+//                    $audio['samples'] = count($audio['kit_files_name']);
+//                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
+//                    //
+//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
 //                }
 //            }
+            if (!empty($audio['tagged_file'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['tagged_file'];
+                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_tagged_file'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
+                }
+            }
         }
         unset($audio['publish_at']);
         unset($audio['bpm']);
