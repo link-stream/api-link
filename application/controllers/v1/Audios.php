@@ -469,7 +469,7 @@ class Audios extends RestController {
             $data_file = $this->aws_s3->s3_read($this->bucket, $path, $track_stems_name);
             if (!empty($data_file)) {
                 file_put_contents($this->temp_dir . '/' . $track_stems_name, $data_file);
-                $src = 'data:' . mime_content_type($this->temp_dir . '/' . $track_stems_name) . ';base64,' . base64_encode($data_file);
+                //$src = 'data:' . mime_content_type($this->temp_dir . '/' . $track_stems_name) . ';base64,' . base64_encode($data_file);
                 //Audio List.
                 $zip = new ZipArchive;
                 $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
