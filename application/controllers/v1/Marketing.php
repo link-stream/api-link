@@ -443,8 +443,8 @@ class Marketing extends RestController {
                 foreach ($list as $id) {
                     $status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
                     $this->Marketing_model->update_subscriber($id, ['email_status' => $status, 'sms_status' => $status]);
-                    $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers updated successfully.'), RestController::HTTP_OK);
                 }
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers updated successfully.'), RestController::HTTP_OK);
             } else {
                 $this->error = 'Provide a valid action';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -511,6 +511,28 @@ class Marketing extends RestController {
             }
         } else {
             $this->error = 'Provide Media ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function subscribers_import_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
+        if (!empty($user_id) && !empty($list)) {
+            $links = json_decode($list, true);
+            foreach ($list as $suscriber) {
+//                $subscriber['email'] = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
+//                $subscriber['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
+//                $subscriber['name'] = (!empty($this->input->post('name'))) ? $this->input->post('name') : '';
+//                $subscriber['birthday'] = (!empty($this->input->post('birthday'))) ? $this->input->post('birthday') : '';
+//                $subscriber['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
+//                $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
+//                $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
+                $subscriber['id'] = $this->Marketing_model->insert_subscriber($subscriber);
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers import successfully.'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide complete subscriber info to import';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
