@@ -207,36 +207,6 @@ class Profiles extends RestController {
             }
             $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
             $path = $this->s3_path . $this->s3_audio;
-            if (!empty($audio['untagged_mp3'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['untagged_mp3'];
-                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_untagged_mp3'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
-                }
-            }
-            if (!empty($audio['untagged_wav'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['untagged_wav'];
-                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_untagged_wav'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
-                }
-            }
-            if (!empty($audio['track_stems'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['track_stems'];
-                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_track_stems'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-                }
-            }
             if (!empty($audio['tagged_file'])) {
                 $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
                 if (!empty($data_file)) {
@@ -246,7 +216,55 @@ class Profiles extends RestController {
                     $audio['data_tagged_file'] = $src;
                     unlink($this->temp_dir . '/' . $audio['tagged_file']);
                 }
+            } elseif (!empty($audio['untagged_mp3']) && empty($audio['data_tagged_file'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['untagged_mp3'];
+                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_untagged_mp3'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
+                }
+            } elseif (!empty($audio['untagged_wav']) && empty($audio['data_untagged_mp3'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['untagged_wav'];
+                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_untagged_wav'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
+                }
             }
+//            if (!empty($audio['untagged_mp3'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['untagged_mp3'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_untagged_mp3'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
+//                }
+//            }
+//            if (!empty($audio['untagged_wav'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['untagged_wav'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_untagged_wav'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
+//                }
+//            }
+//            if (!empty($audio['track_stems'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['track_stems'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_track_stems'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
+//                }
+//            }
         }
         unset($audio['publish_at']);
         unset($audio['price']);
