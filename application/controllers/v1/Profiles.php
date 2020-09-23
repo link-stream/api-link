@@ -332,16 +332,16 @@ class Profiles extends RestController {
                     unlink($this->temp_dir . '/' . $audio['track_stems']);
                 }
             }
-            if (!empty($audio['tagged_file'])) {
-                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
-                if (!empty($data_file)) {
-                    $img_file = $audio['tagged_file'];
-                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
-                    $audio['data_tagged_file'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
-                }
-            }
+//            if (!empty($audio['tagged_file'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['tagged_file'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_tagged_file'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
+//                }
+//            }
         }
         unset($audio['publish_at']);
         unset($audio['bpm']);
