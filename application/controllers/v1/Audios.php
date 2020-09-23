@@ -290,7 +290,6 @@ class Audios extends RestController {
             }
             $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
             $path = $this->s3_path . $this->s3_audio;
-            $audio['data_tagged_file'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['tagged_file']; //Optimization 2
             if (!empty($audio['untagged_mp3'])) {
                 $audio['data_untagged_mp3'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['untagged_mp3'];
             }
