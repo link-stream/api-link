@@ -486,7 +486,7 @@ class Audios extends RestController {
                 $kit_files_name = json_encode($audio['kit_files_name']);
                 $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
                 //
-                unlink($this->temp_dir . '/' . $audio['track_stems']);
+                unlink($this->temp_dir . '/' . $track_stems_name);
             }
         }
         return true;
