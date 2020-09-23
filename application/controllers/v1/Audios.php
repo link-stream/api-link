@@ -277,7 +277,7 @@ class Audios extends RestController {
             foreach ($collaborators as $collaborator) {
                 $collaborator['data_image'] = '';
                 if (!empty($collaborator['image'])) {
-                     $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $collaborator['image'];
+                     $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
 //                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
 //                    if (!empty($data_image)) {
 //                        $img_file = $collaborator['image'];
