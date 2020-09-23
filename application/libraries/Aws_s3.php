@@ -307,7 +307,7 @@ class Aws_s3 {
     public function s3_upload($bucket, $path, $filename, $data) {
         // Register the stream wrapper from an S3Client object
         $this->s3->registerStreamWrapper();
-        $path = (ENV == 'live') ? 'PROD/' . $path : 'DEV/' . $path;
+        //$path = (ENV == 'live') ? 'PROD/' . $path : 'DEV/' . $path;
         return file_put_contents('s3://' . $bucket . (!empty($path) ? '/' . $path : '') . '/' . $filename, $data);
     }
 

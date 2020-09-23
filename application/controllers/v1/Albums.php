@@ -16,6 +16,7 @@ class Albums extends RestController {
     private $s3_coverart;
     private $s3_audio;
     private $temp_dir;
+    private $server_url;
 
     public function __construct() {
         parent::__construct();
@@ -32,6 +33,7 @@ class Albums extends RestController {
         $this->s3_coverart = 'Coverart';
         $this->s3_audio = 'Audio';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
     public function related_album_get($user_id = null, $track_type = null) {
@@ -186,104 +188,23 @@ class Albums extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['license_id'] = !empty($audio['license_id']) ? $audio['license_id'] : '';
         $audio['data_image'] = '';
-
-
-//        $audio['url_user'] = '';
-//        $audio['url_title'] = '';
         $audio['beats'] = '';
-//        $audio['licenses'] = '';
-//        $audio['collaborators'] = '';
-//        $audio['marketing'] = '';
-//        $audio['data_image'] = '';
-//        $audio['data_untagged_mp3'] = '';
-//        $audio['data_untagged_wav'] = '';
-//        $audio['data_track_stems'] = '';
-//        $audio['data_tagged_file'] = '';
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
             if (!empty($audio['coverart'])) {
-                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
-                if (!empty($data_image)) {
-                    $img_file = $audio['coverart'];
-                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
-                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
-                    $audio['data_image'] = $src;
-                    unlink($this->temp_dir . '/' . $audio['coverart']);
-                }
+                $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+//                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+//                if (!empty($data_image)) {
+//                    $img_file = $audio['coverart'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+//                    $audio['data_image'] = $src;
+//                    unlink($this->temp_dir . '/' . $audio['coverart']);
+//                }
             }
         }
         $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio['id']);
-//        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
-        if (!empty($audio_id)) {
-//            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
-//            $audio['url_user'] = $user['url'];
-//            $audio['url_title'] = url_title($audio['title']);
-//            $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio_id);
-//            $audio['collaborators'] = [];
-//            $path = $this->s3_path . $this->s3_folder;
-//            $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($audio_id);
-//            foreach ($collaborators as $collaborator) {
-//                $collaborator['data_image'] = '';
-//                if (!empty($collaborator['image'])) {
-//                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
-//                    if (!empty($data_image)) {
-//                        $img_file = $collaborator['image'];
-//                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
-//                        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
-//                        $collaborator['data_image'] = $src;
-//                        unlink($this->temp_dir . '/' . $collaborator['image']);
-//                    }
-//                }
-//                $audio['collaborators'][] = $collaborator;
-//            }
-//            $audio['marketing'] = $this->Audio_model->fetch_audio_marketing_by_id($audio_id);
-//            $path = $this->s3_path . $this->s3_audio;
-//            if (!empty($audio['untagged_mp3'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['untagged_mp3'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_mp3'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_mp3']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_untagged_mp3'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['untagged_mp3']);
-//                }
-//            }
-//            if (!empty($audio['untagged_wav'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['untagged_wav'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['untagged_wav'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['untagged_wav']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_untagged_wav'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['untagged_wav']);
-//                }
-//            }
-//            if (!empty($audio['track_stems'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['track_stems'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_track_stems'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-//                }
-//            }
-//            if (!empty($audio['tagged_file'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['tagged_file'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_tagged_file'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
-//                }
-//            }
-        }
-//        unset($audio['publish_at']);
-//        unset($audio['price']);
-//        unset($audio['samples']);
-//        unset($audio['description']);
         return $audio;
     }
 
