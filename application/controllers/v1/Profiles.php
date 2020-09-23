@@ -324,6 +324,7 @@ class Profiles extends RestController {
             $audio['url_title'] = url_title($audio['title']);
             //$path = $this->s3_path . $this->s3_folder;
             $path = $this->s3_path . $this->s3_audio;
+            $audio['kit_files_name'] = (!empty($audio['kit_files_name'])) ? json_decode($audio['kit_files_name']) : [];
 //            if (!empty($audio['track_stems'])) {
 //                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
 //                if (!empty($data_file)) {
