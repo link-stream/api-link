@@ -300,7 +300,7 @@ class Profiles extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['url_user'] = '';
         $audio['url_title'] = '';
-        $audio['kit_files_name'] = [];
+        //$audio['kit_files_name'] = [];
         $audio['data_image'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
