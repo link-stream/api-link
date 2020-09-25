@@ -439,7 +439,7 @@ class Marketing extends RestController {
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : ''; //id list
         if (!empty($user_id) && !empty($action) && !empty($list)) {
             if ($action == 'unsubscribe' || $action == 'resubscribe') {
-                $links = json_decode($list, true);
+                $list = json_decode($list, true);
                 foreach ($list as $id) {
                     $status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
                     $this->Marketing_model->update_subscriber($id, ['email_status' => $status, 'sms_status' => $status]);
