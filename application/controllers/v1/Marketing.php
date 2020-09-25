@@ -519,6 +519,9 @@ class Marketing extends RestController {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
         if (!empty($user_id) && !empty($list)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $list = json_decode($list, true);
             foreach ($list as $subscriber) {
 //                $subscriber['email'] = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
@@ -528,6 +531,7 @@ class Marketing extends RestController {
 //                $subscriber['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
 //                $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
 //                $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
+                $subscriber['user_id'] = $user_id;
                 $subscriber['id'] = $this->Marketing_model->insert_subscriber($subscriber);
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers import successfully.'), RestController::HTTP_OK);
