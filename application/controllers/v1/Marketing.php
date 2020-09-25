@@ -519,7 +519,7 @@ class Marketing extends RestController {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : '';
         if (!empty($user_id) && !empty($list)) {
-            $links = json_decode($list, true);
+            $list = json_decode($list, true);
             foreach ($list as $suscriber) {
 //                $subscriber['email'] = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
 //                $subscriber['phone'] = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
