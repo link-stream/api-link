@@ -364,8 +364,31 @@ class Marketing extends RestController {
             }
             $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
             $limit = $page_size;
+            $subscribers_reply = [];
             $subscribers = $this->Marketing_model->fetch_subscribers_by_user_id($id, $subscriber_id, $search, false, $limit, $offset);
-            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $subscribers), RestController::HTTP_OK);
+            if (!empty($subscribers)) {
+                if (empty($subscriber_id)) {
+                    $subscribers_reply = $subscribers;
+                } else {
+                    foreach ($subscribers as $subscriber) {
+                        //FIND SUBSCRIBER INFO
+                        //EXAMPLE
+                        $subscriber_extra_info = [
+                            'open_rate' => '0',
+                            'click_rate' => '0',
+                            //'total_revenue'=>'0',
+                            //'average'=>'0',
+                            'feed' => [
+                                ['date' => '09/10/2020 12:20:00', 'log' => 'Was Sent email Someone To Love You'],
+                                ['date' => '09/01/2020 09:00:00', 'log' => 'Was Sent email Welcome']
+                            ]
+                        ];
+                        $subscriber = $resultado = array_merge($subscriber, $subscriber_extra_info);
+                        $subscribers_reply[] = $subscriber;
+                    }
+                }
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $subscribers_reply), RestController::HTTP_OK);
             //END ACTIONS
         } else {
             $this->error = 'Provide User ID.';
