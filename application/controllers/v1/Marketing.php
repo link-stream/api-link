@@ -384,7 +384,9 @@ class Marketing extends RestController {
             }
             $subscriber['name'] = (!empty($this->input->post('name'))) ? $this->input->post('name') : '';
             $subscriber['birthday'] = (!empty($this->input->post('birthday'))) ? $this->input->post('birthday') : '';
+            $subscriber['gender'] = (!empty($this->input->post('gender'))) ? $this->input->post('gender') : '';
             $subscriber['tags'] = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
+            $subscriber['note'] = (!empty($this->input->post('note'))) ? $this->input->post('note') : '';
             $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
             $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
             $subscriber['id'] = $this->Marketing_model->insert_subscriber($subscriber);
@@ -414,8 +416,14 @@ class Marketing extends RestController {
                 if (!empty($this->put('birthday'))) {
                     $subscriber['birthday'] = $this->put('birthday');
                 }
+                if (!empty($this->put('gender'))) {
+                    $subscriber['gender'] = $this->put('gender');
+                }
                 if (!empty($this->put('tags'))) {
                     $subscriber['tags'] = $this->put('tags');
+                }
+                if (!empty($this->put('note'))) {
+                    $subscriber['note'] = $this->put('note');
                 }
                 $subscriber['email_status'] = (!empty($subscriber['email'])) ? 'subscribed' : 'not subscribed';
                 $subscriber['sms_status'] = (!empty($subscriber['phone'])) ? 'subscribed' : 'not subscribed';
