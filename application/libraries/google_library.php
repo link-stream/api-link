@@ -9,6 +9,8 @@ class Google_library {
     private $publishable_key;
     private $secret_key;
     private $stripe;
+    
+    
 
     public function __construct() {
         //require_once('application/libraries/stripe-php/init.php');
