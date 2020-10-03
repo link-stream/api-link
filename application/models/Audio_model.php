@@ -470,6 +470,8 @@ class Audio_model extends CI_Model {
         if (!empty($bpm_max)) {
             $query_beat .= "AND bpm <= '" . $bpm_max . "' ";
         }
+        $current_date = date('Y-m-d H:i:s');
+        $query_beat .= "AND (publish_at = '0000-00-00 00:00:00' or publish_at <= '" . $current_date . "') ";
         //
         //
         //
@@ -481,7 +483,7 @@ class Audio_model extends CI_Model {
             $query_pack .= "AND id = '" . $audio_id . "'";
         }
         if (!empty($genre)) {
-             //print_r($genre);
+            //print_r($genre);
             $genres = explode(',', $genre);
             //print_r($genres);
             $genres = implode("','", $genres);
@@ -493,6 +495,8 @@ class Audio_model extends CI_Model {
         if (!empty($tag)) {
             $query_pack .= "AND (title LIKE '%" . $tag . "%' OR tags LIKE '%" . $tag . "%') ";
         }
+        $current_date = date('Y-m-d H:i:s');
+        $query_pack .= "AND (publish_at = '0000-00-00 00:00:00' or publish_at <= '" . $current_date . "') ";
         //END QUERY
         if ($beat_type == 'beat') {
             $sql = $query_beat;
@@ -511,8 +515,8 @@ class Audio_model extends CI_Model {
             $sql .= " order by price DESC";
         } elseif ($sort == 'best') {
             $sql .= " order by sort"; //TEMP UNTIL DEFINE BEST
-        }elseif ($sort == 'random') {
-            $sql .= " order by RAND()"; 
+        } elseif ($sort == 'random') {
+            $sql .= " order by RAND()";
         } else {
             $this->db->order_by('sort');
             $sql .= " order by sort";
@@ -546,6 +550,11 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+
+    public function insert_audio_log($data) {
+        $this->db->insert('st_audio_log', $data);
+        //return $this->db->insert_id();
     }
 
 }

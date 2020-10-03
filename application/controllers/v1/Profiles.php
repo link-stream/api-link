@@ -825,7 +825,7 @@ class Profiles extends RestController {
     }
 
     //NEW
-    public function beats_tab_get($url = null) {
+    public function beats_tab_get($url = null, $audio_id = null) {
         if (!empty($url)) {
             $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
             if (!empty($register_user)) {
@@ -845,7 +845,7 @@ class Profiles extends RestController {
                     }
                 }
                 $data_response['beats'] = [];
-                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], null, null, null, null, null, null, 'default', 50, 0);
+                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, null, 'default', 50, 0);
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean_2($streamy, null);
                     if (!empty($audio_response)) {
@@ -862,6 +862,44 @@ class Profiles extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+
+//    public function beats_detail_get($url = null, $audio_id = null) {
+//        if (!empty($id) || !empty($audio_id)) {
+//            $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
+//            if (!empty($register_user)) {
+//                $user_response = $this->user_clean_2($register_user);
+//                $data_response = [];
+//                $data_response['profile'] = $user_response;
+//                //GENRES
+//                $data_response['genres'] = $this->Audio_model->fetch_beats_genres_by_profile($register_user['id']);
+//                //Licenses
+//                $licenses = $this->License_model->fetch_licenses_by_user_id($register_user['id'], null);
+//                $data_response['licenses'] = [];
+//                if (!empty($licenses)) {
+//                    foreach ($licenses as $license) {
+//                        //Define if user can use the license (PENDING) ***** 
+//                        $license['license_available'] = true;
+//                        $data_response['licenses'][] = $license;
+//                    }
+//                }
+//                $data_response['beats'] = [];
+//                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, null, 'default', 50, 0);
+//                foreach ($streamys as $streamy) {
+//                    $audio_response = $this->audio_clean_2($streamy, $audio_id);
+//                    if (!empty($audio_response)) {
+//                        $data_response['beats'][] = $audio_response;
+//                    }
+//                }
+//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
+//            } else {
+//                $this->error = 'Profile Not Found.';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//            }
+//        } else {
+//            $this->error = 'Provide Profile URL.';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        }
+//    }
 
     private function user_clean_2($user, $images = true) {
         unset($user['password']);
@@ -1061,30 +1099,31 @@ class Profiles extends RestController {
         unset($audio['date']);
         unset($audio['time']);
         //new
-        unset($audio['created_at']);
-        unset($audio['status_id']);
-        unset($audio['bpm']);
-        unset($audio['key_id']);
-        unset($audio['public']);
-        unset($audio['publish_at']);
-        unset($audio['untagged_mp3']);
-        unset($audio['untagged_wav_name']);
-        unset($audio['untagged_wav']);
-        unset($audio['track_stems_name']);
-        unset($audio['track_stems']);
-        unset($audio['tagged_file_name']);
-        unset($audio['tagged_file']);
-        unset($audio['license_id']);
-        unset($audio['url_user']);
-        unset($audio['url_title']);
-        unset($audio['beat_packs']);
-        unset($audio['collaborators']);
-        unset($audio['marketing']);
-        unset($audio['data_untagged_mp3']);
-        unset($audio['data_untagged_wav']);
-        unset($audio['data_track_stems']);
-        unset($audio['data_tagged_file']);
-
+        if (empty($audio_id)) {
+            unset($audio['created_at']);
+            unset($audio['status_id']);
+            unset($audio['bpm']);
+            unset($audio['key_id']);
+            unset($audio['public']);
+            unset($audio['publish_at']);
+            unset($audio['untagged_mp3']);
+            unset($audio['untagged_wav_name']);
+            unset($audio['untagged_wav']);
+            unset($audio['track_stems_name']);
+            unset($audio['track_stems']);
+            unset($audio['tagged_file_name']);
+            unset($audio['tagged_file']);
+            unset($audio['license_id']);
+            unset($audio['url_user']);
+            unset($audio['url_title']);
+            unset($audio['beat_packs']);
+            unset($audio['collaborators']);
+            unset($audio['marketing']);
+            unset($audio['data_untagged_mp3']);
+            unset($audio['data_untagged_wav']);
+            unset($audio['data_track_stems']);
+            unset($audio['data_tagged_file']);
+        }
         return $audio;
     }
 
@@ -1179,6 +1218,25 @@ class Profiles extends RestController {
 
 
         return $audio;
+    }
+
+    public function audio_action_post($audio_id, $audio_type, $action) {
+        if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
+            $data = [];
+            $data['audio_id'] = $audio_id;
+            $data['audio_type'] = $audio_type;
+            $data['action'] = $action;
+            if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'sound_kit') {
+                $this->Audio_model->insert_audio_log($data);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio action has been created successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Provide Valid Audio Type';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } {
+            $this->error = 'Provide Audio ID and/or Audio Type and/or Action';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
 }

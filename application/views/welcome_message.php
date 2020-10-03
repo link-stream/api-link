@@ -3121,6 +3121,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>url (example: paolo_linkstream)</li>
+                    <li>$audio_id (optional)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -3359,6 +3360,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         ]
     }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Insert Audio Action:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/audio_action</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>audio_id</li>
+                    <li>audio_type (beat, pack, sound_kit)</li>
+                    <li>action (play)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The audio action has been created successfully."
 }');
                     echo '</pre>';
                     ?>
