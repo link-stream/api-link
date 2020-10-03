@@ -852,6 +852,13 @@ class Profiles extends RestController {
                         $data_response['beats'][] = $audio_response;
                     }
                 }
+                if (!empty($audio_id) && !empty($streamys)) {
+                    $data_log = [];
+                    $data_log['audio_id'] = $audio_id;
+                    $data_log['audio_type'] = 'beat';
+                    $data_log['action'] = 'VIEW';
+                    $this->Audio_model->insert_audio_log($data_log);
+                }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Profile Not Found.';
@@ -1222,12 +1229,12 @@ class Profiles extends RestController {
 
     public function audio_action_post($audio_id, $audio_type, $action) {
         if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
-            $data = [];
-            $data['audio_id'] = $audio_id;
-            $data['audio_type'] = $audio_type;
-            $data['action'] = $action;
+            $data_log = [];
+            $data_log['audio_id'] = $audio_id;
+            $data_log['audio_type'] = $audio_type;
+            $data_log['action'] = strtoupper($action);
             if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'sound_kit') {
-                $this->Audio_model->insert_audio_log($data);
+                $this->Audio_model->insert_audio_log($data_log);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio action has been created successfully.'), RestController::HTTP_OK);
             } else {
                 $this->error = 'Provide Valid Audio Type';
