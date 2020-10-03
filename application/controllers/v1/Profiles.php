@@ -855,7 +855,7 @@ class Profiles extends RestController {
                 if (!empty($audio_id) && !empty($streamys)) {
                     $data_log = [];
                     $data_log['audio_id'] = $audio_id;
-                    $data_log['audio_type'] = 'beat';
+                    $data_log['audio_type'] = (!empty($beat_type)) ? $beat_type : 'beat';
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }
@@ -870,43 +870,81 @@ class Profiles extends RestController {
         }
     }
 
-//    public function beats_detail_get($url = null, $audio_id = null) {
-//        if (!empty($id) || !empty($audio_id)) {
-//            $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
-//            if (!empty($register_user)) {
-//                $user_response = $this->user_clean_2($register_user);
-//                $data_response = [];
-//                $data_response['profile'] = $user_response;
-//                //GENRES
-//                $data_response['genres'] = $this->Audio_model->fetch_beats_genres_by_profile($register_user['id']);
-//                //Licenses
-//                $licenses = $this->License_model->fetch_licenses_by_user_id($register_user['id'], null);
-//                $data_response['licenses'] = [];
-//                if (!empty($licenses)) {
-//                    foreach ($licenses as $license) {
-//                        //Define if user can use the license (PENDING) ***** 
-//                        $license['license_available'] = true;
-//                        $data_response['licenses'][] = $license;
-//                    }
-//                }
-//                $data_response['beats'] = [];
-//                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, null, 'default', 50, 0);
-//                foreach ($streamys as $streamy) {
-//                    $audio_response = $this->audio_clean_2($streamy, $audio_id);
-//                    if (!empty($audio_response)) {
-//                        $data_response['beats'][] = $audio_response;
-//                    }
-//                }
-//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
-//            } else {
-//                $this->error = 'Profile Not Found.';
-//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-//            }
-//        } else {
-//            $this->error = 'Provide Profile URL.';
-//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-//        }
-//    }
+    public function sound_kits_tab_get($url = null, $audio_id = null) {
+
+        if (!empty($url)) {
+            $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
+            if (!empty($register_user)) {
+                $user_response = $this->user_clean_2($register_user);
+                $data_response = [];
+                $data_response['profile'] = $user_response;
+                //GENRES
+                $data_response['genres'] = $this->Audio_model->fetch_beats_genres_by_profile($register_user['id']);
+                //Licenses
+                $licenses = $this->License_model->fetch_licenses_by_user_id($register_user['id'], null);
+                $data_response['licenses'] = [];
+                if (!empty($licenses)) {
+                    foreach ($licenses as $license) {
+                        //Define if user can use the license (PENDING) ***** 
+                        $license['license_available'] = true;
+                        $data_response['licenses'][] = $license;
+                    }
+                }
+                $data_response['beats'] = [];
+                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0);
+                foreach ($streamys as $streamy) {
+                    $audio_response = $this->audio_clean_2($streamy, null);
+                    if (!empty($audio_response)) {
+                        $data_response['beats'][] = $audio_response;
+                    }
+                }
+                if (!empty($audio_id) && !empty($streamys)) {
+                    $data_log = [];
+                    $data_log['audio_id'] = $audio_id;
+                    $data_log['audio_type'] = 'beat';
+                    $data_log['action'] = 'VIEW';
+                    $this->Audio_model->insert_audio_log($data_log);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Profile Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Profile URL.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+
+
+
+
+        if (!empty($id)) {
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            $sort = (!empty($this->input->get('sort'))) ? $this->input->get('sort') : 'default';
+            $tag = (!empty($this->input->get('tag'))) ? $this->input->get('tag') : '';
+            $genre = (!empty($this->input->get('genre'))) ? $this->input->get('genre') : '';
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+                $limit = $page_size;
+                $streamys = $this->Audio_model->fetch_sound_kit_by_profile($id, $audio_id, $genre, $tag, $sort, $limit, $offset);
+                $audios = [];
+                foreach ($streamys as $streamy) {
+                    $audio_response = $this->audio_clean($streamy, $audio_id);
+                    if (!empty($audio_response)) {
+                        $audios[] = $audio_response;
+                    }
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide Peoducer ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
 
     private function user_clean_2($user, $images = true) {
         unset($user['password']);
