@@ -825,7 +825,7 @@ class Profiles extends RestController {
     }
 
     //NEW
-    public function beats_tab_get($url = null, $audio_id = null) {
+    public function beats_tab_get($url = null, $audio_id = null, $beat_type = null) {
         if (!empty($url)) {
             $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
             if (!empty($register_user)) {
@@ -845,7 +845,7 @@ class Profiles extends RestController {
                     }
                 }
                 $data_response['beats'] = [];
-                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, null, 'default', 50, 0);
+                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0);
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean_2($streamy, null);
                     if (!empty($audio_response)) {
