@@ -3117,11 +3117,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>GET Beats Tab:</h3>
-                <code>GET <?= base_url() ?>v1/profiles/beats_tab/{url}</code>
+                <code>GET <?= base_url() ?>v1/profiles/beats_tab/{url}/{audio_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>url (example: paolo_linkstream)</li>
-                    <li>$audio_id (optional)</li>
+                    <li>audio_id (optional)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
