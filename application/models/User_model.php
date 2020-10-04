@@ -150,13 +150,29 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function insert_user_purchase($data) {
+        $this->db->insert('st_user_invoice', $data);
+        return $this->db->insert_id();
+    }
+
+    public function update_user_purchase($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_invoice', $data);
+    }
+
     public function fetch_user_purchases($user_id) {
         $this->db->from('st_user_invoice');
         $this->db->where('user_id', $user_id);
+        $this->db->where('status', 'COMPLETED');
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+
+    public function insert_user_purchase_details($data) {
+        $this->db->insert('st_user_invoice_detail', $data);
+        //return $this->db->insert_id();
     }
 
     public function fetch_user_purchases_details($invoice_id) {
@@ -265,7 +281,7 @@ class User_model extends CI_Model {
         $this->db->where(array('user_id' => $user_id, 'account_id' => $account_id));
         $this->db->update('st_user_connect', $data);
     }
-    
+
     public function fetch_stripe_account_by_user_id($user_id, $processor = 'Stripe') {
         $this->db->from('st_user_connect');
         $this->db->where('user_id', $user_id);

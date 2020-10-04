@@ -226,4 +226,72 @@ class Stripe_library {
         return $response;
     }
 
+    //PAYMENT
+    public function create_a_card_token($exp_month, $exp_year, $number, $cvc, $name, $address_zip) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->tokens->create([
+                'card' => [
+                    'number' => $number,
+                    'exp_month' => $exp_month,
+                    'exp_year' => $exp_year,
+                    'cvc' => $cvc,
+                    'name' => $name,
+                    'address_zip' => $address_zip
+                ],
+            ]);
+//            'card' => [
+//                    'number' => '4242424242424242',
+//                    'exp_month' => 10,
+//                    'exp_year' => 2021,
+//                    'cvc' => '314',
+//                ],
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['token_id'] = $object->id;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
+    public function create_a_charge($amount, $description, $receipt_email, $source, $transfer_group) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->charges->create([
+                'amount' => ($amount * 100),
+                'currency' => 'usd',
+                'description' => $description,
+                'source' => 'tok_mastercard',
+                'receipt_email' => $receipt_email,
+                'source' => $source,
+                'transfer_group' => $transfer_group
+            ]);
+
+//            $stripe->charges->create([
+//  'amount' => 2000,
+//  'currency' => 'usd',
+//  'source' => 'tok_mastercard',
+//  'description' => 'My First Test Charge (created for API docs)',
+//]);
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['charge_id'] = $object->id;
+            $response['receipt_url'] = $object->receipt_url;
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+
 }

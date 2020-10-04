@@ -1387,6 +1387,7 @@ class Profiles extends RestController {
         $cvc = '314';
         $name = 'Paolo Ferra';
         $address_zip = '33312';
+        $user_id = 35;
         $card_token = $this->stripe_library->create_a_card_token($exp_month, $exp_year, $number, $cvc, $name, $address_zip);
         if (!$card_token['status']) {
             $this->error = 'Payment Error: ' . $card_token['error'];
@@ -1394,11 +1395,29 @@ class Profiles extends RestController {
         } else {
             $token_id = $card_token['token_id'];
             echo $token_id . '<br>';
-            $amount = 200;
-            $description = 'Linkstream Charge ORDER_95';
+            $subtotal = 180;
+            $feeCC = 10;
+            $feeService = 10;
+            $total = 200;
+            $invoice = [
+                'user_id' => $user_id,
+                'status' => 'PENDING',
+                'sub_total' => $subtotal,
+                'feeCC' => $feeCC,
+                'feeService' => $feeService,
+                'total' => $total,
+                'payment_customer_id' => $token_id,
+            ];
+            $invoice_id = $this->User_model->insert_user_purchase($invoice);
+            $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
+
+//            $transfer_group = 'ORDER_95';
+//            $description = 'Linkstream Charge ORDER_95';
+            $transfer_group = $invoice_number;
+            $description = 'Linkstream - Invoice: ' . $invoice_number;
             $receipt_email = 'paolofq@gmail.com';
-            $transfer_group = 'ORDER_95';
-            $charge = $this->stripe_library->create_a_charge($amount, $description, $receipt_email, $token_id, $transfer_group);
+
+            $charge = $this->stripe_library->create_a_charge($total, $description, $receipt_email, $token_id, $transfer_group);
             if (!$charge['status']) {
                 $this->error = 'Payment Error: ' . $charge['error'];
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -1407,6 +1426,15 @@ class Profiles extends RestController {
                 $receipt_url = $charge['receipt_url'];
                 echo $charge_id . '<br>';
                 echo $receipt_url . '<br>';
+                $invoice['invoice_number'] = $invoice_number;
+                $invoice['status'] = 'COMPLETED';
+                $invoice['payment_charge_id'] = $charge_id;
+                $invoice['billingZip'] = $address_zip;
+                $invoice['billingCVV'] = $cvc;
+                $invoice['billingCC6'] = substr($number, 6);
+                $invoice['billingCC'] = substr($number, -4);
+                $invoice['billingName'] = $name;
+                $this->User_model->update_user_purchase($invoice_id, $invoice);
             }
         }
     }
