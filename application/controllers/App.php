@@ -3496,4 +3496,125 @@ paypal.use( ["login"], function (login) {
         echo '</pre>';
     }
 
+    public function testing_json() {
+        $list = [
+            [
+                'email' => 'a@a.com',
+                'phone' => '1111111111',
+                'name' => 'Name',
+                'birthday' => '01/15',
+                'tags' => 'beats, links, videos',
+                'email_status' => 'subscribed',
+                'sms_status' => 'unsubscribed',
+            ],
+            [
+                'email' => 'b@a.com',
+                'phone' => '1111111112',
+                'name' => 'Name2',
+                'birthday' => '02/15',
+                'tags' => 'beats, links, audios',
+                'email_status' => 'subscribed',
+                'sms_status' => 'subscribed',
+            ]
+        ];
+        $list = [
+            'a', 'b', 'c'
+        ];
+        print_r(json_encode($list));
+    }
+
+    
+
+    public function testing_yt() {
+//         $this->load->library('google_library');
+//         $this->google_library->youtube();
+        $this->load->view($this->loc_path . 'example/account');
+    }
+
+    public function testing_mp3_to_mp4() {
+        $file_name = 'file_example_MP3_1MG.mp3';
+        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
+        $file_mp3 = $path . $file_name;
+        $file_name_mp4 = 'video.avi';
+        $file_name_mp4_2 = 'video_image.avi';
+        $file_mp4 = $path . $file_name_mp4;
+        $file_mp4_2 = $path . $file_name_mp4_2;
+        $image_name = 'download.jpeg';
+        $image = $path . $image_name;
+
+
+
+        $image_input = $path . '01_Image.png';
+        $audio_input = $path . '01_Audio.mp3';
+        $video_output = $path . '01_Video_Final.mp4';
+        $video_image_output = $path . '01_Video_Image_Final_10.mp4';
+
+        //
+        //
+        //*******REAL OPCION********//
+//        $time_start = microtime(true);
+//        //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -shortest " . $video_output . "";//TIME: 2.6338345011075 Mins, MB:52.2MB
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_output . "";//TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
+//        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        $time_end = microtime(true);
+//        //dividing with 60 will give the execution time in minutes otherwise seconds
+//        $execution_time = ($time_end - $time_start) / 60;
+//        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+//        exit;
+//        
+//        
+//        
+//        $time_start = microtime(true);
+//        //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $audio_input . " " . $video_output; 
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg  -i " . $audio_input . " -c:v copy -c:a copy " . $video_output;
+//        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        $time_end = microtime(true);
+//        //dividing with 60 will give the execution time in minutes otherwise seconds
+//        $execution_time = ($time_end - $time_start) / 60;
+//        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+
+        $time_start = microtime(true);
+//        $cmd = "usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $video_output . " -i " . $image_input . " -filter_complex 'overlay=10:main_h-overlay_h-10' ".$video_image_output;
+//        //$cmd = '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i ' . $image_input . ' -i ' . $video_output . ' -shortest -preset veryfast ' . $video_image_output;
+//        exec($cmd, $output);
+        $this->mix_video($audio_input, $image_input, $video_image_output);
+//        echo "<pre>";
+//        print_r($output);
+        $time_end = microtime(true);
+        //dividing with 60 will give the execution time in minutes otherwise seconds
+        $execution_time = ($time_end - $time_start) / 60;
+        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+
+        exit;
+        //***************//
+//        $time_start = microtime(true);
+//        $video_encoded = $path . '01_Video_Final_Encoded.mpg';
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $video_output . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy " . $video_encoded;//0.3108925819397 Mins, 15.4MB
+//        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        $time_end = microtime(true);
+//        //dividing with 60 will give the execution time in minutes otherwise seconds
+//        $execution_time = ($time_end - $time_start) / 60;
+//        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+//        exit;
+    }
+
+    public function mix_video($audio_file, $img_file, $video_file) {
+        $mix = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop -i " . $img_file . " -i " . $audio_file . " -vcodec mpeg4 -s 720x576 -b 10k -r 1 -acodec copy -shortest " . $video_file;
+        //exec($mix);
+        echo $mix;
+    }
+
+    public function youtube_upload_video() {
+        $this->load->view($this->loc_path . 'example/account');
+    }
+
+//    public function youtube_upload_image() {
+//        $this->load->view($this->loc_path . 'example/account_2');
+//    }
 }
