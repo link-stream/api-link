@@ -871,7 +871,6 @@ class Profiles extends RestController {
     }
 
     public function sound_kits_tab_get($url = null, $audio_id = null) {
-
         if (!empty($url)) {
             $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
             if (!empty($register_user)) {
@@ -893,6 +892,49 @@ class Profiles extends RestController {
                     $data_log = [];
                     $data_log['audio_id'] = $audio_id;
                     $data_log['audio_type'] = 'sound_kit';
+                    $data_log['action'] = 'VIEW';
+                    $this->Audio_model->insert_audio_log($data_log);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Profile Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Profile URL.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function videos_tab_get($url = null, $video_id = null) {
+        if (!empty($url)) {
+            $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
+            if (!empty($register_user)) {
+                $user_response = $this->user_clean_2($register_user);
+                $data_response = [];
+                $data_response['profile'] = $user_response;
+                //GENRES
+                $data_response['genres'] = $this->Video_model->fetch_videos_genres_by_profile($register_user['id']);
+                $data_response['videos'] = [];
+                //$videos = $this->Video_model->fetch_video_by_profile($id, $video_id, $genre, $tag, $sort, $limit, $offset);
+                $videos = $this->Video_model->fetch_video_by_profile($register_user['id'], $video_id, null, null, 'default', 50, 0);
+                foreach ($videos as $video) {
+                    $video['scheduled'] = true;
+                    if ($video['publish_at'] == '0000-00-00 00:00:00' || empty($video['publish_at'])) {
+                        $video['scheduled'] = false;
+                    }
+                    $video['date'] = ($video['scheduled']) ? substr($video['publish_at'], 0, 10) : '';
+                    $video['time'] = ($video['scheduled']) ? substr($video['publish_at'], 11) : '';
+                    $video['public'] = ($video['public'] == '3') ? '1' : $video['public'];
+                    $video_response = $this->video_clean($video);
+                    if (!empty($video_response)) {
+                        $data_response['videos'][] = $video_response;
+                    }
+                }
+                if (!empty($video_id) && !empty($videos)) {
+                    $data_log = [];
+                    $data_log['audio_id'] = $video_id;
+                    $data_log['audio_type'] = 'videos';
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }

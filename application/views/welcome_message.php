@@ -3387,15 +3387,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                 <hr>
+
+                <hr>
                 <h3>GET Sound Kits Tab:</h3>
                 <code>GET <?= base_url() ?>v1/profiles/sound_kits_tab/{url}/{audio_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>url (example: paolo_linkstream)</li>
                     <li>audio_id (optional)</li>
-                  
+
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -3586,6 +3586,79 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "data_image": "data:image/jpeg;base64,/9j",
                 "data_track_stems": "",
                 "data_tagged_file": ""
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>GET Videos Tab:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/videos_tab/{url}/{video_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>url (example: paolo_linkstream)</li>
+                    <li>video_id (optional)</li>
+
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "profile": {
+            "id": "35",
+            "user_name": "paolo_ls",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "display_name": "Paolo_LinkStream",
+            "url": "paolo_linkstream",
+            "image": "54ec6e5b610a3c082d8d6641f59b94f9.jpeg",
+            "banner": "b3c8e56a73665ff17156353b17e27888.png",
+            "city": "Fort Lauderdale",
+            "country": "US",
+            "bio": "Making Progress...LinkStream is Coming!!!",
+            "followers": "0",
+            "plays": "0",
+            "beats": "0",
+            "data_image": "data: image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ",
+            "data_banner": "data: image/png;base64,iVBORw0KGgoAAAANSUhEUg"
+        },
+        "genres": [
+            {
+                "id": "3",
+                "genre": "Hip-hop & Rap"
+            }
+        ],
+        "videos": [
+            {
+                "id": "330",
+                "created_at": "2020-09-22 02:36:51",
+                "user_id": "35",
+                "title": "Mas Macarena",
+                "url": "https://www.youtube.com/watch?v=8BMnz4i2dM8",
+                "genre_id": "3"
+            },
+            {
+                "id": "328",
+                "created_at": "2020-09-22 02:35:49",
+                "user_id": "35",
+                "title": "La Gozadera",
+                "url": "https://www.youtube.com/watch?v=VMp55KH_3wo",
+                "genre_id": "3"
+            },
+            {
+                "id": "329",
+                "created_at": "2020-09-22 02:36:14",
+                "user_id": "35",
+                "title": "Si No Vuelves",
+                "url": "https://www.youtube.com/watch?v=lf8xoMhV8pI",
+                "genre_id": "3"
             }
         ]
     }
