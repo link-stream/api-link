@@ -147,6 +147,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>email</li>
                     <li>password</li>
                     <li>user_name</li>
+                    <li>type (optional)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
