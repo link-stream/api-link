@@ -738,6 +738,7 @@ class Users extends RestController {
                     $response_details[] = $detail;
                 }
                 $invoice['details'] = $response_details;
+                $invoice['amount'] = $invoice['total'];
                 $response[] = $invoice;
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
