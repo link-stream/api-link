@@ -894,7 +894,7 @@ class Profiles extends RestController {
                 //$streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0);
                 $streamys = $this->Audio_model->fetch_sound_kit_by_profile($register_user['id'], $audio_id, null, null, 'default', 50, 0);
                 foreach ($streamys as $streamy) {
-                    $audio_response = $this->audio_clean_2($streamy, null);
+                    $audio_response = $this->audio_clean_2($streamy, $audio_id);
                     if (!empty($audio_response)) {
                         $data_response['beats'][] = $audio_response;
                     }
@@ -913,36 +913,6 @@ class Profiles extends RestController {
             }
         } else {
             $this->error = 'Provide Profile URL.';
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        }
-
-
-
-
-        if (!empty($id)) {
-            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
-            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
-            $sort = (!empty($this->input->get('sort'))) ? $this->input->get('sort') : 'default';
-            $tag = (!empty($this->input->get('tag'))) ? $this->input->get('tag') : '';
-            $genre = (!empty($this->input->get('genre'))) ? $this->input->get('genre') : '';
-            if (!is_int($page) || !is_int($page_size)) {
-                $this->error = 'Parameters page and page_size can only have integer values';
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-            } else {
-                $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
-                $limit = $page_size;
-                $streamys = $this->Audio_model->fetch_sound_kit_by_profile($id, $audio_id, $genre, $tag, $sort, $limit, $offset);
-                $audios = [];
-                foreach ($streamys as $streamy) {
-                    $audio_response = $this->audio_clean($streamy, $audio_id);
-                    if (!empty($audio_response)) {
-                        $audios[] = $audio_response;
-                    }
-                }
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $audios), RestController::HTTP_OK);
-            }
-        } else {
-            $this->error = 'Provide Peoducer ID';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
@@ -1027,7 +997,7 @@ class Profiles extends RestController {
                 $audio = $this->beat_pack_clean_2($audio, $audio_id, $images);
             }
         } elseif ($audio['track_type'] == '3') {
-            $audio = $this->sound_kit_clean($audio, $audio_id, $images);
+            $audio = $this->sound_kit_clean_2($audio, $audio_id, $images);
         }
         return $audio;
     }
@@ -1238,31 +1208,133 @@ class Profiles extends RestController {
         unset($audio['date']);
         unset($audio['time']);
         //new
-        unset($audio['created_at']);
-        unset($audio['status_id']);
+        if (empty($audio_id)) {
+            unset($audio['created_at']);
+            unset($audio['status_id']);
+            unset($audio['bpm']);
+            unset($audio['key_id']);
+            unset($audio['public']);
+            unset($audio['publish_at']);
+            unset($audio['untagged_mp3']);
+            unset($audio['untagged_wav_name']);
+            unset($audio['untagged_wav']);
+            unset($audio['track_stems_name']);
+            unset($audio['track_stems']);
+            unset($audio['tagged_file_name']);
+            unset($audio['tagged_file']);
+            unset($audio['license_id']);
+            unset($audio['url_user']);
+            unset($audio['url_title']);
+            unset($audio['beat_packs']);
+            unset($audio['collaborators']);
+            unset($audio['marketing']);
+            unset($audio['data_untagged_mp3']);
+            unset($audio['data_untagged_wav']);
+            unset($audio['data_track_stems']);
+            unset($audio['data_tagged_file']);
+        }
+
+
+        return $audio;
+    }
+
+    private function sound_kit_clean_2($audio, $audio_id = null, $images = true) {
+
+        $audio['scheduled'] = true;
+        if ($audio['publish_at'] == '0000-00-00 00:00:00' || empty($audio['publish_at'])) {
+            $audio['scheduled'] = false;
+        }
+        $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
+        $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
+        $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
+        $audio['url_user'] = '';
+        $audio['url_title'] = '';
+        //$audio['kit_files_name'] = [];
+        $audio['data_image'] = '';
+        $audio['data_track_stems'] = '';
+        $audio['data_tagged_file'] = '';
+        //Coverart
+        $path = $this->s3_path . $this->s3_coverart;
+        if ($images) {
+            if (!empty($audio['coverart'])) {
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+                if (!empty($data_image)) {
+                    $img_file = $audio['coverart'];
+                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+                    $audio['data_image'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['coverart']);
+                }
+            }
+        }
+        if (!empty($audio_id)) {
+            $user = $this->User_model->fetch_user_by_id($audio['user_id']);
+            $audio['url_user'] = $user['url'];
+            $audio['url_title'] = url_title($audio['title']);
+            //$path = $this->s3_path . $this->s3_folder;
+            $path = $this->s3_path . $this->s3_audio;
+            $audio['kit_files_name'] = (!empty($audio['kit_files_name'])) ? json_decode($audio['kit_files_name']) : [];
+//            if (!empty($audio['track_stems'])) {
+//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+//                if (!empty($data_file)) {
+//                    $img_file = $audio['track_stems'];
+//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
+//                    $audio['data_track_stems'] = $src;
+//
+//                    //Audio List.
+//                    $zip = new ZipArchive;
+//                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
+//                    if ($res === TRUE) {
+//                        for ($i = 0; $i < $zip->numFiles; $i++) {
+//                            $filename = $zip->getNameIndex($i);
+//                            $pos = strpos($filename, 'MACOSX/.');
+//                            if ($pos === false) {
+//                                $audio['kit_files_name'][] = $filename;
+//                            }
+//                        }
+//                    }
+//                    $audio['samples'] = count($audio['kit_files_name']);
+//                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
+//                    //
+//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
+//                }
+//            }
+            if (!empty($audio['tagged_file'])) {
+                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+                if (!empty($data_file)) {
+                    $img_file = $audio['tagged_file'];
+                    file_put_contents($this->temp_dir . '/' . $audio['tagged_file'], $data_file);
+                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['tagged_file']) . ';base64,' . base64_encode($data_file);
+                    $audio['data_tagged_file'] = $src;
+                    unlink($this->temp_dir . '/' . $audio['tagged_file']);
+                }
+            }
+        }
+        unset($audio['publish_at']);
         unset($audio['bpm']);
         unset($audio['key_id']);
-        unset($audio['public']);
-        unset($audio['publish_at']);
+        unset($audio['untagged_mp3_name']);
         unset($audio['untagged_mp3']);
         unset($audio['untagged_wav_name']);
         unset($audio['untagged_wav']);
-        unset($audio['track_stems_name']);
-        unset($audio['track_stems']);
-        unset($audio['tagged_file_name']);
-        unset($audio['tagged_file']);
-        unset($audio['license_id']);
-        unset($audio['url_user']);
-        unset($audio['url_title']);
-        unset($audio['beat_packs']);
-        unset($audio['collaborators']);
-        unset($audio['marketing']);
-        unset($audio['data_untagged_mp3']);
-        unset($audio['data_untagged_wav']);
-        unset($audio['data_track_stems']);
-        unset($audio['data_tagged_file']);
-
-
+        unset($audio['key_id']);
+        //PROFILE
+        unset($audio['status_id']);
+        unset($audio['sort']);
+        if ($audio['public'] != '1') {
+            $audio = false;
+        }
+        unset($audio['public']);
+        if ($audio['scheduled']) {
+            $current_time = date("Y-m-d H:i:s");
+            if ($current_time < $audio['date'] . ' ' . $audio['time']) {
+                $audio = false;
+            }
+        }
+        unset($audio['scheduled']);
+        unset($audio['date']);
+        unset($audio['time']);
         return $audio;
     }
 
