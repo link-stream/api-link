@@ -902,7 +902,7 @@ class Profiles extends RestController {
                 if (!empty($audio_id) && !empty($streamys)) {
                     $data_log = [];
                     $data_log['audio_id'] = $audio_id;
-                    $data_log['audio_type'] = 'beat';
+                    $data_log['audio_type'] = 'sound_kit';
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }
@@ -1155,19 +1155,7 @@ class Profiles extends RestController {
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['license_id'] = !empty($audio['license_id']) ? $audio['license_id'] : '';
         $audio['data_image'] = '';
-
-
-//        $audio['url_user'] = '';
-//        $audio['url_title'] = '';
         $audio['beats'] = '';
-//        $audio['licenses'] = '';
-//        $audio['collaborators'] = '';
-//        $audio['marketing'] = '';
-//        $audio['data_image'] = '';
-//        $audio['data_untagged_mp3'] = '';
-//        $audio['data_untagged_wav'] = '';
-//        $audio['data_track_stems'] = '';
-//        $audio['data_tagged_file'] = '';
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -1183,14 +1171,6 @@ class Profiles extends RestController {
             }
         }
         $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio['id']);
-//        $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
-        if (!empty($audio_id)) {
-            
-        }
-//        unset($audio['publish_at']);
-//        unset($audio['price']);
-//        unset($audio['samples']);
-//        unset($audio['description']);
         //PROFILE
         unset($audio['status_id']);
         unset($audio['sort']);
@@ -1233,8 +1213,6 @@ class Profiles extends RestController {
             unset($audio['data_track_stems']);
             unset($audio['data_tagged_file']);
         }
-
-
         return $audio;
     }
 
@@ -1271,35 +1249,8 @@ class Profiles extends RestController {
             $user = $this->User_model->fetch_user_by_id($audio['user_id']);
             $audio['url_user'] = $user['url'];
             $audio['url_title'] = url_title($audio['title']);
-            //$path = $this->s3_path . $this->s3_folder;
             $path = $this->s3_path . $this->s3_audio;
             $audio['kit_files_name'] = (!empty($audio['kit_files_name'])) ? json_decode($audio['kit_files_name']) : [];
-//            if (!empty($audio['track_stems'])) {
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['track_stems'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-//                    $audio['data_track_stems'] = $src;
-//
-//                    //Audio List.
-//                    $zip = new ZipArchive;
-//                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
-//                    if ($res === TRUE) {
-//                        for ($i = 0; $i < $zip->numFiles; $i++) {
-//                            $filename = $zip->getNameIndex($i);
-//                            $pos = strpos($filename, 'MACOSX/.');
-//                            if ($pos === false) {
-//                                $audio['kit_files_name'][] = $filename;
-//                            }
-//                        }
-//                    }
-//                    $audio['samples'] = count($audio['kit_files_name']);
-//                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
-//                    //
-//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-//                }
-//            }
             if (!empty($audio['tagged_file'])) {
                 $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
                 if (!empty($data_file)) {

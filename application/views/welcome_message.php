@@ -3387,6 +3387,212 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
+                
+                 <hr>
+                <h3>GET Sound Kits Tab:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/sound_kits_tab/{url}/{audio_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>url (example: paolo_linkstream)</li>
+                    <li>audio_id (optional)</li>
+                  
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "profile": {
+            "id": "35",
+            "user_name": "paolo_ls",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "display_name": "Paolo_LinkStream",
+            "url": "paolo_linkstream",
+            "image": "54ec6e5b610a3c082d8d6641f59b94f9.jpeg",
+            "banner": "b3c8e56a73665ff17156353b17e27888.png",
+            "city": "Fort Lauderdale",
+            "country": "US",
+            "bio": "Making Progress...LinkStream is Coming!!!",
+            "followers": "0",
+            "plays": "0",
+            "beats": "0",
+            "data_image": "data: image/jpeg;base64,/9j/4AAQSkZJRgABAQAAA",
+            "data_banner": "data: image/png;base64,iVBORw0KGgoAAAANSUhEU"
+        },
+        "genres": [
+            {
+                "id": "2",
+                "genre": "Custom"
+            },
+            {
+                "id": "3",
+                "genre": "Hip-hop & Rap"
+            }
+        ],
+        "licenses": [
+            {
+                "id": "1",
+                "user_id": "35",
+                "status_id": "1",
+                "title": "Standard License",
+                "descripcion": "Untagged MP3",
+                "price": "30.00",
+                "mp3": "1",
+                "wav": "0",
+                "trackout_stems": "0",
+                "distribution_copies": "0",
+                "free_download": "0",
+                "audio_streams": "0",
+                "music_videos": "0",
+                "video_streams": "0",
+                "broadcasting_rights": "0",
+                "radio_station": "0",
+                "paid_performances": "0",
+                "non_profit_performances": "Unlimited",
+                "license_available": true
+            },
+            {
+                "id": "2",
+                "user_id": "35",
+                "status_id": "1",
+                "title": "Premium License ",
+                "descripcion": "Untagged MP3 - WAV",
+                "price": "50.00",
+                "mp3": "1",
+                "wav": "1",
+                "trackout_stems": "0",
+                "distribution_copies": "0",
+                "free_download": "0",
+                "audio_streams": "0",
+                "music_videos": "0",
+                "video_streams": "0",
+                "broadcasting_rights": "0",
+                "radio_station": "0",
+                "paid_performances": "0",
+                "non_profit_performances": "Unlimited",
+                "license_available": true
+            },
+            {
+                "id": "3",
+                "user_id": "35",
+                "status_id": "1",
+                "title": "Unlimited License",
+                "descripcion": "Untagged MP3 - WAV",
+                "price": "100.00",
+                "mp3": "1",
+                "wav": "1",
+                "trackout_stems": "0",
+                "distribution_copies": "0",
+                "free_download": "0",
+                "audio_streams": "0",
+                "music_videos": "0",
+                "video_streams": "0",
+                "broadcasting_rights": "0",
+                "radio_station": "0",
+                "paid_performances": "0",
+                "non_profit_performances": "Unlimited",
+                "license_available": true
+            },
+            {
+                "id": "4",
+                "user_id": "35",
+                "status_id": "1",
+                "title": "Unlimited With Trackouts License",
+                "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
+                "price": "200.00",
+                "mp3": "1",
+                "wav": "1",
+                "trackout_stems": "1",
+                "distribution_copies": "0",
+                "free_download": "0",
+                "audio_streams": "0",
+                "music_videos": "0",
+                "video_streams": "0",
+                "broadcasting_rights": "0",
+                "radio_station": "0",
+                "paid_performances": "0",
+                "non_profit_performances": "Unlimited",
+                "license_available": true
+            },
+            {
+                "id": "5",
+                "user_id": "35",
+                "status_id": "1",
+                "title": "Exclusive License",
+                "descripcion": "Untagged MP3 - WAV - .ZIP/.RAR of track stems",
+                "price": "300.00",
+                "mp3": "1",
+                "wav": "1",
+                "trackout_stems": "1",
+                "distribution_copies": "0",
+                "free_download": "0",
+                "audio_streams": "0",
+                "music_videos": "0",
+                "video_streams": "0",
+                "broadcasting_rights": "0",
+                "radio_station": "0",
+                "paid_performances": "0",
+                "non_profit_performances": "Unlimited",
+                "license_available": true
+            }
+        ],
+        "beats": [
+            {
+                "id": "381",
+                "created_at": "2020-09-22 03:25:00",
+                "user_id": "35",
+                "title": "My title",
+                "coverart": "d22dbf7178b5b8110e6a8dd21d2f0cad.jpeg",
+                "genre_id": "2",
+                "track_type": "3",
+                "tags": "paolo, kit, linkstream",
+                "track_stems_name": "wav.zip",
+                "track_stems": "473475ad090ba17648347d09e81d2ee3.zip",
+                "tagged_file_name": "file_example_MP3_2MG.mp3",
+                "tagged_file": "1416cf525f3a71ed6864e10e0c09f318.mp3",
+                "price": "150.00",
+                "samples": "4",
+                "kit_files_name": "[\"file_example_WAV_1MG.wav\",\"file_example_WAV_2MG.wav\",\"file_example_WAV_5MG.wav\",\"file_example_WAV_10MG.wav\"]",
+                "description": "My first Kit",
+                "url_user": "",
+                "url_title": "",
+                "data_image": "data:image/jpeg;base64,/9j/4AAQSkZJR",
+                "data_track_stems": "",
+                "data_tagged_file": ""
+            },
+            {
+                "id": "387",
+                "created_at": "2020-09-22 21:02:57",
+                "user_id": "35",
+                "title": "Sound KIt Big",
+                "coverart": "9c1aa7dd76f40f8b5b580dd0fe254e3c.jpeg",
+                "genre_id": "3",
+                "track_type": "3",
+                "tags": "paolo, kit, big",
+                "track_stems_name": "SoundKit.zip",
+                "track_stems": "9fbd9d7d781dc9fbdb238f0132acec6b.zip",
+                "tagged_file_name": "file_example_MP3_1MG.mp3",
+                "tagged_file": "0feaf969a2cf2cd2bfe737913e66a8ee.mp3",
+                "price": "450.00",
+                "samples": "8",
+                "kit_files_name": "[\"file_example_MP3_1MG.mp3\",\"file_example_MP3_2MG.mp3\",\"file_example_MP3_5MG.mp3\",\"file_example_MP3_700KB.mp3\",\"file_example_WAV_1MG.wav\",\"file_example_WAV_2MG.wav\",\"file_example_WAV_5MG.wav\",\"file_example_WAV_10MG.wav\"]",
+                "description": "26Mb",
+                "url_user": "",
+                "url_title": "",
+                "data_image": "data:image/jpeg;base64,/9j",
+                "data_track_stems": "",
+                "data_tagged_file": ""
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
 
                 <!-- EXAMPLE 
