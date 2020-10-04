@@ -879,24 +879,14 @@ class Profiles extends RestController {
                 $data_response = [];
                 $data_response['profile'] = $user_response;
                 //GENRES
-                $data_response['genres'] = $this->Audio_model->fetch_beats_genres_by_profile($register_user['id']);
-                //Licenses
-                $licenses = $this->License_model->fetch_licenses_by_user_id($register_user['id'], null);
-                $data_response['licenses'] = [];
-                if (!empty($licenses)) {
-                    foreach ($licenses as $license) {
-                        //Define if user can use the license (PENDING) ***** 
-                        $license['license_available'] = true;
-                        $data_response['licenses'][] = $license;
-                    }
-                }
-                $data_response['beats'] = [];
+                $data_response['genres'] = $this->Audio_model->fetch_sound_kits_genres_by_profile($register_user['id']);
+                $data_response['sound_kits'] = [];
                 //$streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0);
                 $streamys = $this->Audio_model->fetch_sound_kit_by_profile($register_user['id'], $audio_id, null, null, 'default', 50, 0);
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean_2($streamy, $audio_id);
                     if (!empty($audio_response)) {
-                        $data_response['beats'][] = $audio_response;
+                        $data_response['sound_kits'][] = $audio_response;
                     }
                 }
                 if (!empty($audio_id) && !empty($streamys)) {
