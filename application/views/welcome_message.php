@@ -3757,6 +3757,40 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>GET Config Fees:</h3>
+                <code>POST <?= base_url() ?>v1/config/fees</code>
+                <!--                <h3>Parameters:</h3>
+                                 <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>-->
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "fees": [
+            {
+                "name": "Credit Card Fee",
+                "type": "Percent",
+                "value": "3"
+            },
+            {
+                "name": "Service Fee",
+                "type": "Amount",
+                "value": "4.99"
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

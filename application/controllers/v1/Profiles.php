@@ -1376,4 +1376,39 @@ class Profiles extends RestController {
         }
     }
 
+    public function stripe_payment_post() {
+
+        //VARS: USER ID QUE PAGA, VALORES A COBRAR, LISTA DE ITEMS, SUBTOTAL, FEES, TOTAL.
+        //CREATE TOKEN
+        $this->load->library('Stripe_library');
+        $exp_month = 10;
+        $exp_year = 2021;
+        $number = '4242424242424242';
+        $cvc = '314';
+        $name = 'Paolo Ferra';
+        $address_zip = '33312';
+        $card_token = $this->stripe_library->create_a_card_token($exp_month, $exp_year, $number, $cvc, $name, $address_zip);
+        if (!$card_token['status']) {
+            $this->error = 'Payment Error: ' . $card_token['error'];
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } else {
+            $token_id = $card_token['token_id'];
+            echo $token_id . '<br>';
+            $amount = 200;
+            $description = 'Linkstream Charge ORDER_95';
+            $receipt_email = 'paolofq@gmail.com';
+            $transfer_group = 'ORDER_95';
+            $charge = $this->stripe_library->create_a_charge($amount, $description, $receipt_email, $token_id, $transfer_group);
+            if (!$charge['status']) {
+                $this->error = 'Payment Error: ' . $charge['error'];
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            } else {
+                $charge_id = $charge['charge_id'];
+                $receipt_url = $charge['receipt_url'];
+                echo $charge_id . '<br>';
+                echo $receipt_url . '<br>';
+            }
+        }
+    }
+
 }
