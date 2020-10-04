@@ -3777,12 +3777,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             {
                 "name": "Credit Card Fee",
                 "type": "Percent",
-                "value": "3"
+                "value": "3",
+                "var": "feeCC"
             },
             {
                 "name": "Service Fee",
                 "type": "Amount",
-                "value": "4.99"
+                "value": "4.99",
+                "var": "feeService"
             }
         ]
     }
