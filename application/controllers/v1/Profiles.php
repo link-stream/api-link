@@ -949,6 +949,42 @@ class Profiles extends RestController {
         }
     }
 
+    public function links_tab_get($url = null, $link_id = null) {
+        if (!empty($url)) {
+            $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
+            if (!empty($register_user)) {
+                $user_response = $this->user_clean_2($register_user);
+                $data_response = [];
+                $data_response['profile'] = $user_response;
+                //GENRES
+                //$data_response['genres'] = $this->Video_model->fetch_videos_genres_by_profile($register_user['id']);
+                $data_response['links'] = [];
+                //$videos = $this->Video_model->fetch_video_by_profile($id, $video_id, $genre, $tag, $sort, $limit, $offset);
+                $links = $this->Link_model->fetch_links_by_profile($register_user['id'], $link_id, null, 'default', 50, 0);
+                foreach ($links as $link) {
+                    $link_reponse = $this->link_clean($link);
+                    if (!empty($link_reponse)) {
+                        $data_response['links'][] = $link_reponse;
+                    }
+                }
+//                if (!empty($video_id) && !empty($videos)) {
+//                    $data_log = [];
+//                    $data_log['audio_id'] = $video_id;
+//                    $data_log['audio_type'] = 'videos';
+//                    $data_log['action'] = 'VIEW';
+//                    $this->Audio_model->insert_audio_log($data_log);
+//                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Profile Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Profile URL.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     private function user_clean_2($user, $images = true) {
         unset($user['password']);
         unset($user['email_confirmed']);

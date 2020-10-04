@@ -3668,6 +3668,95 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>GET Links Tab:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/links_tab/{url}/{audio_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>url (example: paolo_linkstream)</li>
+                    <li>audio_id (optional)</li>
+
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "profile": {
+            "id": "35",
+            "user_name": "paolo_ls",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "display_name": "Paolo_LinkStream",
+            "url": "paolo_linkstream",
+            "image": "54ec6e5b610a3c082d8d6641f59b94f9.jpeg",
+            "banner": "b3c8e56a73665ff17156353b17e27888.png",
+            "city": "Fort Lauderdale",
+            "country": "US",
+            "bio": "Making Progress...LinkStream is Coming!!!",
+            "followers": "0",
+            "plays": "0",
+            "beats": "0",
+            "data_image": "data: image/jpeg;base64,/9j/4AAQSkZJRg",
+            "data_banner": "data: image/png;base64,iVBORw0KGgoAAA"
+        },
+        "links": [
+            {
+                "id": "291",
+                "created_at": "2020-09-22 02:52:12",
+                "user_id": "35",
+                "title": "Marca",
+                "url": "https://www.marca.com/",
+                "coverart": "539335abf1fb5909e0a876f06739363f.png",
+                "data_image": "data: image/png;base64,iVBORw0KGgoA"
+            },
+            {
+                "id": "282",
+                "created_at": "2020-08-05 00:23:29",
+                "user_id": "35",
+                "title": "LinkStream",
+                "url": "https://www.linkstream.com",
+                "coverart": "38200f9d67ad6f31634da8a46029a230.png",
+                "data_image": "data: image/png;base64,iVBORw0KGgoAAAAN"
+            },
+            {
+                "id": "283",
+                "created_at": "2020-08-05 00:26:43",
+                "user_id": "35",
+                "title": "eTags",
+                "url": "https://www.etags.com",
+                "coverart": "752e1e49efc8fce9a5420fe395e7bc3a.png",
+                "data_image": "data: image/png;base64,iVBORw0KGgoAAAANSU"
+            },
+            {
+                "id": "289",
+                "created_at": "2020-09-22 02:48:19",
+                "user_id": "35",
+                "title": "Youtube",
+                "url": "https://www.youtube.com/",
+                "coverart": "b7d52356c8be1946a34588b38c1aff16.jpeg",
+                "data_image": "data: image/jpeg;base64,/9j/4AAQSkZJRgABAQ"
+            },
+            {
+                "id": "290",
+                "created_at": "2020-09-22 02:50:57",
+                "user_id": "35",
+                "title": "Instagram",
+                "url": "https://www.instagram.com/",
+                "coverart": "fc3948a508728b400922afc3cd6abfdd.jpeg",
+                "data_image": "data: image/jpeg;base64,/9j/4AAQSkZJRgABAQA"
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>
