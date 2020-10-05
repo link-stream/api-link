@@ -2585,15 +2585,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>scheduled</li>
                     <li>date</li>
                     <li>time</li>
-
                     <li>logo</li>
                     <li>artwork</li>
                     <li>button_color</li> 
                     <li>background_color</li> 
                     <li>background_image</li>
-
                     <li>status (Draft, Scheduled, Pending)</li>
-
                     <li>headline</li>
                     <li>body</li> 
                     <li>promote_id</li>
@@ -2648,9 +2645,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>button_color</li> 
                     <li>background_color</li> 
                     <li>background_image</li>
-
                     <li>status (Draft, Scheduled, Pending)</li>
-
                     <li>headline</li>
                     <li>body</li> 
                     <li>promote_id</li>

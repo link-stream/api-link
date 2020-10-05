@@ -24,7 +24,7 @@ class Audios extends RestController {
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib'));
         //Helpers
         //$this->load->helper('email');
         //VARS
@@ -74,9 +74,21 @@ class Audios extends RestController {
         $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
         //upload image to server 
         file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //Image_Resize
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $this->temp_dir . '/' . $image_name;
+        $config['create_thumb'] = FALSE;
+        $resize_img = 'ls_' . $image_name;
+        $config['new_image'] = $this->temp_dir . '/' . $resize_img;
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 640;
+        $config['height'] = 640;
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
         //SAVE S3
-        $this->s3_push($image_name, $this->s3_coverart);
-        return $image_name;
+        $this->s3_push($resize_img, $this->s3_coverart);
+        return $resize_img;
     }
 
     private function audio_decode_put($file) {
