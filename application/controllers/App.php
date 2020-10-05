@@ -3563,22 +3563,37 @@ paypal.use( ["login"], function (login) {
         $this->image_lib->resize();
         //END IMAGE RESIZE
         $image_input_resize = $path . '01_Image_thumb.png';
+        if (file_exists($image_input_resize)) {
+            echo 'Exist: ' . $image_input_resize;
+            echo '<br>';
+            //*******REAL OPCION********//
+            $time_start = microtime(true);
+            $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
+            $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input_resize . " -i " . $audio_input . " -shortest " . $video_output . ""; //TIME: 2.6338345011075 Mins, MB:52.2MB
+            //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_image_output . ""; //TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
+            echo $cmd;
+            exec($cmd, $output);
+            echo "<pre>";
+            //print_r($output);
+            $time_end = microtime(true);
+            //dividing with 60 will give the execution time in minutes otherwise seconds
+            $execution_time = ($time_end - $time_start) / 60;
+            echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+            echo '<br>';
+            unlink($image_input_resize);
+            if (file_exists($video_output)) {
+                echo 'Exist: ' . $video_output;
+                echo '<br>';
+            } else {
+                echo 'No Exist: ' . $video_output;
+                echo '<br>';
+            }
+            exit;
+        } else {
+            echo 'No Exist: ' . $image_input_resize;
+            echo '<br>';
+        }
         //
-        //*******REAL OPCION********//
-        $time_start = microtime(true);
-        $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
-        $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input_resize . " -i " . $audio_input . " -shortest " . $video_output . ""; //TIME: 2.6338345011075 Mins, MB:52.2MB
-        //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_image_output . ""; //TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
-        echo $cmd;
-        exec($cmd, $output);
-        echo "<pre>";
-        //print_r($output);
-        $time_end = microtime(true);
-        //dividing with 60 will give the execution time in minutes otherwise seconds
-        $execution_time = ($time_end - $time_start) / 60;
-        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
-        unlink($image_input_resize);
-        exit;
 //        
 //        
 //        
