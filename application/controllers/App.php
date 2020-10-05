@@ -3518,12 +3518,10 @@ paypal.use( ["login"], function (login) {
             ]
         ];
         $list = [
-            'a', 'b', 'c'
+            'beat', 'tag', 'paolo'
         ];
         print_r(json_encode($list));
     }
-
-    
 
     public function testing_yt() {
 //         $this->load->library('google_library');
@@ -3532,37 +3530,55 @@ paypal.use( ["login"], function (login) {
     }
 
     public function testing_mp3_to_mp4() {
-        $file_name = 'file_example_MP3_1MG.mp3';
+
+        $temp_dir = $this->general_library->get_temp_dir();
+        echo $temp_dir;
+        echo '<br>';
+//        $file_name = 'file_example_MP3_1MG.mp3';
         $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
-        $file_mp3 = $path . $file_name;
-        $file_name_mp4 = 'video.avi';
-        $file_name_mp4_2 = 'video_image.avi';
-        $file_mp4 = $path . $file_name_mp4;
-        $file_mp4_2 = $path . $file_name_mp4_2;
-        $image_name = 'download.jpeg';
-        $image = $path . $image_name;
-
-
-
+        $path = $temp_dir . '/';
+//        $file_mp3 = $path . $file_name;
+//        $file_name_mp4 = 'video.avi';
+//        $file_name_mp4_2 = 'video_image.avi';
+//        $file_mp4 = $path . $file_name_mp4;
+//        $file_mp4_2 = $path . $file_name_mp4_2;
+//        $image_name = 'download.jpeg';
+//        $image = $path . $image_name;
+        //$image_input = $path . '01_Image_Test_thumb.png';
         $image_input = $path . '01_Image.png';
         $audio_input = $path . '01_Audio.mp3';
         $video_output = $path . '01_Video_Final.mp4';
-        $video_image_output = $path . '01_Video_Image_Final_10.mp4';
-
-        //
+        //IMAGE RESIZE
+        //$file_source = $path . $image_input;
+        $this->load->library('image_lib');
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $image_input;
+        $config['create_thumb'] = TRUE;
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 480;
+        $config['height'] = 480;
+        //ACTION
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
+        //END IMAGE RESIZE
+        $image_input_resize = $path . '01_Image_thumb.png';
         //
         //*******REAL OPCION********//
-//        $time_start = microtime(true);
-//        //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -shortest " . $video_output . "";//TIME: 2.6338345011075 Mins, MB:52.2MB
-//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_output . "";//TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
-//        exec($cmd, $output);
-//        echo "<pre>";
-//        print_r($output);
-//        $time_end = microtime(true);
-//        //dividing with 60 will give the execution time in minutes otherwise seconds
-//        $execution_time = ($time_end - $time_start) / 60;
-//        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
-//        exit;
+        $time_start = microtime(true);
+        $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
+        $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input_resize . " -i " . $audio_input . " -shortest " . $video_output . ""; //TIME: 2.6338345011075 Mins, MB:52.2MB
+        //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_image_output . ""; //TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
+        echo $cmd;
+        exec($cmd, $output);
+        echo "<pre>";
+        //print_r($output);
+        $time_end = microtime(true);
+        //dividing with 60 will give the execution time in minutes otherwise seconds
+        $execution_time = ($time_end - $time_start) / 60;
+        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+        unlink($image_input_resize);
+        exit;
 //        
 //        
 //        
@@ -3576,20 +3592,19 @@ paypal.use( ["login"], function (login) {
 //        //dividing with 60 will give the execution time in minutes otherwise seconds
 //        $execution_time = ($time_end - $time_start) / 60;
 //        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
-
-        $time_start = microtime(true);
-//        $cmd = "usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $video_output . " -i " . $image_input . " -filter_complex 'overlay=10:main_h-overlay_h-10' ".$video_image_output;
-//        //$cmd = '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i ' . $image_input . ' -i ' . $video_output . ' -shortest -preset veryfast ' . $video_image_output;
-//        exec($cmd, $output);
-        $this->mix_video($audio_input, $image_input, $video_image_output);
-//        echo "<pre>";
-//        print_r($output);
-        $time_end = microtime(true);
-        //dividing with 60 will give the execution time in minutes otherwise seconds
-        $execution_time = ($time_end - $time_start) / 60;
-        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
-
-        exit;
+//        $time_start = microtime(true);
+////        $cmd = "usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -i " . $video_output . " -i " . $image_input . " -filter_complex 'overlay=10:main_h-overlay_h-10' ".$video_image_output;
+////        //$cmd = '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i ' . $image_input . ' -i ' . $video_output . ' -shortest -preset veryfast ' . $video_image_output;
+////        exec($cmd, $output);
+//        $this->mix_video($audio_input, $image_input, $video_image_output);
+////        echo "<pre>";
+////        print_r($output);
+//        $time_end = microtime(true);
+//        //dividing with 60 will give the execution time in minutes otherwise seconds
+//        $execution_time = ($time_end - $time_start) / 60;
+//        echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+//
+//        exit;
         //***************//
 //        $time_start = microtime(true);
 //        $video_encoded = $path . '01_Video_Final_Encoded.mpg';
@@ -3617,4 +3632,23 @@ paypal.use( ["login"], function (login) {
 //    public function youtube_upload_image() {
 //        $this->load->view($this->loc_path . 'example/account_2');
 //    }
+
+    public function imagen_resize() {
+        $file_name = '01_Image.png';
+        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
+        $file_source = $path . $file_name;
+        $this->load->library('image_lib');
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $file_source;
+        $config['create_thumb'] = FALSE;
+        $config['new_image'] = $path . 'new_image.png';
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 640;
+        $config['height'] = 640;
+
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
+    }
+
 }

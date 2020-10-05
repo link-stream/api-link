@@ -88,6 +88,7 @@ class Audios extends RestController {
         $this->image_lib->resize();
         //SAVE S3
         $this->s3_push($resize_img, $this->s3_coverart);
+        unlink($this->temp_dir . '/' . $image_name);
         return $resize_img;
     }
 
