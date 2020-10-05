@@ -859,6 +859,19 @@ class Profiles extends RestController {
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }
+                //More Items
+                $data_response['extra'] = [];
+                if (!empty($audio_id)) {
+                    $extra_streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], null, null, null, null, null, $beat_type, 'random', 4, 0);
+                    foreach ($extra_streamys as $extra_streamy) {
+                        $audio_response = $this->audio_clean_2($extra_streamy, null);
+                        if (!empty($audio_response)) {
+                            if ($audio_response['id'] != $audio_id) {
+                                $data_response['extra'][] = $audio_response;
+                            }
+                        }
+                    }
+                }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Profile Not Found.';
@@ -895,6 +908,20 @@ class Profiles extends RestController {
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }
+                //More Items
+                $data_response['extra'] = [];
+                if (!empty($audio_id)) {
+                    $extra_streamys = $this->Audio_model->fetch_sound_kit_by_profile($register_user['id'], null, null, null, 'random', 4, 0);
+                    foreach ($extra_streamys as $extra_streamy) {
+                        $audio_response = $this->audio_clean_2($extra_streamy, null);
+                        if (!empty($audio_response)) {
+                            if ($audio_response['id'] != $audio_id) {
+                                $data_response['extra'][] = $audio_response;
+                            }
+                        }
+                    }
+                }
+
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Profile Not Found.';
