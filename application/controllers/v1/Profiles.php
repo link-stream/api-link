@@ -904,7 +904,7 @@ class Profiles extends RestController {
                 if (!empty($audio_id) && !empty($streamys)) {
                     $data_log = [];
                     $data_log['audio_id'] = $audio_id;
-                    $data_log['audio_type'] = 'sound_kit';
+                    $data_log['audio_type'] = 'kit';
                     $data_log['action'] = 'VIEW';
                     $this->Audio_model->insert_audio_log($data_log);
                 }
@@ -1393,7 +1393,7 @@ class Profiles extends RestController {
             $data_log['audio_id'] = $audio_id;
             $data_log['audio_type'] = $audio_type;
             $data_log['action'] = strtoupper($action);
-            if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'sound_kit') {
+            if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'kit') {
                 $this->Audio_model->insert_audio_log($data_log);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio action has been created successfully.'), RestController::HTTP_OK);
             } else {
