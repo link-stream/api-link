@@ -3548,6 +3548,22 @@ paypal.use( ["login"], function (login) {
         $image_input = $path . '01_Image.png';
         $audio_input = $path . '01_Audio.mp3';
         $video_output = $path . '01_Video_Final.mp4';
+        if (file_exists($image_input)) {
+            echo 'Exist: ' . $image_input;
+            echo '<br>';
+        } else {
+            echo 'No Exist: ' . $image_input;
+            echo '<br>';
+            exit;
+        }
+        if (file_exists($audio_input)) {
+            echo 'Exist: ' . $audio_input;
+            echo '<br>';
+        } else {
+            echo 'No Exist: ' . $audio_input;
+            echo '<br>';
+            exit;
+        }
         //IMAGE RESIZE
         //$file_source = $path . $image_input;
         $this->load->library('image_lib');
