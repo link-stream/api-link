@@ -25,7 +25,7 @@ class Marketing extends RestController {
         $this->load->model(array('User_model', 'Audio_model', 'Marketing_model'));
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint', 'Google_library'));
-         $this->load->library(array('aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint'));
         //Helpers
         //$this->load->helper('email');
         //VARS
@@ -150,6 +150,7 @@ class Marketing extends RestController {
             $message['headline'] = (!empty($this->input->post('headline'))) ? $this->input->post('headline') : '';
             $message['body'] = (!empty($this->input->post('body'))) ? $this->input->post('body') : '';
             $message['promote_id'] = (!empty($this->input->post('promote_id'))) ? $this->input->post('promote_id') : '';
+            $message['template_type'] = (!empty($this->input->post('template_type'))) ? $this->input->post('template_type') : '';
             $message['id'] = $this->Marketing_model->insert_message($message);
             $message_cleaned = $this->message_clean($message);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The message has been created successfully.', 'id' => $message['id'], 'data' => $message_cleaned), RestController::HTTP_OK);
@@ -225,6 +226,9 @@ class Marketing extends RestController {
                 }
                 if (!empty($this->put('promote_id'))) {
                     $message['promote_id'] = $this->put('promote_id');
+                }
+                if (!empty($this->put('template_type'))) {
+                    $message['template_type'] = $this->put('template_type');
                 }
                 $this->Marketing_model->update_message($id, $message);
                 $message_cleaned = $this->message_clean($message);

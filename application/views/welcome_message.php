@@ -2597,6 +2597,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>headline</li>
                     <li>body</li> 
                     <li>promote_id</li>
+                    <li>template_type</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -2653,6 +2654,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>headline</li>
                     <li>body</li> 
                     <li>promote_id</li>
+                    <li>template_type</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
