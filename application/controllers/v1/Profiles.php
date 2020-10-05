@@ -1384,7 +1384,10 @@ class Profiles extends RestController {
         return $audio;
     }
 
-    public function audio_action_post($audio_id, $audio_type, $action) {
+    public function audio_action_post() {
+        $audio_id = (!empty($this->input->post('audio_id'))) ? $this->input->post('audio_id') : '';
+        $audio_type = (!empty($this->input->post('audio_type'))) ? $this->input->post('audio_type') : '';
+        $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
         if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
             $data_log = [];
             $data_log['audio_id'] = $audio_id;
