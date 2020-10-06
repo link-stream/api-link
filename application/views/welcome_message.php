@@ -2996,7 +2996,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>GET Message Report:</h3>
-                <code>GET <?= base_url() ?>v1/marketing/messages_report_get/{user_id}/{message_id}</code>
+                <code>GET <?= base_url() ?>v1/marketing/messages_report/{user_id}/{message_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
