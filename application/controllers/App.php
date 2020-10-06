@@ -3860,4 +3860,11 @@ paypal.use( ["login"], function (login) {
         }
     }
 
+    public function ff_version() {
+        $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
+        $cmd = $ffmpeg . " -version";
+        exec($cmd, $output);
+        print_r($output);
+    }
+
 }
