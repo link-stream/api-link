@@ -2619,29 +2619,29 @@ class App extends CI_Controller {
         }
     }
 
-    public function mp3_to_mp4() {
-        $file_name = 'file_example_MP3_2MG.mp3';
-        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
-        $file_mp3 = $path . $file_name;
-        $file_name_mp4 = 'file_example_MP3_2MG.mp4';
-        $file_mp4 = $path . $file_name_mp4;
-        $image_name = 'download.jpeg';
-        $image = $path . $image_name;
-//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a copy -c:v libx264 -shortest " . $file_mp4;
-//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -shortest -c:v libx264 -c:a copy " . $file_mp4;
-        ///////$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg " . " -i " . $file_mp3 . " " . $file_mp4;
-//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -framerate 1 " . " -i " . $image . " -i " . $file_mp3 . " -c copy -shortest " . $file_mp4;
-        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a libmp3lame -c:v libx264 -b:a 128k -shortest " . $file_mp4;
-        exec($cmd, $output);
-        echo "<pre>";
-        print_r($output);
-        echo "</pre>";
-        //ffmpeg -i filename.mp3 newfilename.wav newfilename.ogg newfilename.mp4
-        //ffmpeg -loop 1 -framerate 1 -i image.jpg -i music.mp3 -c copy -shortest output.mkv
-        //ffmpeg -framerate 1 -i input.mp3 -i cover.jpg -c:a copy -s 1280x720 output.mp4
-        //ffmpeg -i input.mp3 -i cover.jpg -map_metadata 0 -map 0 -map 1 output.mp3
-        //ffmpeg -loop 1 -i logo.jpg -i source.mp3 -c:a libmp3lame -c:v libx264 -b:a 128k -shortest output.mp4
-    }
+//    public function mp3_to_mp4() {
+//        $file_name = 'file_example_MP3_2MG.mp3';
+//        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
+//        $file_mp3 = $path . $file_name;
+//        $file_name_mp4 = 'file_example_MP3_2MG.mp4';
+//        $file_mp4 = $path . $file_name_mp4;
+//        $image_name = 'download.jpeg';
+//        $image = $path . $image_name;
+////        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a copy -c:v libx264 -shortest " . $file_mp4;
+////        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -shortest -c:v libx264 -c:a copy " . $file_mp4;
+//        ///////$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg " . " -i " . $file_mp3 . " " . $file_mp4;
+////        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -framerate 1 " . " -i " . $image . " -i " . $file_mp3 . " -c copy -shortest " . $file_mp4;
+//        $cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -i " . $image . " -i " . $file_mp3 . " -c:a libmp3lame -c:v libx264 -b:a 128k -shortest " . $file_mp4;
+//        exec($cmd, $output);
+//        echo "<pre>";
+//        print_r($output);
+//        echo "</pre>";
+//        //ffmpeg -i filename.mp3 newfilename.wav newfilename.ogg newfilename.mp4
+//        //ffmpeg -loop 1 -framerate 1 -i image.jpg -i music.mp3 -c copy -shortest output.mkv
+//        //ffmpeg -framerate 1 -i input.mp3 -i cover.jpg -c:a copy -s 1280x720 output.mp4
+//        //ffmpeg -i input.mp3 -i cover.jpg -map_metadata 0 -map 0 -map 1 output.mp3
+//        //ffmpeg -loop 1 -i logo.jpg -i source.mp3 -c:a libmp3lame -c:v libx264 -b:a 128k -shortest output.mp4
+//    }
 
     public function google_beatstars_test() {
         $html = @file_get_contents('https://main.v2.beatstars.com/musician?permalink=scottstyles/&fields=social_networks', true);
@@ -3680,6 +3680,176 @@ paypal.use( ["login"], function (login) {
         $this->image_lib->clear();
         $this->image_lib->initialize($config);
         $this->image_lib->resize();
+    }
+
+    public function mp3_to_mp4() {
+        echo 'mp3 to mp4';
+        echo '<br>';
+        $this->load->model(array('User_model', 'Audio_model', 'Marketing_model', 'Video_model'));
+        $this->load->library('image_lib');
+        $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->bucket = 'files.link.stream';
+        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+        $this->s3_coverart = 'Coverart';
+        $this->s3_audio = 'Audio';
+        $audio = $this->Audio_model->fetch_audio_by_id('379');
+        if (!empty($audio)) {
+            $path = $this->s3_path . $this->s3_coverart;
+            echo $path;
+            echo '<br>';
+            $image_input = '';
+            if (!empty($audio['coverart'])) {
+                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+                if (!empty($data_image)) {
+                    $image_name = $audio['coverart'];
+                    file_put_contents($this->temp_dir . '/' . $image_name, $data_image);
+                    //Image_Resize
+                    $config['image_library'] = 'gd2';
+                    $config['source_image'] = $this->temp_dir . '/' . $image_name;
+                    $config['create_thumb'] = FALSE;
+                    $resize_img = 'tmp_' . $image_name;
+                    $config['new_image'] = $this->temp_dir . '/' . $resize_img;
+                    $config['maintain_ratio'] = TRUE;
+                    $config['width'] = 480;
+                    $config['height'] = 480;
+                    $this->image_lib->clear();
+                    $this->image_lib->initialize($config);
+                    $this->image_lib->resize();
+                    $image_input = $this->temp_dir . '/' . $resize_img;
+                    unlink($this->temp_dir . '/' . $image_name);
+                    echo 'IMAGE: ' . $image_input;
+                    echo '<br>';
+                }
+                $path = $this->s3_path . $this->s3_audio;
+                $audio_input = '';
+                if (!empty($audio['untagged_mp3'])) {
+                    $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
+                    if (!empty($data_file)) {
+                        $audio_input = $this->temp_dir . '/' . $audio['untagged_mp3'];
+                        file_put_contents($audio_input, $data_file);
+                        //echo 'AUDIO untagged_mp3:' . $audio_input;
+                        //echo '<br>';
+                    }
+                } elseif (!empty($audio['untagged_wav']) && empty($audio_input)) {
+                    $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+                    if (!empty($data_file)) {
+                        $audio_input = $this->temp_dir . '/' . $audio['untagged_wav'];
+                        file_put_contents($audio_input, $data_file);
+                        //echo 'AUDIO untagged_wav:' . $audio_input;
+                        //echo '<br>';
+                    }
+                } elseif (!empty($audio['tagged_file']) && empty($audio_input)) {
+                    $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['tagged_file']);
+                    if (!empty($data_file)) {
+                        $audio_input = $this->temp_dir . '/' . $audio['tagged_file'];
+                        file_put_contents($audio_input, $data_file);
+                        //echo 'AUDIO tagged_file:' . $audio_input;
+                        //echo '<br>';
+                    }
+                }
+                if (empty($audio_input)) {
+                    echo 'Audio File not Found';
+                    echo '<br>';
+                } else {
+                    echo 'AUDIO: ' . $audio_input;
+                    echo '<br>';
+                    $video_output = $this->temp_dir . '/' . md5(uniqid(rand(), true)) . '.mp4';
+                    $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
+                    echo 'ffmpeg: ' . $ffmpeg;
+                    echo '<br>';
+                    $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -shortest " . $video_output . "";
+                    echo 'cmd: ' . $cmd;
+                    echo '<br>';
+                    exec($cmd, $output);
+                    unlink($image_input);
+                    unlink($audio_input);
+                    echo 'VIDEO: ' . $video_output;
+                    echo '<br>';
+                }
+            } else {
+                echo 'No Coverart';
+                echo '<br>';
+            }
+        }
+        exit;
+        $temp_dir = $this->general_library->get_temp_dir();
+        echo $temp_dir;
+        echo '<br>';
+//        $file_name = 'file_example_MP3_1MG.mp3';
+        $path = '/Applications/XAMPP/xamppfiles/htdocs/api.link.stream/tmp/';
+        $path = $temp_dir . '/';
+//        $file_mp3 = $path . $file_name;
+//        $file_name_mp4 = 'video.avi';
+//        $file_name_mp4_2 = 'video_image.avi';
+//        $file_mp4 = $path . $file_name_mp4;
+//        $file_mp4_2 = $path . $file_name_mp4_2;
+//        $image_name = 'download.jpeg';
+//        $image = $path . $image_name;
+        //$image_input = $path . '01_Image_Test_thumb.png';
+        $image_input = $path . '01_Image.png';
+        $audio_input = $path . '01_Audio.mp3';
+        $video_output = $path . '01_Video_Final.mp4';
+        if (file_exists($image_input)) {
+            echo 'Exist: ' . $image_input;
+            echo '<br>';
+        } else {
+            echo 'No Exist: ' . $image_input;
+            echo '<br>';
+            exit;
+        }
+        if (file_exists($audio_input)) {
+            echo 'Exist: ' . $audio_input;
+            echo '<br>';
+        } else {
+            echo 'No Exist: ' . $audio_input;
+            echo '<br>';
+            exit;
+        }
+        //IMAGE RESIZE
+        //$file_source = $path . $image_input;
+        $this->load->library('image_lib');
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $image_input;
+        $config['create_thumb'] = TRUE;
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 480;
+        $config['height'] = 480;
+        //ACTION
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
+        //END IMAGE RESIZE
+        $image_input_resize = $path . '01_Image_thumb.png';
+        if (file_exists($image_input_resize)) {
+            echo 'Exist: ' . $image_input_resize;
+            echo '<br>';
+            //*******REAL OPCION********//
+            $time_start = microtime(true);
+            $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
+            $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input_resize . " -i " . $audio_input . " -shortest " . $video_output . ""; //TIME: 2.6338345011075 Mins, MB:52.2MB
+            //$cmd = "/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_image_output . ""; //TIME:2.0092757026354 Mins  Mins, MB: 14.3MB
+            echo $cmd;
+            exec($cmd, $output);
+            echo "<pre>";
+            //print_r($output);
+            $time_end = microtime(true);
+            //dividing with 60 will give the execution time in minutes otherwise seconds
+            $execution_time = ($time_end - $time_start) / 60;
+            echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+            echo '<br>';
+            unlink($image_input_resize);
+            if (file_exists($video_output)) {
+                echo 'Exist: ' . $video_output;
+                echo '<br>';
+            } else {
+                echo 'No Exist: ' . $video_output;
+                echo '<br>';
+            }
+            exit;
+        } else {
+            echo 'No Exist: ' . $image_input_resize;
+            echo '<br>';
+        }
     }
 
 }
