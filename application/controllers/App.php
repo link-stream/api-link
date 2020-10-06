@@ -3692,6 +3692,8 @@ paypal.use( ["login"], function (login) {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_coverart = 'Coverart';
         $this->s3_audio = 'Audio';
+        //*******REAL OPCION********//
+        $time_start = microtime(true);
         $audio = $this->Audio_model->fetch_audio_by_id('379');
         if (!empty($audio)) {
             $path = $this->s3_path . $this->s3_coverart;
@@ -3766,6 +3768,11 @@ paypal.use( ["login"], function (login) {
                     echo 'VIDEO: ' . $video_output;
                     echo '<br>';
                     unlink($video_output);
+                    $time_end = microtime(true);
+                    //dividing with 60 will give the execution time in minutes otherwise seconds
+                    $execution_time = ($time_end - $time_start) / 60;
+                    echo '<b>Total Execution Time:</b> ' . $execution_time . ' Mins';
+                    echo '<br>';
                 }
             } else {
                 echo 'No Coverart';
