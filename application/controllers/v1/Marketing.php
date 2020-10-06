@@ -22,10 +22,10 @@ class Marketing extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Marketing_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Marketing_model', 'Video_model'));
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint', 'Google_library'));
-        $this->load->library(array('aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib', 'Google_library'));
         //Helpers
         //$this->load->helper('email');
         //VARS
@@ -593,7 +593,12 @@ class Marketing extends RestController {
         }
     }
 
-    public function youtube_uploader_post($access_token = null) {
+    public function youtube_uploader_post() {
+        @ini_set('zlib.output_compression', 0);
+        @ini_set('implicit_flush', 1);
+        @ob_end_clean();
+        set_time_limit(0);
+        ob_implicit_flush(1);
         $yt = [];
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio_id = (!empty($this->input->post('audio_id'))) ? $this->input->post('audio_id') : '';
@@ -606,17 +611,32 @@ class Marketing extends RestController {
             $audio = $this->Audio_model->fetch_audio_by_id($audio_id);
             if (!empty($audio)) {
                 //AUDIO FILES
-//                Coverart
+                //Coverart
                 $path = $this->s3_path . $this->s3_coverart;
                 $image_input = '';
                 if (!empty($audio['coverart'])) {
                     $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
                     if (!empty($data_image)) {
-                        $image_input = $this->temp_dir . '/' . $audio['coverart'];
-                        file_put_contents($image_input, $data_image);
-                        //echo 'IMAGEN:' . $image_input;
+                        $image_name = $audio['coverart'];
+                        //$image_name = $this->temp_dir . '/' . $audio['coverart'];
+                        file_put_contents($this->temp_dir . '/' . $image_name, $data_image);
+                        //Image_Resize
+                        $config['image_library'] = 'gd2';
+                        $config['source_image'] = $this->temp_dir . '/' . $image_name;
+                        $config['create_thumb'] = FALSE;
+                        $resize_img = 'tmp_' . $image_name;
+                        $config['new_image'] = $this->temp_dir . '/' . $resize_img;
+                        $config['maintain_ratio'] = TRUE;
+                        $config['width'] = 480;
+                        $config['height'] = 480;
+                        $this->image_lib->clear();
+                        $this->image_lib->initialize($config);
+                        $this->image_lib->resize();
+                        $image_input = $this->temp_dir . '/' . $resize_img;
+                        unlink($this->temp_dir . '/' . $image_name);
                     }
                 }
+                //exit;
                 //AUDIO
                 $path = $this->s3_path . $this->s3_audio;
                 $audio_input = '';
@@ -646,30 +666,50 @@ class Marketing extends RestController {
                     $this->error = 'Audio File not Found';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 }
-                $video_output = $this->temp_dir . '/' . md5(uniqid(rand(), true)) . '.mpg';
+                $video_output = $this->temp_dir . '/' . md5(uniqid(rand(), true)) . '.mp4';
                 $ffmpeg = ($_SERVER['HTTP_HOST'] == 'localhost') ? '/usr/local/Cellar/ffmpeg/4.2.3/bin/ffmpeg' : 'ffmpeg';
-                $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_output . "";
+                //$cmd = $ffmpeg . " -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -s 640x480 -b:v 512k -vcodec mpeg1video -acodec copy -shortest " . $video_output . "";
+                $cmd = $ffmpeg . " -loop 1 -y -i " . $image_input . " -i " . $audio_input . " -shortest " . $video_output . "";
                 if (empty($image_input)) {
                     $cmd = $ffmpeg . " -i " . $audio_input . " -shortest " . $video_output . "";
                 }
                 exec($cmd, $output);
+                //exit;
                 unlink($image_input);
                 unlink($audio_input);
                 //UPDATE TO YOUTUBE - SAVE REFERENCE - RETURN VIDEO NAME.
                 $yt['video_output'] = $video_output;
                 $yt['title'] = $title;
                 $yt['description'] = $description;
-                $yt['tags'] = array("tag1", "tag2"); //(!empty($tags)) ? json_decode($tags, TRUE) : '';
+                $yt['tags'] = (!empty($tags)) ? json_decode($tags, TRUE) : ''; //array("tag1", "tag2");
+                //$yt['tags1'] = array("beat", "tag", "paolo");
+                //print_r($yt);
+                //exit;
                 $yt['privacy'] = $privacy;
                 $yt['access_token'] = $access_token;
                 //exit;
                 $google_response = $this->google_library->youtube_post_video($yt);
                 unlink($video_output);
                 if ($google_response['status']) {
+
                     $google_response['link'] = 'https://www.youtube.com/watch?v=' . $google_response['id'];
+                    //SAVE AS VIDEO IN PROFILE
+//                    $video = [];
+//                    $video['user_id'] = $user_id;
+//                    $video['status_id'] = '1';
+//                    $video['title'] = $title;
+//                    $video['url'] = $google_response['link'];
+//                    $video['public'] = ($privacy == 'public') ? '1' : '2';
+//                    $video['sort'] = $this->get_last_video_sort($video['user_id']);
+//                    $video['genre_id'] = '';
+//                    $video['related_track'] = $audio_id;
+//                    $this->Video_model->insert_video($video);
+                    //RESPONSE
+                    $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Video Create and Uploaded Succefully', 'data' => $google_response), RestController::HTTP_OK);
+                } else {
+                    //$this->error = 'Audio not Found';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'data' => $google_response), RestController::HTTP_BAD_REQUEST);
                 }
-                //RESPONSE
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Video Create and Uploaded Succefully', 'data' => $google_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Audio not Found';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -678,6 +718,12 @@ class Marketing extends RestController {
             $this->error = 'Provide complete youtube info to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function get_last_video_sort($user_id) {
+        $max = $this->Video_model->fetch_max_video_sort($user_id);
+        $sort = (empty($max)) ? '1' : ($max + 1);
+        return $sort;
     }
 
     //
