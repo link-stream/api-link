@@ -3765,6 +3765,7 @@ paypal.use( ["login"], function (login) {
                     unlink($audio_input);
                     echo 'VIDEO: ' . $video_output;
                     echo '<br>';
+                    unlink($video_output);
                 }
             } else {
                 echo 'No Coverart';
