@@ -25,7 +25,7 @@ class Marketing extends RestController {
         $this->load->model(array('User_model', 'Audio_model', 'Marketing_model', 'Video_model'));
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint', 'Google_library'));
-        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib', 'Google_library'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib', 'google_library'));
         //Helpers
         //$this->load->helper('email');
         //VARS
