@@ -557,4 +557,57 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
         //return $this->db->insert_id();
     }
 
+    public function fetch_promote_audio_by_user_id($user_id, $beat_type, $type, $sort = 'default', $limit = 0, $offset = 0) {
+        //
+        $query_beat = "SELECT ";
+        $query_beat .= "id, title, coverart, genre_id, track_type , 'beat' as type , sort ";
+        $query_beat .= "FROM st_audio ";
+        $query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1'  AND (track_type='3' or track_type='2') ";
+        $current_date = date('Y-m-d H:i:s');
+        $query_beat .= "AND (publish_at = '0000-00-00 00:00:00' or publish_at <= '" . $current_date . "') ";
+        //
+        //
+        //
+        $query_pack = "SELECT ";
+        $query_pack .= "id, title, coverart, genre_id, track_type, 'pack' as type, sort ";
+        $query_pack .= "FROM st_album ";
+        $query_pack .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1'  ";
+        $current_date = date('Y-m-d H:i:s');
+        $query_pack .= "AND (publish_at = '0000-00-00 00:00:00' or publish_at <= '" . $current_date . "') ";
+        //END QUERY
+        if ($beat_type == 'beat') {
+            $sql = $query_beat;
+        } elseif ($beat_type == 'pack') {
+            $sql = $query_pack;
+        } else {
+            $sql = "SELECT * FROM ( " . $query_beat . " UNION ALL " . $query_pack . ") Beats ";
+        }
+        if ($sort == 'default') {
+            $sql .= " order by sort";
+        } 
+//        elseif ($sort == 'new') {
+//            $sql .= " order by id DESC ";
+//        } elseif ($sort == 'price_low') {
+//            $sql .= " order by price";
+//        } elseif ($sort == 'price_high') {
+//            $sql .= " order by price DESC";
+//        } elseif ($sort == 'best') {
+//            $sql .= " order by sort"; //TEMP UNTIL DEFINE BEST
+//        } elseif ($sort == 'random') {
+//            $sql .= " order by RAND()";
+//        } else {
+//            $this->db->order_by('sort');
+//            $sql .= " order by sort";
+//        }
+        if (!empty($limit)) {
+            $sql .= " limit " . $offset . " , " . $limit;
+        }
+
+
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
