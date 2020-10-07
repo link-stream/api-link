@@ -726,6 +726,40 @@ class Marketing extends RestController {
         return $sort;
     }
 
+    public function marketing_promote_get($user_id) {
+        $data = array();
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_by_id($user_id);
+            if (!empty($register_user)) {
+                $promote = [];
+                $related_audio = $this->Audio_model->fetch_promote_audio_by_user_id($user_id, null, null, 'default', 0, 0);
+                if (!empty($related_audio)) {
+                    foreach ($related_audio as $audio) {
+                        unset($audio['sort']);
+                        if ($audio['type'] == 'pack') {
+                            unset($audio['track_type']);
+                        } else {
+                            $audio['type'] = ($audio['track_type'] == '3') ? 'kit' : $audio['type'];
+                            unset($audio['track_type']);
+                        }
+                        $audio['data_image'] = (!empty($audio['coverart'])) ? $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'] : '';
+                        $promote[] = $audio;
+                    }
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $promote), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     //
     //
     //

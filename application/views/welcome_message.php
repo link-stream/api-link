@@ -3790,6 +3790,83 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Marketing Promote:</h3>
+                <code>GET <?= base_url() ?>v1/marketing/marketing_promote/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "33",
+            "title": "My Beat Pack",
+            "coverart": "121988630b65aa812aacd7906d1cde3d..png",
+            "genre_id": "2",
+            "type": "pack",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/121988630b65aa812aacd7906d1cde3d..png"
+        },
+        {
+            "id": "378",
+            "title": "My Beat 2Mb",
+            "coverart": "bd1e0c283a1a109c30da90fad315bdda.jpeg",
+            "genre_id": "3",
+            "type": "beat",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/bd1e0c283a1a109c30da90fad315bdda.jpeg"
+        },
+        {
+            "id": "379",
+            "title": "My Beat 5Mb",
+            "coverart": "069e711921ab22c99d991f59ae01418c.png",
+            "genre_id": "3",
+            "type": "beat",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/069e711921ab22c99d991f59ae01418c.png"
+        },
+        {
+            "id": "380",
+            "title": "My Beat 10MB",
+            "coverart": "b65db62d53337dbade3b7e91bbe690ea.png",
+            "genre_id": "3",
+            "type": "beat",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/b65db62d53337dbade3b7e91bbe690ea.png"
+        },
+        {
+            "id": "381",
+            "title": "My title",
+            "coverart": "d22dbf7178b5b8110e6a8dd21d2f0cad.jpeg",
+            "genre_id": "2",
+            "type": "kit",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/d22dbf7178b5b8110e6a8dd21d2f0cad.jpeg"
+        },
+        {
+            "id": "387",
+            "title": "Sound KIt Big",
+            "coverart": "9c1aa7dd76f40f8b5b580dd0fe254e3c.jpeg",
+            "genre_id": "3",
+            "type": "kit",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/9c1aa7dd76f40f8b5b580dd0fe254e3c.jpeg"
+        },
+        {
+            "id": "389",
+            "title": "Testin IMG",
+            "coverart": "ls_5f51c713f640460480f244394e2dad74.png",
+            "genre_id": "4",
+            "type": "beat",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_5f51c713f640460480f244394e2dad74.png"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>
