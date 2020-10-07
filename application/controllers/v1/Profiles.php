@@ -1419,7 +1419,7 @@ class Profiles extends RestController {
                 $this->Audio_model->insert_audio_log($data_log);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The action has been created successfully.'), RestController::HTTP_OK);
             } else {
-                $this->error = 'Provide Valid Audio Type';
+                $this->error = 'Provide Valid Type';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             }
         } {
