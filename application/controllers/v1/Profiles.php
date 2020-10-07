@@ -1406,6 +1406,28 @@ class Profiles extends RestController {
         }
     }
 
+    public function action_post() {
+        $audio_id = (!empty($this->input->post('id'))) ? $this->input->post('id') : '';
+        $audio_type = (!empty($this->input->post('type'))) ? $this->input->post('type') : '';
+        $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
+        if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
+            $data_log = [];
+            $data_log['audio_id'] = $audio_id;
+            $data_log['audio_type'] = $audio_type;
+            $data_log['action'] = strtoupper($action);
+            if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'kit' || $audio_type == 'link' || $audio_type == 'video') {
+                $this->Audio_model->insert_audio_log($data_log);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The action has been created successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Provide Valid Audio Type';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } {
+            $this->error = 'Provide ID and/or Type and/or Action';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function stripe_payment_post() {
 
         //VARS: USER ID QUE PAGA, VALORES A COBRAR, LISTA DE ITEMS, SUBTOTAL, FEES, TOTAL.
