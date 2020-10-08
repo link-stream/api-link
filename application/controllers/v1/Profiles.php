@@ -1430,6 +1430,27 @@ class Profiles extends RestController {
 
     public function stripe_payment_post() {
 
+        $array = [
+            'user_id' => '35',
+            'payment' => [
+                'exp_month' => '10',
+                'exp_year' => '2021',
+                'number' => '4242424242424242',
+                'cvc' => '314',
+                'name' => 'John Doe',
+                'address_zip' => '33312',
+                'subtotal' => '180',
+                'feeCC' => '10',
+                'feeService' => '10',
+                'total' => '200'
+            ],
+            'cart' => [
+                ['item_id' => '10', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '30', 'license_id' => '5'],
+                ['item_id' => '25', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '30', 'license_id' => ''],
+                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '24', 'license_id' => '']
+            ]
+        ];
+
         //VARS: USER ID QUE PAGA, VALORES A COBRAR, LISTA DE ITEMS, SUBTOTAL, FEES, TOTAL.
         //CREATE TOKEN
         $this->load->library('Stripe_library');

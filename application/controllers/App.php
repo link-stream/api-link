@@ -3520,7 +3520,31 @@ paypal.use( ["login"], function (login) {
         $list = [
             'beat', 'tag', 'paolo'
         ];
-        print_r(json_encode($list));
+
+
+        $array = [
+            'user_id' => '35',
+            'payment' => [
+                'exp_month' => '10',
+                'exp_year' => '2021',
+                'number' => '4242424242424242',
+                'cvc' => '314',
+                'name' => 'John Doe',
+                'address_zip' => '33312',
+                'subtotal' => '180',
+                'feeCC' => '10',
+                'feeService' => '10',
+                'total' => '200'
+            ],
+            'cart' => [
+                ['item_id' => '10', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '30', 'license_id' => '5'],
+                ['item_id' => '25', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '30', 'license_id' => ''],
+                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '24', 'license_id' => '']
+            ]
+        ];
+
+
+        print_r(json_encode($array));
     }
 
     public function testing_yt() {
