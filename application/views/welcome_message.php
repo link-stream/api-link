@@ -3756,7 +3756,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>GET Config Fees:</h3>
-                <code>POST <?= base_url() ?>v1/config/fees</code>
+                <code>GET <?= base_url() ?>v1/config/fees</code>
                 <!--                <h3>Parameters:</h3>
                                  <ul>
                                     <li></li>
