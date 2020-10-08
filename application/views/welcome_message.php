@@ -3370,7 +3370,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>audio_id</li>
-                    <li>audio_type (beat, pack, sound_kit)</li>
+                    <li>audio_type (beat, pack, kit)</li>
                     <li>action (play)</li>
                 </ul>
                 <h3>Response Example:</h3>
@@ -3392,7 +3392,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>id</li>
-                    <li>type (beat, pack, sound_kit, video, link)</li>
+                    <li>type (beat, pack, kit, video, link)</li>
                     <li>action (play)</li>
                 </ul>
                 <h3>Response Example:</h3>
