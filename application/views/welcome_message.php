@@ -3385,8 +3385,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                 <hr>
+
+                <hr>
                 <h3>Insert Action:</h3>
                 <code>POST <?= base_url() ?>v1/profiles/action</code>
                 <h3>Parameters:</h3>
