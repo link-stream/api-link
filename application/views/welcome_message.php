@@ -3402,7 +3402,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "message": "The audio action has been created successfully."
+    "message": "The action has been created successfully."
 }');
                     echo '</pre>';
                     ?>
