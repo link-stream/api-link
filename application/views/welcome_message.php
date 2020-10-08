@@ -3385,6 +3385,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
+                
+                 <hr>
+                <h3>Insert Action:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/action</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>id</li>
+                    <li>type (beat, pack, sound_kit, video, link)</li>
+                    <li>action (play)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The audio action has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
                 <hr>
                 <h3>GET Sound Kits Tab:</h3>
