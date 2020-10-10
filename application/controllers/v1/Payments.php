@@ -108,11 +108,14 @@ class Payments extends RestController {
                     $this->error = 'The sum of the amount of the items is not equal to the subtotal amount';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 }
-                if ($total != ($subtotal + $feeService + $feeCC)) {
+
+                $subtotal_fees = $subtotal + $feeService + $feeCC;
+                $a = (string) $subtotal_fees;
+                $b = $total;
+                if ($a != $b) {
                     $this->error = 'The total amount is not equal to the sum of other amounts';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 }
-
                 //Validation OK
                 //PAYMENT
                 //CREATE TOKEN
@@ -179,14 +182,8 @@ class Payments extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
-    
-    
-    
-    //NOTE: 
-    
-    
 
+    //NOTE: 
 //    private function image_decode_put($image) {
 //        preg_match("/^data:image\/(.*);base64/i", $image, $match);
 //        $ext = (!empty($match[1])) ? $match[1] : '.png';
