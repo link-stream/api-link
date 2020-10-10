@@ -310,4 +310,16 @@ class Album_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_album_audio_by_album_id_with_name($id_album) {
+        $this->db->select('a.id_audio,b.title');
+        $this->db->from('st_album_audio a');
+        $this->db->join('st_audio b', 'a.id_audio = b.id');
+        $this->db->where('a.id_album', $id_album);
+        $this->db->order_by('a.sort');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

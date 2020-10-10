@@ -22,8 +22,10 @@ class Profiles extends RestController {
         parent::__construct();
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Video_model', 'Link_model', 'License_model'));
+        $this->load->model('Visitor_model');
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
+        $this->load->library('user_agent');
         //Helpers
         //$this->load->helper(array('email'));
         //VARS
@@ -829,6 +831,7 @@ class Profiles extends RestController {
         if (!empty($url)) {
             $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
             if (!empty($register_user)) {
+                /////$this->analytics($register_user);
                 $user_response = $this->user_clean_2($register_user);
                 $data_response = [];
                 $data_response['profile'] = $user_response;
@@ -880,6 +883,59 @@ class Profiles extends RestController {
         } else {
             $this->error = 'Provide Profile URL.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    private function analytics($register_user) {
+        $session_id = session_id();
+        print_r($_SERVER['REMOTE_ADDR']);exit;
+//        $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+//        print_r($ip);
+        $visitor = $this->Visitor_model->fetch_visitor_by_search(array('user_id' => $register_user['id'], 'session_id' => $session_id));
+        if (empty($visitor)) {
+            //IP
+            $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+            $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+            //
+            //USER AGENT
+            if ($this->agent->is_browser()) {
+                $agent = $this->agent->browser() . ' ' . $this->agent->version();
+            } elseif ($this->agent->is_robot()) {
+                $agent = $this->agent->robot();
+            } elseif ($this->agent->is_mobile()) {
+                $agent = $this->agent->mobile();
+            } else {
+                $agent = 'Unidentified User Agent';
+            }
+            $platform = $this->agent->platform(); // Platform info (Windows, Linux, Mac, etc.)
+            $agent_string = $this->agent->agent_string();
+            //
+            //LOCATION
+            //$location = file_get_contents('http://ip-api.com/json/' . $ip);
+            //$data_loc = json_decode($location, true);
+            //
+            $data = array(
+                'user_id' => $register_user['id'],
+                'session_id' => $session_id,
+                'ip' => $ip,
+                'agent' => $agent,
+                'platform' => $platform,
+                'country' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['country'] : 'United States',
+                'countryCode' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['countryCode'] : 'US',
+                'region' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['region'] : 'FL',
+                'regionName' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['regionName'] : 'Florida',
+                'city' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['city'] : 'Miami',
+                'zip' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['zip'] : '33132',
+                'lat' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['lat'] : '25.7806',
+                'lon' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['lon'] : '-80.1826',
+                'timezone' => (!empty($data_loc) && $data_loc['status'] == 'success') ? $data_loc['timezone'] : 'America/New_York',
+                'agent_string' => $agent_string
+            );
+            echo '<pre>';
+            print_r($data);
+            echo '</pre>';
+            //VISITOR
+            //$this->Visitor_model->insert_visitor($data);
         }
     }
 
@@ -1265,7 +1321,7 @@ class Profiles extends RestController {
                 }
             }
         }
-        $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio['id']);
+        $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id_with_name($audio['id']);
         //PROFILE
         unset($audio['status_id']);
         unset($audio['sort']);

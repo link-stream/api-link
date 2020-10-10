@@ -3891,4 +3891,14 @@ paypal.use( ["login"], function (login) {
         print_r($output);
     }
 
+    public function view_email() {
+        $this->load->library('parser');
+        $data = [
+            'EMAIL_REF_ID'=>'100',
+            'EMAIL_UTM_SOURCE'=>'email_campaing'
+        ];
+       // $this->load->view($this->loc_path . 'example/email',$data);
+        $this->parser->parse($this->loc_path . 'example/email',$data);
+    }
+
 }

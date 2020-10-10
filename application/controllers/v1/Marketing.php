@@ -694,16 +694,18 @@ class Marketing extends RestController {
 
                     $google_response['link'] = 'https://www.youtube.com/watch?v=' . $google_response['id'];
                     //SAVE AS VIDEO IN PROFILE
-//                    $video = [];
-//                    $video['user_id'] = $user_id;
-//                    $video['status_id'] = '1';
-//                    $video['title'] = $title;
-//                    $video['url'] = $google_response['link'];
-//                    $video['public'] = ($privacy == 'public') ? '1' : '2';
-//                    $video['sort'] = $this->get_last_video_sort($video['user_id']);
-//                    $video['genre_id'] = '';
-//                    $video['related_track'] = $audio_id;
-//                    $this->Video_model->insert_video($video);
+                    if ($privacy == 'public') {
+                        $video = [];
+                        $video['user_id'] = $user_id;
+                        $video['status_id'] = '1';
+                        $video['title'] = $title;
+                        $video['url'] = $google_response['link'];
+                        $video['public'] = ($privacy == 'public') ? '1' : '2';
+                        $video['sort'] = $this->get_last_video_sort($video['user_id']);
+                        $video['genre_id'] = '';
+                        $video['related_track'] = $audio_id;
+                        $this->Video_model->insert_video($video);
+                    }
                     //RESPONSE
                     $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Video Create and Uploaded Succefully', 'data' => $google_response), RestController::HTTP_OK);
                 } else {
@@ -759,6 +761,8 @@ class Marketing extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+
+    
 
     //
     //

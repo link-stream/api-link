@@ -325,7 +325,7 @@ class Users extends RestController {
         // Get the post data
         $email = strip_tags($this->input->post('email'));
         $password = $this->input->post('password');
-        $user_name = strip_tags($this->input->post('user_name'));
+        $user_name = !empty($this->input->post('user_name')) ? strip_tags($this->input->post('user_name')) : null;
         $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : null;
         if (!empty($email) && !empty($user_name) && !empty($password)) {
             //Check Email And User
@@ -1180,4 +1180,5 @@ class Users extends RestController {
 //        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
 //        return $response;
 //    }
-}
+    
+    }
