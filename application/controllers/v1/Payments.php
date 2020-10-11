@@ -170,7 +170,8 @@ class Payments extends RestController {
                             $this->User_model->insert_user_purchase_details($item);
                         }
                         //RESPONSE TRUE
-                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number), RestController::HTTP_OK);
+                        $cc_type = $this->general_library->card_type($number);
+                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
                     }
                 }
             } else {
