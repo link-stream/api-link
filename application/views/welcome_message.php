@@ -3915,6 +3915,113 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Get Recommendations:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/recommendations/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "extra": [
+            {
+                "id": "396",
+                "user_id": "35",
+                "title": "King",
+                "coverart": "ls_49bfb9af2bce6d9eeea5afe42f817d81.jpeg",
+                "genre_id": "3",
+                "track_type": "2",
+                "tags": "paolo",
+                "type": "beat",
+                "licenses": [
+                    {
+                        "license_id": "1",
+                        "price": "30.00",
+                        "status_id": "1",
+                        "mp3": "1",
+                        "wav": "0",
+                        "trackout_stems": "0"
+                    }
+                ],
+                "data_image": "data:image/jpeg;base64,/9j/4A"
+            },
+            {
+                "id": "398",
+                "user_id": "35",
+                "title": "Japan",
+                "coverart": "ls_e6abb813a7bf539ea348d736f4a4e449.jpeg",
+                "genre_id": "3",
+                "track_type": "2",
+                "tags": "paolo",
+                "type": "beat",
+                "licenses": [
+                    {
+                        "license_id": "1",
+                        "price": "30.00",
+                        "status_id": "1",
+                        "mp3": "1",
+                        "wav": "0",
+                        "trackout_stems": "0"
+                    }
+                ],
+                "data_image": "data:image/jpeg;base64,/9j/4AAQS"
+            },
+            {
+                "id": "391",
+                "user_id": "35",
+                "title": "One Way",
+                "coverart": "ls_6d3a98518beaab2b6b6b39cd4d9583e4.jpeg",
+                "genre_id": "3",
+                "track_type": "2",
+                "tags": "paolo, linkstream",
+                "type": "beat",
+                "licenses": [
+                    {
+                        "license_id": "1",
+                        "price": "30.00",
+                        "status_id": "1",
+                        "mp3": "1",
+                        "wav": "0",
+                        "trackout_stems": "0"
+                    }
+                ],
+                "data_image": "data:image/jpeg;base64,/9j/4"
+            },
+            {
+                "id": "394",
+                "user_id": "35",
+                "title": "Wide Eyes",
+                "coverart": "ls_675042f3f09ae9345d53d126fb1a16c8.png",
+                "genre_id": "3",
+                "track_type": "2",
+                "tags": "paolo",
+                "type": "beat",
+                "licenses": [
+                    {
+                        "license_id": "1",
+                        "price": "30.00",
+                        "status_id": "1",
+                        "mp3": "1",
+                        "wav": "0",
+                        "trackout_stems": "0"
+                    }
+                ],
+                "data_image": "data:image/png;base64,iVB"
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

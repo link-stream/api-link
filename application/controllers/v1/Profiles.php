@@ -888,7 +888,8 @@ class Profiles extends RestController {
 
     private function analytics($register_user) {
         $session_id = session_id();
-        print_r($_SERVER['REMOTE_ADDR']);exit;
+        print_r($_SERVER['REMOTE_ADDR']);
+        exit;
 //        $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 //        print_r($ip);
         $visitor = $this->Visitor_model->fetch_visitor_by_search(array('user_id' => $register_user['id'], 'session_id' => $session_id));
@@ -1566,6 +1567,21 @@ class Profiles extends RestController {
                 $this->User_model->update_user_purchase($invoice_id, $invoice);
             }
         }
+    }
+
+    public function recommendations_get($user_id) {
+        $genre_recommendation = $this->Audio_model->fetch_genre_recommendations($user_id);
+        $data_response = [];
+        $extra_streamys = $this->Audio_model->fetch_beats_by_profile($user_id, null, $genre_recommendation['genre_id'], null, null, null, 'beat', 'random', 4, 0);
+        foreach ($extra_streamys as $extra_streamy) {
+            $audio_response = $this->audio_clean_2($extra_streamy, null);
+            if (!empty($audio_response)) {
+                //if ($audio_response['id'] != $audio_id) {
+                $data_response['extra'][] = $audio_response;
+                //}
+            }
+        }
+        $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
     }
 
 }
