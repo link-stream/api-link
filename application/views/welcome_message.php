@@ -69,7 +69,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </style>
     </head>
     <body>
-
         <div id="container">
             <h1>Welcome to LinkStream API V1! </h1>
 
@@ -3907,7 +3906,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "message": "The order was created succefully",
-    "id": "LS0000010"
+    "id": "LS0000012",
+    "email": "paul@link.stream",
+    "cc_type": "Visa",
+    "billingCC": "4242"
 }');
                     echo '</pre>';
                     ?>
@@ -3938,6 +3940,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             <p class="footer">Page rendered in <strong>{elapsed_time}</strong> seconds. <?php echo (ENVIRONMENT === 'development') ? 'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
         </div>
-
     </body>
 </html>
