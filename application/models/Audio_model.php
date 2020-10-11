@@ -611,4 +611,15 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
         return $result;
     }
 
+    public function fetch_genre_recommendations($user_id) {
+        $sql = "SELECT c.genre_id FROM linkstream_dev.st_user_invoice a 
+inner join linkstream_dev.st_user_invoice_detail b on a.id = b.invoice_id 
+inner join linkstream_dev.st_audio c on b.item_id = c.id
+where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' group by c.genre_id order by count(*) desc limit 1";
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
