@@ -448,7 +448,11 @@ class Audio_model extends CI_Model {
         $query_beat = "SELECT ";
         $query_beat .= "id, created_at, user_id, status_id, title, bpm, key_id, coverart, public, publish_at, sort, genre_id, track_type, tags, untagged_mp3, untagged_wav_name, untagged_wav, track_stems_name, track_stems, tagged_file_name, tagged_file, price, samples, description, '' as license_id, 'beat' as type ";
         $query_beat .= "FROM st_audio ";
-        $query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '2' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
+        $query_beat .= "WHERE status_id <> '2' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
+        //$query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '2' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
+        if (!empty($user_id)) {
+            $query_beat .= "AND user_id = '" . $user_id . "' ";
+        }
         if (!empty($audio_id)) {
             $query_beat .= "AND id = '" . $audio_id . "' ";
         }

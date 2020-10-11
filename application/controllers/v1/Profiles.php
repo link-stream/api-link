@@ -1572,7 +1572,7 @@ class Profiles extends RestController {
     public function recommendations_get($user_id) {
         $genre_recommendation = $this->Audio_model->fetch_genre_recommendations($user_id);
         $data_response = [];
-        $extra_streamys = $this->Audio_model->fetch_beats_by_profile($user_id, null, $genre_recommendation['genre_id'], null, null, null, 'beat', 'random', 4, 0);
+        $extra_streamys = $this->Audio_model->fetch_beats_by_profile(null, null, $genre_recommendation['genre_id'], null, null, null, 'beat', 'random', 4, 0);
         foreach ($extra_streamys as $extra_streamy) {
             $audio_response = $this->audio_clean_2($extra_streamy, null);
             if (!empty($audio_response)) {
