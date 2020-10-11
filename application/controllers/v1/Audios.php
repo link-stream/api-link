@@ -598,6 +598,9 @@ class Audios extends RestController {
             $audio['samples'] = (!empty($this->input->post('samples'))) ? $this->input->post('samples') : 0;
             $audio['description'] = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
             //
+            //NEW STATUS
+            $audio['status_id'] = (!empty($this->input->post('processing'))) ? '2' : $audio['status_id'];
+            //
             $id = $this->Audio_model->insert_audio($audio);
             if (!empty($beat_packs)) {
                 //$beat_packs = ['1','2'];
@@ -780,6 +783,8 @@ class Audios extends RestController {
                 if ($this->put('description') !== null) {
                     $audio['description'] = $this->put('description');
                 }
+                //NEW STATUS
+                $audio['status_id'] = (!empty($this->put('posting'))) ? '1' : $audio['status_id'];
                 //
                 $this->Audio_model->update_streamy($id, $audio);
 //                $audio['date'] = $date;
