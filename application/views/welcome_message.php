@@ -1467,6 +1467,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>price</li>
                     <li>samples</li>
                     <li>description</li>
+                    <li>processing (optional - value: TRUE)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -1537,6 +1538,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>price</li>
                     <li>samples</li>
                     <li>description</li>
+                    <li>posting (optional - value: TRUE)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
