@@ -443,7 +443,7 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_beats_by_profile($user_id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort = 'default', $limit = 0, $offset = 0) {
+    public function fetch_beats_by_profile($user_id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort = 'default', $limit = 0, $offset = 0, $ignore_user = null) {
         //
         $query_beat = "SELECT ";
         $query_beat .= "id, created_at, user_id, status_id, title, bpm, key_id, coverart, public, publish_at, sort, genre_id, track_type, tags, untagged_mp3, untagged_wav_name, untagged_wav, track_stems_name, track_stems, tagged_file_name, tagged_file, price, samples, description, '' as license_id, 'beat' as type ";
@@ -452,6 +452,9 @@ class Audio_model extends CI_Model {
         //$query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '2' AND status_id <> '3' AND public = '1' AND track_type = '2'  ";
         if (!empty($user_id)) {
             $query_beat .= "AND user_id = '" . $user_id . "' ";
+        }
+        if (!empty($ignore_user)) {
+            $query_beat .= "AND user_id <> '" . $ignore_user . "' ";
         }
         if (!empty($audio_id)) {
             $query_beat .= "AND id = '" . $audio_id . "' ";
@@ -616,10 +619,13 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
     }
 
     public function fetch_genre_recommendations($user_id) {
-        $sql = "SELECT c.genre_id FROM linkstream_dev.st_user_invoice a 
+//        $sql = "SELECT c.genre_id FROM linkstream_dev.st_user_invoice a 
+//inner join linkstream_dev.st_user_invoice_detail b on a.id = b.invoice_id 
+//inner join linkstream_dev.st_audio c on b.item_id = c.id
+//where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' group by c.genre_id order by count(*) desc limit 1";
+        $sql = "SELECT b.genre_id,count(*) FROM linkstream_dev.st_user_invoice a 
 inner join linkstream_dev.st_user_invoice_detail b on a.id = b.invoice_id 
-inner join linkstream_dev.st_audio c on b.item_id = c.id
-where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' group by c.genre_id order by count(*) desc limit 1";
+where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_id is not null group by b.genre_id order by count(*) desc limit 1";
         $query = $this->db->query($sql);
         $result = $query->row_array();
         $query->free_result();

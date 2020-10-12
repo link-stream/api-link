@@ -559,7 +559,7 @@ class Profiles extends RestController {
                     }
                 }
                 //$streamys = $this->Audio_model->fetch_beat_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $sort, $limit, $offset);
-                $streamys = $this->Audio_model->fetch_beats_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort, $limit, $offset);
+                $streamys = $this->Audio_model->fetch_beats_by_profile($id, $audio_id, $genre, $tag, $bpm_min, $bpm_max, $beat_type, $sort, $limit, $offset, null);
                 $audios = [];
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean($streamy, $audio_id);
@@ -848,7 +848,7 @@ class Profiles extends RestController {
                     }
                 }
                 $data_response['beats'] = [];
-                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0);
+                $streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], $audio_id, null, null, null, null, $beat_type, 'default', 50, 0, null);
                 foreach ($streamys as $streamy) {
                     $audio_response = $this->audio_clean_2($streamy, $audio_id);
                     if (!empty($audio_response)) {
@@ -865,7 +865,7 @@ class Profiles extends RestController {
                 //More Items
                 $data_response['extra'] = [];
                 if (!empty($audio_id)) {
-                    $extra_streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], null, null, null, null, null, $beat_type, 'random', 4, 0);
+                    $extra_streamys = $this->Audio_model->fetch_beats_by_profile($register_user['id'], null, null, null, null, null, $beat_type, 'random', 4, 0, null);
                     foreach ($extra_streamys as $extra_streamy) {
                         $audio_response = $this->audio_clean_2($extra_streamy, null);
                         if (!empty($audio_response)) {
@@ -1572,7 +1572,7 @@ class Profiles extends RestController {
     public function recommendations_get($user_id) {
         $genre_recommendation = $this->Audio_model->fetch_genre_recommendations($user_id);
         $data_response = [];
-        $extra_streamys = $this->Audio_model->fetch_beats_by_profile(null, null, $genre_recommendation['genre_id'], null, null, null, 'beat', 'random', 4, 0);
+        $extra_streamys = $this->Audio_model->fetch_beats_by_profile(null, null, $genre_recommendation['genre_id'], null, null, null, 'beat', 'random', 4, 0, $user_id);
         foreach ($extra_streamys as $extra_streamy) {
             $audio_response = $this->audio_clean_2($extra_streamy, null);
             if (!empty($audio_response)) {
