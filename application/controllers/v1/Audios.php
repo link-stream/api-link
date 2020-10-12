@@ -105,7 +105,13 @@ class Audios extends RestController {
 
     private function file_decode_put($file) {
         preg_match("/^data:file\/(.*);base64/i", $file, $match);
-        $ext = (!empty($match[1])) ? $match[1] : 'zip';
+        $fp = fopen($file, 'r');
+        $meta = stream_get_meta_data($fp);
+        $ext = 'zip';
+//        if ($meta['mediatype'] == '@file/x-rar-compressed') {
+//            $ext = 'rar';
+//        }
+        //$ext = (!empty($match[1])) ? $match[1] : 'zip';
         $file_name = md5(uniqid(rand(), true)) . '.' . $ext;
         //upload image to server 
         file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
@@ -483,39 +489,41 @@ class Audios extends RestController {
             if (!empty($data_file)) {
                 file_put_contents($this->temp_dir . '/' . $track_stems_name, $data_file);
                 $ext = pathinfo($this->temp_dir . '/' . $track_stems_name, PATHINFO_EXTENSION);
-                if ($ext == 'zip') {
-                    //Audio List.
-                    $zip = new ZipArchive;
-                    $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
-                    if ($res === TRUE) {
-                        for ($i = 0; $i < $zip->numFiles; $i++) {
-                            $filename = $zip->getNameIndex($i);
-                            $pos = strpos($filename, 'MACOSX/.');
-                            if ($pos === false) {
-                                $audio['kit_files_name'][] = $filename;
-                            }
+                //if ($ext == 'zip') {
+                //Audio List.
+                print_r($this->temp_dir . '/' . $track_stems_name);
+                $zip = new ZipArchive;
+                $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
+                if ($res === TRUE) {
+                    for ($i = 0; $i < $zip->numFiles; $i++) {
+                        $filename = $zip->getNameIndex($i);
+                        $pos = strpos($filename, 'MACOSX/.');
+                        if ($pos === false) {
+                            $audio['kit_files_name'][] = $filename;
                         }
                     }
-                    $audio['samples'] = count($audio['kit_files_name']);
-                    $kit_files_name = json_encode($audio['kit_files_name']);
-                    $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
-                    //
-                    unlink($this->temp_dir . '/' . $track_stems_name);
-                } elseif ($ext == 'rar') {
-                    $res = RarArchive::open($this->temp_dir . '/' . $track_stems_name);
-                    if ($res === TRUE) {
-                        $rar_entries = $res->getEntries();
-                        foreach ($rar_entries as $e) {
-                            $pos = strpos($e, 'MACOSX/.');
-                            if ($pos === false) {
-                                $audio['kit_files_name'][] = $e;
-                            }
-                        }
-                    }
-                    $audio['samples'] = count($audio['kit_files_name']);
-                    $kit_files_name = json_encode($audio['kit_files_name']);
-                    $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
                 }
+                $audio['samples'] = count($audio['kit_files_name']);
+                $kit_files_name = json_encode($audio['kit_files_name']);
+                $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
+                //
+                unlink($this->temp_dir . '/' . $track_stems_name);
+                //} 
+//                elseif ($ext == 'rar') {
+//                    $res = RarArchive::open($this->temp_dir . '/' . $track_stems_name);
+//                    if ($res === TRUE) {
+//                        $rar_entries = $res->getEntries();
+//                        foreach ($rar_entries as $e) {
+//                            $pos = strpos($e, 'MACOSX/.');
+//                            if ($pos === false) {
+//                                $audio['kit_files_name'][] = $e;
+//                            }
+//                        }
+//                    }
+//                    $audio['samples'] = count($audio['kit_files_name']);
+//                    $kit_files_name = json_encode($audio['kit_files_name']);
+//                    $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
+//                }
             }
         }
         return true;
@@ -733,7 +741,7 @@ class Audios extends RestController {
                 if ($this->put('track_stems') !== null) {
                     if (!empty($this->put('track_stems'))) {
                         $track_stems = $this->put("track_stems");
-                        $audio['track_stems'] = $this->audio_decode_put($track_stems);
+                        $audio['track_stems'] = $this->file_decode_put($track_stems);
                     } else {
                         $audio['track_stems'] = '';
                     }
