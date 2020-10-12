@@ -482,24 +482,40 @@ class Audios extends RestController {
             $data_file = $this->aws_s3->s3_read($this->bucket, $path, $track_stems_name);
             if (!empty($data_file)) {
                 file_put_contents($this->temp_dir . '/' . $track_stems_name, $data_file);
-                //$src = 'data:' . mime_content_type($this->temp_dir . '/' . $track_stems_name) . ';base64,' . base64_encode($data_file);
-                //Audio List.
-                $zip = new ZipArchive;
-                $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
-                if ($res === TRUE) {
-                    for ($i = 0; $i < $zip->numFiles; $i++) {
-                        $filename = $zip->getNameIndex($i);
-                        $pos = strpos($filename, 'MACOSX/.');
-                        if ($pos === false) {
-                            $audio['kit_files_name'][] = $filename;
+                $ext = pathinfo($this->temp_dir . '/' . $track_stems_name, PATHINFO_EXTENSION);
+                if ($ext == 'zip') {
+                    //Audio List.
+                    $zip = new ZipArchive;
+                    $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
+                    if ($res === TRUE) {
+                        for ($i = 0; $i < $zip->numFiles; $i++) {
+                            $filename = $zip->getNameIndex($i);
+                            $pos = strpos($filename, 'MACOSX/.');
+                            if ($pos === false) {
+                                $audio['kit_files_name'][] = $filename;
+                            }
                         }
                     }
+                    $audio['samples'] = count($audio['kit_files_name']);
+                    $kit_files_name = json_encode($audio['kit_files_name']);
+                    $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
+                    //
+                    unlink($this->temp_dir . '/' . $track_stems_name);
+                } elseif ($ext == 'rar') {
+                    $res = RarArchive::open($this->temp_dir . '/' . $track_stems_name);
+                    if ($res === TRUE) {
+                        $rar_entries = $res->getEntries();
+                        foreach ($rar_entries as $e) {
+                            $pos = strpos($e, 'MACOSX/.');
+                            if ($pos === false) {
+                                $audio['kit_files_name'][] = $e;
+                            }
+                        }
+                    }
+                    $audio['samples'] = count($audio['kit_files_name']);
+                    $kit_files_name = json_encode($audio['kit_files_name']);
+                    $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
                 }
-                $audio['samples'] = count($audio['kit_files_name']);
-                $kit_files_name = json_encode($audio['kit_files_name']);
-                $this->Audio_model->update_streamy($audio_id, ['samples' => $audio['samples'], 'kit_files_name' => $kit_files_name]);
-                //
-                unlink($this->temp_dir . '/' . $track_stems_name);
             }
         }
         return true;
