@@ -942,6 +942,7 @@ class Audios extends RestController {
                     if (!empty($data_file)) {
 //                        $img_file = $audio['track_stems'];
                         file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+                        $title = urldecode($title);
                         //$src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
                         //$audio['data_track_stems'] = $src;
                         //Audio List.

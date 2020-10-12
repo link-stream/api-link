@@ -794,8 +794,11 @@ class Profiles extends RestController {
                     $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
                     if (!empty($data_file)) {
                         file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
+                        $title = urldecode($title);
                         //Audio List.
                         $zip = new ZipArchive;
+//                        print_r(urldecode($title));
+//                        exit;
                         if ($zip->open($this->temp_dir . '/' . $audio['track_stems']) === TRUE) {
                             $beat_file = $zip->getFromName($title);
                             $zip->close();
