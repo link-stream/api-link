@@ -1105,9 +1105,9 @@ class Profiles extends RestController {
         unset($user['about']);
         unset($user['timezone']);
         //PENDING
-        $user['followers'] = '0';
-        $user['plays'] = '0';
-        $user['beats'] = '0';
+        $user['followers'] = '50000';
+        $user['plays'] = '1000000';
+        $user['beats'] = '300';
         //
         //Avatar & Banner
         $path = $this->s3_path . $this->s3_folder;
