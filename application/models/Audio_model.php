@@ -638,11 +638,17 @@ where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_
         $this->db->where('status_id <> ', '3');
         return $this->db->count_all_results();
     }
-    
+
     public function fetch_audio_log_count($user_id, $action) {
-        $this->db->where('user_id', $user_id); 
-        $this->db->where('action', $action); 
+        $this->db->where('user_id', $user_id);
+        $this->db->where('action', $action);
         $this->db->from('st_audio_log');
+        return $this->db->count_all_results();
+    }
+
+    public function fetch_followers_count($user_id) {
+        $this->db->where('user_id', $user_id);
+        $this->db->from('st_follower');
         return $this->db->count_all_results();
     }
 
