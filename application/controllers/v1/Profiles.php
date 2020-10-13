@@ -863,6 +863,7 @@ class Profiles extends RestController {
                     $data_log['audio_id'] = $audio_id;
                     $data_log['audio_type'] = (!empty($beat_type)) ? $beat_type : 'beat';
                     $data_log['action'] = 'VIEW';
+                    $data_log['user_id'] = $register_user['id'];
                     $this->Audio_model->insert_audio_log($data_log);
                 }
                 //More Items
@@ -966,6 +967,7 @@ class Profiles extends RestController {
                     $data_log['audio_id'] = $audio_id;
                     $data_log['audio_type'] = 'kit';
                     $data_log['action'] = 'VIEW';
+                    $data_log['user_id'] = $register_user['id'];
                     $this->Audio_model->insert_audio_log($data_log);
                 }
                 //More Items
@@ -1023,6 +1025,7 @@ class Profiles extends RestController {
                     $data_log['audio_id'] = $video_id;
                     $data_log['audio_type'] = 'videos';
                     $data_log['action'] = 'VIEW';
+                    $data_log['user_id'] = $register_user['id'];
                     $this->Audio_model->insert_audio_log($data_log);
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
@@ -1059,6 +1062,7 @@ class Profiles extends RestController {
 //                    $data_log['audio_id'] = $video_id;
 //                    $data_log['audio_type'] = 'videos';
 //                    $data_log['action'] = 'VIEW';
+//                    $data_log['user_id'] = $register_user['id'];
 //                    $this->Audio_model->insert_audio_log($data_log);
 //                }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
@@ -1448,11 +1452,13 @@ class Profiles extends RestController {
         $audio_id = (!empty($this->input->post('audio_id'))) ? $this->input->post('audio_id') : '';
         $audio_type = (!empty($this->input->post('audio_type'))) ? $this->input->post('audio_type') : '';
         $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
             $data_log = [];
             $data_log['audio_id'] = $audio_id;
             $data_log['audio_type'] = $audio_type;
             $data_log['action'] = strtoupper($action);
+            $data_log['user_id'] = $user_id;
             if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'kit') {
                 $this->Audio_model->insert_audio_log($data_log);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The audio action has been created successfully.'), RestController::HTTP_OK);
@@ -1470,11 +1476,13 @@ class Profiles extends RestController {
         $audio_id = (!empty($this->input->post('id'))) ? $this->input->post('id') : '';
         $audio_type = (!empty($this->input->post('type'))) ? $this->input->post('type') : '';
         $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         if (!empty($audio_id) && !empty($audio_type) && !empty($action)) {
             $data_log = [];
             $data_log['audio_id'] = $audio_id;
             $data_log['audio_type'] = $audio_type;
             $data_log['action'] = strtoupper($action);
+            $data_log['user_id'] = $user_id;
             if ($audio_type == 'beat' || $audio_type == 'pack' || $audio_type == 'kit' || $audio_type == 'link' || $audio_type == 'video') {
                 $this->Audio_model->insert_audio_log($data_log);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The action has been created successfully.'), RestController::HTTP_OK);
