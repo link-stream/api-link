@@ -631,7 +631,12 @@ where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_
         $query->free_result();
         return $result;
     }
-    
-    
+
+    public function fetch_beat_count($user_id) {
+        $this->db->where('user_id', $user_id); //By Usew
+        $this->db->from('st_audio');
+        $this->db->where('status_id <> ', '3');
+        return $this->db->count_all_results();
+    }
 
 }

@@ -17,6 +17,7 @@ class Profiles extends RestController {
     private $s3_coverart;
     private $temp_dir;
     private $s3_audio;
+    private $server_url;
 
     public function __construct() {
         parent::__construct();
@@ -36,6 +37,7 @@ class Profiles extends RestController {
         $this->s3_coverart = 'Coverart';
         $this->s3_audio = 'Audio';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
     private function user_clean($user, $images = true) {
@@ -1107,10 +1109,12 @@ class Profiles extends RestController {
         //PENDING
         $user['followers'] = '50000';
         $user['plays'] = '1000000';
-        $user['beats'] = '300';
+        //$user['beats'] = '300';
+        $user['beats'] = $this->Audio_model->fetch_beat_count($user['id']);
         //
         //Avatar & Banner
         $path = $this->s3_path . $this->s3_folder;
+        $user['avatar_url'] = '';
         $user['data_image'] = '';
         $user['data_banner'] = '';
         if ($images) {
@@ -1122,6 +1126,7 @@ class Profiles extends RestController {
                     $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
+                    $user['avatar_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 }
             } else {
                 $user['image'] = 'LS_avatar.png';
@@ -1132,6 +1137,7 @@ class Profiles extends RestController {
                     $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $user['image']) . ';base64,' . base64_encode($data_image);
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
+                    $user['avatar_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 }
             }
             if (!empty($user['banner'])) {
@@ -1176,6 +1182,7 @@ class Profiles extends RestController {
         $audio['url_user'] = '';
         $audio['url_title'] = '';
         $audio['beat_packs'] = '';
+        $audio['coverart_url'] = '';
         $audio['licenses'] = '';
         $audio['collaborators'] = '';
         $audio['marketing'] = '';
@@ -1184,6 +1191,7 @@ class Profiles extends RestController {
         $audio['data_untagged_wav'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
+
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -1196,6 +1204,7 @@ class Profiles extends RestController {
                     $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
                     $audio['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $audio['coverart']);
+                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 }
             }
         }
@@ -1313,8 +1322,10 @@ class Profiles extends RestController {
         $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
         $audio['license_id'] = !empty($audio['license_id']) ? $audio['license_id'] : '';
+        $audio['coverart_url'] = '';
         $audio['data_image'] = '';
         $audio['beats'] = '';
+
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -1326,6 +1337,7 @@ class Profiles extends RestController {
                     $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
                     $audio['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $audio['coverart']);
+                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 }
             }
         }
@@ -1384,12 +1396,14 @@ class Profiles extends RestController {
         $audio['date'] = ($audio['scheduled']) ? substr($audio['publish_at'], 0, 10) : '';
         $audio['time'] = ($audio['scheduled']) ? substr($audio['publish_at'], 11) : '';
         $audio['genre_id'] = !empty($audio['genre_id']) ? $audio['genre_id'] : '';
+        $audio['coverart_url'] = '';
         $audio['url_user'] = '';
         $audio['url_title'] = '';
         //$audio['kit_files_name'] = [];
         $audio['data_image'] = '';
         $audio['data_track_stems'] = '';
         $audio['data_tagged_file'] = '';
+
         //Coverart
         $path = $this->s3_path . $this->s3_coverart;
         if ($images) {
@@ -1401,6 +1415,7 @@ class Profiles extends RestController {
                     $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
                     $audio['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $audio['coverart']);
+                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 }
             }
         }
