@@ -603,6 +603,9 @@ class Marketing extends RestController {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $audio_id = (!empty($this->input->post('audio_id'))) ? $this->input->post('audio_id') : '';
         if ((!empty($user_id) && !empty($audio_id))) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $title = (!empty($this->input->post('title'))) ? $this->input->post('title') : '';
             $description = (!empty($this->input->post('description'))) ? $this->input->post('description') : '';
             $tags = (!empty($this->input->post('tags'))) ? $this->input->post('tags') : '';
@@ -761,8 +764,6 @@ class Marketing extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-
-    
 
     //
     //

@@ -4024,6 +4024,38 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Youtube Uploader:</h3>
+                <code>POST <?= base_url() ?>v1/marketing/youtube_uploader</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>audio_id</li>
+                    <li>title</li>
+                    <li>description</li>
+                    <li>tags(json_array Example: ["beat","tag","youtube"])</li>
+                    <li>privacy (public or private)</li>
+                    <li>access_token</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "Video Create and Uploaded Succefully",
+    "data": {
+        "title": "Example",
+        "id": "Og0QGuiJCiM",
+        "status": true,
+        "link": "https://www.youtube.com/watch?v=Og0QGuiJCiM"
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>
