@@ -1108,7 +1108,8 @@ class Profiles extends RestController {
         unset($user['timezone']);
         //PENDING
         $user['followers'] = '50000';
-        $user['plays'] = '1000000';
+        //$user['plays'] = '1000000';
+        $user['plays'] = $this->Audio_model->fetch_audio_log_count($user['id'], 'PLAY');
         //$user['beats'] = '300';
         $user['beats'] = $this->Audio_model->fetch_beat_count($user['id']);
         //
