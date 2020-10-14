@@ -169,6 +169,8 @@ class Payments extends RestController {
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
                             $this->User_model->insert_user_purchase_details($item);
                         }
+                        //SEND CONFIRMATION EMAIL
+                        
                         //RESPONSE TRUE
                         $cc_type = $this->general_library->card_type($number);
                         $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);

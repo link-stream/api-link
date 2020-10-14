@@ -4056,6 +4056,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3> Pre Signed Url:</h3>
+                <code>POST <?= base_url() ?>v1/audios/pre_signed_url/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": "https://s3.us-east-2.amazonaws.com/files.link.stream/AKIAXBDC73PHUL3JUCGP?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXBDC73PHUL3JUCGP%2F20201014%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20201014T133526Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Signature=d166a9d67ad39416590cdd28129d67387436551df55c66995f7828d6317451e6"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

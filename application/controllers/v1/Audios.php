@@ -127,6 +127,19 @@ class Audios extends RestController {
         unlink($this->temp_dir . '/' . $file_name);
     }
 
+    public function pre_signed_url_get($user_id = null) {
+        if (empty($user_id)) {
+            $this->error = 'User ID is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } else {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $presignedUrl = $this->aws_s3->pre_signed_url($this->bucket);
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $presignedUrl), RestController::HTTP_OK);
+        }
+    }
+
     //
     private function s3_upload($file_name, $s3_folder, $data) {
         //SAVE S3

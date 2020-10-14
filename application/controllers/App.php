@@ -3520,6 +3520,7 @@ paypal.use( ["login"], function (login) {
         $list = [
             'beat', 'tag', 'paolo'
         ];
+        print_r(json_encode($list));
 
 
         $array = [

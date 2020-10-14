@@ -351,4 +351,18 @@ class Aws_s3 {
         }
     }
 
+    public function pre_signed_url($bucket) {
+        //Creating a presigned URL
+        $cmd = $this->s3->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $this->aws_key
+        ]);
+
+        $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+
+        // Get the actual presigned-url
+        $presignedUrl = (string) $request->getUri();
+        return $presignedUrl;
+    }
+
 }
