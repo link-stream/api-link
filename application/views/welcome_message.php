@@ -4058,7 +4058,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3> Pre Signed Url:</h3>
-                <code>POST <?= base_url() ?>v1/audios/pre_signed_url/{user_id}/{file_name}</code>
+                <code>GET <?= base_url() ?>v1/audios/pre_signed_url/{user_id}/{file_name}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
