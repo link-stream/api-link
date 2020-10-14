@@ -352,13 +352,22 @@ class Aws_s3 {
     }
 
     public function pre_signed_url($bucket, $key) {
+
+//        $key = bin2hex(random_bytes(32));  // Note, if you lose this key, you lose access to all objects encrypted by it
+//        //Create customer key
+//        $customerKey = hash('sha256', $key, true);
+//
+//        // Create customer MD5 Key
+//        $customerMd5Key = md5($customerKey, true);
+
+
         //Creating a presigned URL
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $bucket,
             'Key' => $key
         ]);
 
-        $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
+        $request = $this->s3->createPresignedRequest($cmd, '+60 minutes');
 
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
