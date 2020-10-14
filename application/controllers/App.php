@@ -3902,4 +3902,9 @@ paypal.use( ["login"], function (login) {
         $this->parser->parse($this->loc_path . 'example/email', $data);
     }
 
+    public function s3_url() {
+        $url = $this->aws_s3->object_url($this->bucket);
+        print_r($url);
+    }
+
 }

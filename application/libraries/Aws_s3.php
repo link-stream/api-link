@@ -351,11 +351,11 @@ class Aws_s3 {
         }
     }
 
-    public function pre_signed_url($bucket) {
+    public function pre_signed_url($bucket, $key) {
         //Creating a presigned URL
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $bucket,
-            'Key' => $this->aws_key
+            'Key' => $key
         ]);
 
         $request = $this->s3->createPresignedRequest($cmd, '+10 minutes');
@@ -363,6 +363,11 @@ class Aws_s3 {
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
         return $presignedUrl;
+    }
+
+    public function object_url($bucket) {
+        $url = $this->s3->getObjectUrl($bucket, 'Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg');
+        return $url;
     }
 
 }
