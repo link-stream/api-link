@@ -136,7 +136,9 @@ class Audios extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $destination = $this->s3_path . $this->s3_audio . '/' . $file_name;
-            $presignedUrl = $this->aws_s3->pre_signed_url($this->bucket, $destination);
+            $path = $this->s3_path . $this->s3_audio. '/';
+            //$presignedUrl = $this->aws_s3->pre_signed_url($this->bucket, $destination);
+            $presignedUrl = $this->aws_s3->pre_signed_post($this->bucket, $file_name, $path);
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $presignedUrl), RestController::HTTP_OK);
         }
     }

@@ -351,7 +351,7 @@ class Aws_s3 {
         }
     }
 
-    public function pre_signed_url($bucket, $key) {
+    public function pre_signed_url($bucket, $file_name) {
 
 //        $key = bin2hex(random_bytes(32));  // Note, if you lose this key, you lose access to all objects encrypted by it
 //        //Create customer key
@@ -359,24 +359,78 @@ class Aws_s3 {
 //
 //        // Create customer MD5 Key
 //        $customerMd5Key = md5($customerKey, true);
-
-
         //Creating a presigned URL
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $bucket,
-            'Key' => $key
+            'Key' => $file_name,
+                //'x-amz-acl'=> 'public-read'
+                //'ContentType'=> 'application/octet-stream'
+                //'ResponseContentDisposition' => 'attachment; filename=sample.pdf'
         ]);
 
         $request = $this->s3->createPresignedRequest($cmd, '+60 minutes');
 
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
+
+        //
+        //$encodedCustomerKey = base64_encode($customerKey);
+        //$encodedCustomerMd5Key = base64_encode($customerMd5Key);
+        //var_dump($presignedUrl);
+        //var_dump($encodedCustomerKey); /// DIxGD8n7eLwfAusYvqpLK+Ysql+xYL4jdbR13Z3e08=
+        //var_dump($encodedCustomerMd5Key); // Hz1c31UCZ/f5CwxxKnMeAQ==
+        //
         return $presignedUrl;
     }
 
     public function object_url($bucket) {
         $url = $this->s3->getObjectUrl($bucket, 'Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg');
         return $url;
+    }
+
+    public function pre_signed_post($bucket, $file_name, $path) {
+//        $client = new \Aws\S3\S3Client([
+//            'version' => 'latest',
+//            'region' => 'us-west-2',
+//        ]);
+        //$bucket = 'mybucket';
+// Set some defaults for form input fields
+        $formInputs = ['acl' => 'public-read', 'key' => $path . $file_name];
+
+// Construct an array of conditions for policy
+        $options = [
+            ['acl' => 'public-read'],
+            ['bucket' => $bucket],
+            ['starts-with', '$key', $path . $file_name],
+            ["content-length-range", 100, 10000000],
+        ];
+
+// Optional: configure expiration time string
+        $expires = '+2 hours';
+
+        $postObject = new \Aws\S3\PostObjectV4(
+                $this->s3,
+                $bucket,
+                $formInputs,
+                $options,
+                $expires
+        );
+
+// Get attributes to set on an HTML form, e.g., action, method, enctype
+        $formAttributes = $postObject->getFormAttributes();
+//        echo '<pre>';
+//        print_r($formAttributes);
+//        echo '</pre>';
+// Get form input fields. This will include anything set as a form input in
+// the constructor, the provided JSON policy, your AWS Access Key ID, and an
+// auth signature.
+        $formInputs = $postObject->getFormInputs();
+        //return $formInputs;
+//        echo '<pre>';
+//        print_r($formInputs);
+//        echo '</pre>';
+
+        return ['formAttributes' => $formAttributes, 'formInputs' => $formInputs];
     }
 
 }

@@ -3903,8 +3903,24 @@ paypal.use( ["login"], function (login) {
     }
 
     public function s3_url() {
-        $url = $this->aws_s3->object_url($this->bucket);
-        print_r($url);
+        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+        $this->s3_audio = 'Audio';
+        $file_name = 'aaa.mp3';
+        $destination = $this->s3_path . $this->s3_audio . '/' . $file_name;
+        $destination = $file_name;
+        $presignedUrl = $this->aws_s3->pre_signed_url($this->bucket, $destination);
+        //$url = $this->aws_s3->object_url($this->bucket);
+        print_r($presignedUrl);
+    }
+
+    public function s3_post() {
+        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+        $this->s3_audio = 'Audio';
+        $file_name = 'aaa.mp3';
+        $destination = $this->s3_path . $this->s3_audio . '/';
+        //$destination = $file_name;
+        $presignedUrl = $this->aws_s3->pre_signed_post($this->bucket, $file_name, $destination);
+        //print_r($presignedUrl);
     }
 
 }

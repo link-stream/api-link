@@ -4071,7 +4071,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "data": "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Audio/aaa.mp3?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXBDC73PHUL3JUCGP%2F20201014%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20201014T145529Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Signature=c15369f69d8050ced4e0cbc6839b891e49ddc508aadb4ed515bf5d2735cb7c1f"
+    "data": {
+        "formAttributes": {
+            "action": "https://s3.us-east-2.amazonaws.com/files.link.stream",
+            "method": "POST",
+            "enctype": "multipart/form-data"
+        },
+        "formInputs": {
+            "acl": "public-read",
+            "key": "Dev/Audio/jjj.mp3",
+            "X-Amz-Credential": "AKIAXBDC73PHUL3JUCGP/20201014/us-east-2/s3/aws4_request",
+            "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
+            "X-Amz-Date": "20201014T225806Z",
+            "Policy": "eyJleHBpcmF0aW9uIjoiMjAyMC0xMC0xNVQwMDo1ODowNloiLCJjb25kaXRpb25zIjpbeyJhY2wiOiJwdWJsaWMtcmVhZCJ9LHsiYnVja2V0IjoiZmlsZXMubGluay5zdHJlYW0ifSxbInN0YXJ0cy13aXRoIiwiJGtleSIsIkRldlwvQXVkaW9cL2pqai5tcDMiXSxbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwxMDAsMTAwMDAwMDBdLHsiWC1BbXotRGF0ZSI6IjIwMjAxMDE0VDIyNTgwNloifSx7IlgtQW16LUNyZWRlbnRpYWwiOiJBS0lBWEJEQzczUEhVTDNKVUNHUFwvMjAyMDEwMTRcL3VzLWVhc3QtMlwvczNcL2F3czRfcmVxdWVzdCJ9LHsiWC1BbXotQWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9XX0=",
+            "X-Amz-Signature": "3527bb71aeff947723cb7791f4aab322ba984fd8308f739c89a8c941cfcbeba2"
+        }
+    }
 }');
                     echo '</pre>';
                     ?>
