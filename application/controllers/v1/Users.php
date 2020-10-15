@@ -1167,11 +1167,11 @@ class Users extends RestController {
         }
     }
 
-    public function analitycs_get($user_id = null, $days = 7) {
+    public function analytics_get($user_id = null, $days = 7) {
         if (!empty($user_id)) {
-//            if (!$this->general_library->header_token($user_id)) {
-//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-//            }
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
                 // $user_response = $this->user_clean($register_user);
