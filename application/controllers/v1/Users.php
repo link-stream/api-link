@@ -1110,6 +1110,65 @@ class Users extends RestController {
 
     public function dashboard_get($user_id = null) {
         if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_by_id($user_id);
+            if (!empty($register_user)) {
+                // $user_response = $this->user_clean($register_user);
+                $data = [];
+                $data['beat'] = false;
+                $data['store'] = false;
+                $data['campaign'] = false;
+                $data['email_confirmed'] = ($register_user['email_confirmed']) ? true : false; //resend_email_confirm_post en caso necesite comfirmar.
+                if (!empty($register_user['image']) && !empty($register_user['banner']) && !empty($register_user['bio'])) {
+                    $data['store'] = true;
+                }
+                $beats = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id], 1, 0);
+                if (!empty($beats)) {
+                    $data['beat'] = true;
+                }
+                $campaign = $this->Marketing_model->fetch_messages_by_user_id($user_id, '', false, 1, 0);
+                if (!empty($campaign)) {
+                    $data['campaign'] = true;
+                }
+
+                $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('-7 days'))));
+                $data['plays'] = $this->Audio_model->fetch_audio_log_count($user_id, 'PLAY', $date);
+                $data['free_downloads'] = $this->Audio_model->fetch_audio_log_count($user_id, 'FREE_DOWNLOAD', $date);
+                $sales = $this->Audio_model->fetch_sales_report($user_id, $date);
+                $data['sales_count'] = (!empty($sales['Count'])) ? (int) $sales['Count'] : 0;
+                $data['sales_amount'] = (!empty($sales['Total'])) ? (float) $sales['Total'] : 0;
+                $data['conversion'] = 0;
+                if ($data['plays'] > 0) {
+                    $data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
+                }
+                $top_5 = $this->Audio_model->fetch_top_played($user_id, $date, 5);
+                $data['top_5'] = [];
+                foreach ($top_5 as $item) {
+                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
+                    $data['top_5'][] = $item;
+                }
+                //ACTIVITY LOG
+                $activity_5 = $this->Audio_model->fetch_top_activity($user_id, $date, 5);
+                $data['activity'] = [];
+                foreach ($activity_5 as $item) {
+                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
+                    $data['activity'][] = $item;
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function analitycs_get($user_id = null, $days = 7) {
+        if (!empty($user_id)) {
 //            if (!$this->general_library->header_token($user_id)) {
 //                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
 //            }
