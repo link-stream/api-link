@@ -619,12 +619,12 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
     }
 
     public function fetch_genre_recommendations($user_id) {
-//        $sql = "SELECT c.genre_id FROM linkstream_dev.st_user_invoice a 
-//inner join linkstream_dev.st_user_invoice_detail b on a.id = b.invoice_id 
-//inner join linkstream_dev.st_audio c on b.item_id = c.id
+//        $sql = "SELECT c.genre_id FROM st_user_invoice a 
+//inner join st_user_invoice_detail b on a.id = b.invoice_id 
+//inner join st_audio c on b.item_id = c.id
 //where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' group by c.genre_id order by count(*) desc limit 1";
-        $sql = "SELECT b.genre_id,count(*) FROM linkstream_dev.st_user_invoice a 
-inner join linkstream_dev.st_user_invoice_detail b on a.id = b.invoice_id 
+        $sql = "SELECT b.genre_id,count(*) FROM st_user_invoice a 
+inner join st_user_invoice_detail b on a.id = b.invoice_id 
 where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_id is not null group by b.genre_id order by count(*) desc limit 1";
         $query = $this->db->query($sql);
         $result = $query->row_array();
@@ -639,9 +639,12 @@ where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_
         return $this->db->count_all_results();
     }
 
-    public function fetch_audio_log_count($user_id, $action) {
+    public function fetch_audio_log_count($user_id, $action, $from = null) {
         $this->db->where('user_id', $user_id);
         $this->db->where('action', $action);
+        if (!empty($from)) {
+            $this->db->where('transDateTime >=', $from);
+        }
         $this->db->from('st_audio_log');
         return $this->db->count_all_results();
     }
@@ -650,6 +653,35 @@ where a.user_id = '" . $user_id . "' and b.item_track_type = 'beat' and b.genre_
         $this->db->where('user_id', $user_id);
         $this->db->from('st_follower');
         return $this->db->count_all_results();
+    }
+
+    public function fetch_sales_report($user_id, $from) {
+        $sql = "SELECT count(*) as Count, sum(a.item_amount) as Total FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
+where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "'";
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_top_played($user_id, $from, $limit = 5) {
+        $sql = "select audio_id, count(*) as Count, b.title, b.coverart 
+from st_audio_log a inner join st_audio b on a.audio_id = b.id
+where a.user_id = '" . $user_id . "' and a.transDateTime >= '" . $from . "' and audio_type = 'beat' and action = 'PLAY' group by a.audio_id order by Count desc limit " . $limit;
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_top_activity($user_id, $from, $limit = 5) {
+        $sql = "select a.id, a.transDateTime, a.user_id, a.action, a.log, b.display_name, b.first_name, b.last_name, b.image, b.url
+FROM st_profile_activity_log a inner join st_user b on a.ref_user_id = b.id
+where a.user_id = '" . $user_id . "' and a.transDateTime >= '" . $from . "' order by id desc limit " . $limit;
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
     }
 
 }

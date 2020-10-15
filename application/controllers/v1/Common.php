@@ -131,6 +131,45 @@ class Common extends RestController {
         return $hours;
     }
 
+    public function countries_get() {
+        $countries = [
+            "US" => 'United States of America',
+            "CA" => 'Canada',
+            "AT" => 'Austria',
+            "AU" => 'Australia',
+            "BE" => 'Belgium',
+            "BG" => 'Bulgaria',
+            "CH" => 'Switzerland',
+            "CY" => 'Cyprus',
+            "CZ" => 'Czech Republic',
+            "DE" => 'Germany',
+            "DK" => 'Denmark',
+            "EE" => 'Estonia',
+            "ES" => 'Spain',
+            "FI" => 'Finland',
+            "FR" => 'France',
+            "GB" => 'United Kingdom',
+            "GR" => 'Greece',
+            "HK" => 'Hong Kong',
+            "IE" => 'Ireland',
+            "IT" => 'Italy',
+            "LT" => 'Lithuania',
+            "LU" => 'Luxembourg',
+            "LV" => 'Latvia',
+            "MT" => 'Malta',
+            "NL" => 'Netherlands',
+            "NO" => 'Norway',
+            "NZ" => 'New Zealand',
+            "PL" => 'Poland',
+            "PT" => 'Portugal',
+            "RO" => 'Romania',
+            "SE" => 'Sweden',
+            "SG" => 'Singapore',
+            "SI" => 'Slovenia',
+            "SK" => 'Slovakia'
+        ];
+    }
+
 //    public function get_timezone_get($timezone = null) {
 //        // create a $dt object with the UTC timezone
 ////        $dt = new DateTime('2016-12-12 12:12:12', new DateTimeZone('UTC'));

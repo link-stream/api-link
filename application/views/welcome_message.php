@@ -4092,6 +4092,118 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Get Dashboard Info:</h3>
+                <code>GET <?= base_url() ?>v1/users/dashboard/{$user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "beat": true,
+        "store": true,
+        "campaign": true,
+        "email_confirmed": false,
+        "plays": 705,
+        "free_downloads": 1,
+        "sales_count": 31,
+        "sales_amount": 2150.25,
+        "conversion": "4.40",
+        "top_5": [
+            {
+                "audio_id": "378",
+                "Count": "174",
+                "title": "My Beat 2Mb",
+                "coverart": "ls_b010473bdb62681c47a8c1ba59198454.jpeg"
+            },
+            {
+                "audio_id": "390",
+                "Count": "49",
+                "title": "Stranger",
+                "coverart": "ls_a74914a07ca51a5a088ac31e557ed444.png"
+            },
+            {
+                "audio_id": "379",
+                "Count": "44",
+                "title": "My Beat 5Mb",
+                "coverart": "ls_9a758af0b9484b33635c279da6e7fdb2.jpeg"
+            },
+            {
+                "audio_id": "402",
+                "Count": "43",
+                "title": "Soul Defense",
+                "coverart": "ls_b3ace07b48e9eed423fcbfdbfd31dc0d.jpeg"
+            },
+            {
+                "audio_id": "400",
+                "Count": "42",
+                "title": "Up Go",
+                "coverart": "ls_64743c6c60c1f8947bc9f8278f8655be.jpeg"
+            }
+        ],
+        "activity": [
+            {
+                "id": "4",
+                "transDateTime": "2020-10-15 13:25:22",
+                "user_id": "35",
+                "action": "BUY",
+                "log": "bought your Beat \"Stranger\"",
+                "display_name": "paulferra46",
+                "first_name": "Paul",
+                "last_name": "Ferra",
+                "image": "4875d11f3618da0bf638f7e53210fcc2.png",
+                "url": "paulferra46"
+            },
+            {
+                "id": "3",
+                "transDateTime": "2020-10-15 13:25:22",
+                "user_id": "35",
+                "action": "FREE_DOWNLOAD",
+                "log": "downloaded your Beat \"Sould Defense\"",
+                "display_name": "paulferra",
+                "first_name": "Paul",
+                "last_name": "Ferra",
+                "image": "3b1111642f5133fa7d5052c4d46fc030.png",
+                "url": "paulferra"
+            },
+            {
+                "id": "2",
+                "transDateTime": "2020-10-15 13:22:34",
+                "user_id": "35",
+                "action": "FOLLOW",
+                "log": "started following you",
+                "display_name": "paulferra46",
+                "first_name": "Paul",
+                "last_name": "Ferra",
+                "image": "4875d11f3618da0bf638f7e53210fcc2.png",
+                "url": "paulferra46"
+            },
+            {
+                "id": "1",
+                "transDateTime": "2020-10-15 13:21:59",
+                "user_id": "35",
+                "action": "FOLLOW",
+                "log": "started following you",
+                "display_name": "paulferra",
+                "first_name": "Paul",
+                "last_name": "Ferra",
+                "image": "3b1111642f5133fa7d5052c4d46fc030.png",
+                "url": "paulferra"
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

@@ -1130,8 +1130,22 @@ class Users extends RestController {
                 if (!empty($campaign)) {
                     $data['campaign'] = true;
                 }
-                //EN LOG AGREGAR USER ID
-                //DE AHI SACAR VENTAS, PLAYS, FREE DOWNLOAD, CONVERTIOSN, ETC
+
+                $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('-7 days'))));
+                $data['plays'] = $this->Audio_model->fetch_audio_log_count($user_id, 'PLAY', $date);
+                $data['free_downloads'] = $this->Audio_model->fetch_audio_log_count($user_id, 'FREE_DOWNLOAD', $date);
+                $sales = $this->Audio_model->fetch_sales_report($user_id, $date);
+                $data['sales_count'] = (!empty($sales['Count'])) ? (int) $sales['Count'] : 0;
+                $data['sales_amount'] = (!empty($sales['Total'])) ? (float) $sales['Total'] : 0;
+                $data['conversion'] = 0;
+                if ($data['plays'] > 0) {
+                    $data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
+                }
+                $top_5 = $this->Audio_model->fetch_top_played($user_id, $date, 5);
+                $data['top_5'] = $top_5;
+                //ACTIVITY LOG
+                $activity_5 = $this->Audio_model->fetch_top_activity($user_id, $date, 5);
+                $data['activity'] = $activity_5;
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
