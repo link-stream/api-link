@@ -4121,31 +4121,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "audio_id": "378",
                 "Count": "174",
                 "title": "My Beat 2Mb",
-                "coverart": "ls_b010473bdb62681c47a8c1ba59198454.jpeg"
+                "coverart": "ls_b010473bdb62681c47a8c1ba59198454.jpeg",
+                "image_url":""
             },
             {
                 "audio_id": "390",
                 "Count": "49",
                 "title": "Stranger",
-                "coverart": "ls_a74914a07ca51a5a088ac31e557ed444.png"
+                "coverart": "ls_a74914a07ca51a5a088ac31e557ed444.png",
+                "image_url":""
             },
             {
                 "audio_id": "379",
                 "Count": "44",
                 "title": "My Beat 5Mb",
-                "coverart": "ls_9a758af0b9484b33635c279da6e7fdb2.jpeg"
+                "coverart": "ls_9a758af0b9484b33635c279da6e7fdb2.jpeg",
+                "image_url":""
             },
             {
                 "audio_id": "402",
                 "Count": "43",
                 "title": "Soul Defense",
-                "coverart": "ls_b3ace07b48e9eed423fcbfdbfd31dc0d.jpeg"
+                "coverart": "ls_b3ace07b48e9eed423fcbfdbfd31dc0d.jpeg",
+                "image_url":""
             },
             {
                 "audio_id": "400",
                 "Count": "42",
                 "title": "Up Go",
-                "coverart": "ls_64743c6c60c1f8947bc9f8278f8655be.jpeg"
+                "coverart": "ls_64743c6c60c1f8947bc9f8278f8655be.jpeg",
+                "image_url":""
             }
         ],
         "activity": [
@@ -4159,7 +4164,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "first_name": "Paul",
                 "last_name": "Ferra",
                 "image": "4875d11f3618da0bf638f7e53210fcc2.png",
-                "url": "paulferra46"
+                "url": "paulferra46",
+                "image_url":""
             },
             {
                 "id": "3",
@@ -4171,7 +4177,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "first_name": "Paul",
                 "last_name": "Ferra",
                 "image": "3b1111642f5133fa7d5052c4d46fc030.png",
-                "url": "paulferra"
+                "url": "paulferra",
+                "image_url":""
             },
             {
                 "id": "2",
@@ -4183,7 +4190,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "first_name": "Paul",
                 "last_name": "Ferra",
                 "image": "4875d11f3618da0bf638f7e53210fcc2.png",
-                "url": "paulferra46"
+                "url": "paulferra46",
+                "image_url":""
             },
             {
                 "id": "1",
@@ -4195,7 +4203,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 "first_name": "Paul",
                 "last_name": "Ferra",
                 "image": "3b1111642f5133fa7d5052c4d46fc030.png",
-                "url": "paulferra"
+                "url": "paulferra",
+                "image_url":""
             }
         ]
     }
