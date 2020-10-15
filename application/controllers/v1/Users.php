@@ -16,6 +16,7 @@ class Users extends RestController {
     private $s3_folder;
     private $s3_coverart;
     private $temp_dir;
+    private $server_url;
 
     public function __construct() {
         parent::__construct();
@@ -32,6 +33,7 @@ class Users extends RestController {
         $this->s3_folder = 'Profile';
         $this->s3_coverart = 'Coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
     private function image_decode_put($image) {
@@ -1142,10 +1144,18 @@ class Users extends RestController {
                     $data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
                 }
                 $top_5 = $this->Audio_model->fetch_top_played($user_id, $date, 5);
-                $data['top_5'] = $top_5;
+                $data['top_5'] = [];
+                foreach ($top_5 as $item) {
+                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
+                    $data['top_5'][] = $item;
+                }
                 //ACTIVITY LOG
                 $activity_5 = $this->Audio_model->fetch_top_activity($user_id, $date, 5);
-                $data['activity'] = $activity_5;
+                $data['activity'] = [];
+                foreach ($activity_5 as $item) {
+                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
+                    $data['activity'][] = $item;
+                }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
