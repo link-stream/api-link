@@ -377,7 +377,8 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-            $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
+            //$this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
+            $this->db->where("(title LIKE '%" . $tag . "%' OR tags LIKE '%" . $tag . "%')", null, false);
         }
         if ($sort == 'default') {
             $this->db->order_by('sort');
