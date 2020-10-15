@@ -1176,23 +1176,24 @@ class Users extends RestController {
             if (!empty($register_user)) {
                 // $user_response = $this->user_clean($register_user);
                 $data = [];
-                $data['beat'] = false;
-                $data['store'] = false;
-                $data['campaign'] = false;
-                $data['email_confirmed'] = ($register_user['email_confirmed']) ? true : false; //resend_email_confirm_post en caso necesite comfirmar.
-                if (!empty($register_user['image']) && !empty($register_user['banner']) && !empty($register_user['bio'])) {
-                    $data['store'] = true;
-                }
-                $beats = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id], 1, 0);
-                if (!empty($beats)) {
-                    $data['beat'] = true;
-                }
-                $campaign = $this->Marketing_model->fetch_messages_by_user_id($user_id, '', false, 1, 0);
-                if (!empty($campaign)) {
-                    $data['campaign'] = true;
-                }
+//                $data['beat'] = false;
+//                $data['store'] = false;
+//                $data['campaign'] = false;
+//                $data['email_confirmed'] = ($register_user['email_confirmed']) ? true : false; //resend_email_confirm_post en caso necesite comfirmar.
+//                if (!empty($register_user['image']) && !empty($register_user['banner']) && !empty($register_user['bio'])) {
+//                    $data['store'] = true;
+//                }
+//                $beats = $this->Audio_model->fetch_audio_by_search(['user_id' => $user_id], 1, 0);
+//                if (!empty($beats)) {
+//                    $data['beat'] = true;
+//                }
+//                $campaign = $this->Marketing_model->fetch_messages_by_user_id($user_id, '', false, 1, 0);
+//                if (!empty($campaign)) {
+//                    $data['campaign'] = true;
+//                }
 
-                $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('-7 days'))));
+
+                $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('-' . $days . ' days'))));
                 $data['plays'] = $this->Audio_model->fetch_audio_log_count($user_id, 'PLAY', $date);
                 $data['free_downloads'] = $this->Audio_model->fetch_audio_log_count($user_id, 'FREE_DOWNLOAD', $date);
                 $sales = $this->Audio_model->fetch_sales_report($user_id, $date);
@@ -1202,19 +1203,28 @@ class Users extends RestController {
                 if ($data['plays'] > 0) {
                     $data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
                 }
-                $top_5 = $this->Audio_model->fetch_top_played($user_id, $date, 5);
-                $data['top_5'] = [];
-                foreach ($top_5 as $item) {
-                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
-                    $data['top_5'][] = $item;
-                }
-                //ACTIVITY LOG
-                $activity_5 = $this->Audio_model->fetch_top_activity($user_id, $date, 5);
-                $data['activity'] = [];
-                foreach ($activity_5 as $item) {
-                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
-                    $data['activity'][] = $item;
-                }
+//                $top_5 = $this->Audio_model->fetch_top_played($user_id, $date, 5);
+//                $data['top_5'] = [];
+//                foreach ($top_5 as $item) {
+//                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
+//                    $data['top_5'][] = $item;
+//                }
+//                //ACTIVITY LOG
+//                $activity_5 = $this->Audio_model->fetch_top_activity($user_id, $date, 5);
+//                $data['activity'] = [];
+//                foreach ($activity_5 as $item) {
+//                    $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
+//                    $data['activity'][] = $item;
+//                }
+
+                $data['beats_info'] = $this->Audio_model->fetch_earning($user_id, $date);
+                $data['free_downloads_info'] = $this->Audio_model->fetch_audio_log_data($user_id, 'FREE_DOWNLOAD', $date);
+                $data['plays_info'] = $this->Audio_model->fetch_audio_log_data($user_id, 'PLAY', $date);
+                $data['marketing_info'] = $this->Audio_model->fetch_earning_marketing($user_id, $date);
+                $data['top_beat_sales'] = $this->Audio_model->fetch_top_sales($user_id, $date, 5);
+                $data['top_referrers'] = $this->Audio_model->fetch_top_referrers($user_id, $date, 5);
+
+
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';

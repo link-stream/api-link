@@ -4213,6 +4213,129 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Get Analytics Info:</h3>
+                <code>GET <?= base_url() ?>v1/users/analytics/{$user_id}/{days}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>days (optional - default = 7)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": {
+        "plays": 739,
+        "free_downloads": 1,
+        "sales_count": 31,
+        "sales_amount": 2150.25,
+        "conversion": "4.19",
+        "beats_info": [
+            {
+                "TransDate": "2020-10-13",
+                "Count": "19",
+                "Total": "1135.00"
+            },
+            {
+                "TransDate": "2020-10-14",
+                "Count": "12",
+                "Total": "1015.25"
+            }
+        ],
+        "free_downloads_info": [
+            {
+                "TransDate": "2020-10-14",
+                "Count": "1"
+            }
+        ],
+        "plays_info": [
+            {
+                "TransDate": "2020-10-07",
+                "Count": "1"
+            },
+            {
+                "TransDate": "2020-10-08",
+                "Count": "214"
+            },
+            {
+                "TransDate": "2020-10-09",
+                "Count": "81"
+            },
+            {
+                "TransDate": "2020-10-10",
+                "Count": "104"
+            },
+            {
+                "TransDate": "2020-10-11",
+                "Count": "24"
+            },
+            {
+                "TransDate": "2020-10-12",
+                "Count": "139"
+            },
+            {
+                "TransDate": "2020-10-13",
+                "Count": "77"
+            },
+            {
+                "TransDate": "2020-10-14",
+                "Count": "32"
+            },
+            {
+                "TransDate": "2020-10-15",
+                "Count": "67"
+            }
+        ],
+        "marketing_info": [
+            {
+                "TransDate": "2020-10-13",
+                "Count": "1",
+                "Total": "30.00"
+            },
+            {
+                "TransDate": "2020-10-14",
+                "Count": "2",
+                "Total": "45.25"
+            }
+        ],
+        "top_beat_sales": [
+            {
+                "item_title": "My Beat 2Mb",
+                "Count": "10"
+            },
+            {
+                "item_title": "Stranger",
+                "Count": "6"
+            },
+            {
+                "item_title": "Picture Perfect",
+                "Count": "2"
+            },
+            {
+                "item_title": "Up Go",
+                "Count": "1"
+            }
+        ],
+        "top_referrers": [
+            {
+                "utm_source": null,
+                "Count": "28"
+            },
+            {
+                "utm_source": "email",
+                "Count": "3"
+            }
+        ]
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
                 <!-- EXAMPLE 
                 <hr>

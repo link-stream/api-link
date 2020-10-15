@@ -684,4 +684,52 @@ where a.user_id = '" . $user_id . "' and a.transDateTime >= '" . $from . "' orde
         return $result;
     }
 
+    public function fetch_earning($user_id, $from) {
+        $sql = 'SELECT DATE(CONVERT_TZ(created_at,"GMT","America/New_York")) as TransDate,count(*) as Count,sum(a.item_amount) as Total FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
+where a.producer_id = "' . $user_id . '" and created_at >= "' . $from . '" 
+group by TransDate order by TransDate';
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_earning_marketing($user_id, $from) {
+        $sql = 'SELECT DATE(CONVERT_TZ(created_at,"GMT","America/New_York")) as TransDate,count(*) as Count,sum(a.item_amount) as Total FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
+where a.producer_id = "' . $user_id . '" and created_at >= "' . $from . '" and b.utm_source is not null  
+group by TransDate order by TransDate';
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_audio_log_data($user_id, $action, $from = null) {
+        $sql = 'SELECT DATE(CONVERT_TZ(transDateTime,"GMT","America/New_York")) as TransDate,count(*) as Count FROM st_audio_log
+where user_id = "' . $user_id . '"  and action = "' . $action . '"  and transDateTime >= "' . $from . '" 
+group by TransDate order by TransDate';
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_top_sales($user_id, $from, $limit = 5) {
+        $sql = "SELECT item_title,count(*) as Count FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
+where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' and item_track_type = 'beat' group by item_id order by Count desc limit " . $limit;
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_top_referrers($user_id, $from, $limit = 5) {
+        $sql = "SELECT utm_source,count(*) as Count FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
+where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' group by utm_source order by Count desc limit " . $limit;
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
