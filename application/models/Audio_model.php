@@ -201,7 +201,7 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_streamys_by_user_id($user_id, $track_type, $audio_id, $deleted = false, $limit = 0, $offset = 0) {
+    public function fetch_streamys_by_user_id($user_id, $track_type, $audio_id, $deleted = false, $limit = 0, $offset = 0, $tag = null) {
         $this->db->from('st_audio');
         $this->db->where('user_id', $user_id);
         if (!$deleted) {
@@ -212,6 +212,9 @@ class Audio_model extends CI_Model {
         }
         if (!empty($audio_id)) {
             $this->db->where('id', $audio_id);
+        }
+        if (!empty($tag)) {
+            $this->db->where("(title LIKE '%" . $tag . "%')", null, false);
         }
         $this->db->order_by('sort');
         if (!empty($limit)) {
@@ -413,7 +416,8 @@ class Audio_model extends CI_Model {
             $this->db->where_in('genre_id', $genres);
         }
         if (!empty($tag)) {
-            $this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
+            //$this->db->where("(`title` LIKE '$tag%' OR `tags` LIKE '$tag%')", null, false);
+            $this->db->where("(title LIKE '%" . $tag . "%' OR tags LIKE '%" . $tag . "%')", null, false);
         }
         if (!empty($bpm_min)) {
             $this->db->where('bpm >= ', $bpm_min);

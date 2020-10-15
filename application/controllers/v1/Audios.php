@@ -136,7 +136,7 @@ class Audios extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $destination = $this->s3_path . $this->s3_audio . '/' . $file_name;
-            $path = $this->s3_path . $this->s3_audio. '/';
+            $path = $this->s3_path . $this->s3_audio . '/';
             //$presignedUrl = $this->aws_s3->pre_signed_url($this->bucket, $destination);
             $presignedUrl = $this->aws_s3->pre_signed_post($this->bucket, $file_name, $path);
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $presignedUrl), RestController::HTTP_OK);
@@ -552,6 +552,7 @@ class Audios extends RestController {
             }
             $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
             $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            $tag = (!empty($this->input->get('tag'))) ? $this->input->get('tag') : '';
             //$limit = 0;
             //$offset = 0;
             if (!is_int($page) || !is_int($page_size)) {
@@ -560,7 +561,7 @@ class Audios extends RestController {
             } else {
                 $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
                 $limit = $page_size;
-                $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $track_type, $audio_id, false, $limit, $offset);
+                $streamys = $this->Audio_model->fetch_streamys_by_user_id($id, $track_type, $audio_id, false, $limit, $offset, $tag);
                 $audios = [];
                 foreach ($streamys as $streamy) {
                     $audios[] = $this->audio_clean($streamy, $audio_id);

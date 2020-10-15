@@ -1398,7 +1398,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>user_id</li>
                     <li>audio_id (optional)</li>
                     <li>track_type (optional)</li>
-                    <li>?page={page}&page_size={page_size}</li>
+                    <li>?page={page}&page_size={page_size}&tag={title}</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
