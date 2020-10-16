@@ -376,7 +376,7 @@ class Marketing_model extends CI_Model {
     }
 
     public function update_open_action($ref_id) {
-        $this->db->set('field', 'open + 1', FALSE);
+        $this->db->set('open', 'open + 1', FALSE);
         $this->db->where('ref_id', $ref_id);
         $this->db->update('st_marketing_messages_log');
     }
