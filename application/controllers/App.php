@@ -3916,7 +3916,7 @@ paypal.use( ["login"], function (login) {
     public function s3_post() {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_audio = 'Audio';
-        $file_name = md5(uniqid(rand(), true)) . '.mp3';
+        $file_name = md5(uniqid(rand(), true)) . '.jpeg';
         //$file_name = 'te.mp3';
         $destination = $this->s3_path . $this->s3_audio . '/';
         //$destination = $file_name;
@@ -3924,6 +3924,47 @@ paypal.use( ["login"], function (login) {
         echo '<pre>';
         print_r($presignedUrl);
         echo '</pre>';
+    }
+
+    public function file_s3() {
+
+
+
+
+        $curl = curl_init();
+        $source = "tmp/test_02.jpeg";
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://s3.us-east-2.amazonaws.com/files.link.stream",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => array(
+                'acl' => 'public-read',
+                'key' => 'Dev/Audio/9a2b33a504f29f2e7d7dbb96d68b4333.jpeg',
+                'X-Amz-Credential' => 'AKIAXBDC73PHUL3JUCGP/20201015/us-east-2/s3/aws4_request',
+                'X-Amz-Algorithm' => 'AWS4-HMAC-SHA256', 'X-Amz-Date' => '20201015T183840Z',
+                'Policy' => 'eyJleHBpcmF0aW9uIjoiMjAyMC0xMC0xNVQxOTowODo0MFoiLCJjb25kaXRpb25zIjpbeyJhY2wiOiJwdWJsaWMtcmVhZCJ9LHsiYnVja2V0IjoiZmlsZXMubGluay5zdHJlYW0ifSxbInN0YXJ0cy13aXRoIiwiJGtleSIsIkRldlwvQXVkaW9cLzlhMmIzM2E1MDRmMjlmMmU3ZDdkYmI5NmQ2OGI0MzMzLmpwZWciXSx7IlgtQW16LURhdGUiOiIyMDIwMTAxNVQxODM4NDBaIn0seyJYLUFtei1DcmVkZW50aWFsIjoiQUtJQVhCREM3M1BIVUwzSlVDR1BcLzIwMjAxMDE1XC91cy1lYXN0LTJcL3MzXC9hd3M0X3JlcXVlc3QifSx7IlgtQW16LUFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifV19',
+                'X-Amz-Signature' => 'e0adff6b50e4305ddec82ca9a8ca0204c27689495c86fa67fe7740a79d9b0d15',
+                'file' => file_get_contents($source)
+            )
+//                'file' => new CURLFILE($source)),
+//            CURLOPT_HTTPHEADER => array(
+//                "Content-Type: multipart/form-data"
+//            ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+    }
+    
+    public function unique_id(){
+        echo uniqid('6780'.'600000');echo '<br>';echo uniqid('6780'.'600000');
     }
 
 }

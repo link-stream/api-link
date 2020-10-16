@@ -137,7 +137,7 @@ class General_library {
         return $cadena_encriptada4;
     }
 
-    public function send_ses($to_name, $to_email, $fname, $femail, $subject, $message) {
+    public function send_ses($to_name, $to_email, $fname, $femail, $subject, $message, $reply_to = null, $reply_to_name = null) {
         $this->ci->load->library('email');
         $config['mailtype'] = 'html';
         $config['useragent'] = 'Post Title';
@@ -155,6 +155,7 @@ class General_library {
         //
         $this->ci->email->from($femail, $fname);
         $this->ci->email->to($to_email, $to_name);
+        $this->ci->email->reply_to($reply_to, $reply_to_name);
         $this->ci->email->subject($subject);
         $this->ci->email->message($message);
         try {
