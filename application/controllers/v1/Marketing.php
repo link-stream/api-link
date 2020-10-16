@@ -493,7 +493,6 @@ class Marketing extends RestController {
             if ($action == 'unsubscribe' || $action == 'resubscribe' || $action == 'unsubscribe_email' || $action == 'resubscribe_email' || $action == 'unsubscribe_sms' || $action == 'resubscribe_sms') {
                 $list = json_decode($list, true);
                 foreach ($list as $item) {
-
                     if ($action == 'unsubscribe') {
                         $email_status = 'unsubscribed';
                         $sms_status = 'unsubscribed';
@@ -517,7 +516,7 @@ class Marketing extends RestController {
                     }
 
                     //$status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
-                    $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status, 'sms_status' => $sms_status]);
+                    //$this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status, 'sms_status' => $sms_status]);
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers updated successfully.'), RestController::HTTP_OK);
             } else {
