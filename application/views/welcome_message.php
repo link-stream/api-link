@@ -2978,7 +2978,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <li>action (unsubscribe or resubscribe)</li>
+                    <li>action (unsubscribe or resubscribe or unsubscribe_email or resubscribe_email or unsubscribe_sms or resubscribe_sms)</li>
                     <li>list (JSON Array. Example: [{"id":"1"},{"id":"2"}])</li>
                 </ul>
                 <h3>Response Example:</h3>

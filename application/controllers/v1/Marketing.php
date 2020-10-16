@@ -493,8 +493,31 @@ class Marketing extends RestController {
             if ($action == 'unsubscribe' || $action == 'resubscribe') {
                 $list = json_decode($list, true);
                 foreach ($list as $item) {
-                    $status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
-                    $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $status, 'sms_status' => $status]);
+
+                    if ($action == 'unsubscribe') {
+                        $email_status = 'unsubscribed';
+                        $sms_status = 'unsubscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status, 'sms_status' => $sms_status]);
+                    } elseif ($action == 'resubscribe') {
+                        $email_status = 'subscribed';
+                        $sms_status = 'subscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status, 'sms_status' => $sms_status]);
+                    } elseif ($action == 'unsubscribe_email') {
+                        $email_status = 'unsubscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status]);
+                    } elseif ($action == 'resubscribe_email') {
+                        $email_status = 'subscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status]);
+                    } elseif ($action == 'unsubscribe_sms') {
+                        $sms_status = 'unsubscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['sms_status' => $sms_status]);
+                    } elseif ($action == 'resubscribe_sms') {
+                        $sms_status = 'subscribed';
+                        $this->Marketing_model->update_subscriber($item['id'], ['sms_status' => $sms_status]);
+                    }
+
+                    //$status = ($action == 'unsubscribe') ? 'unsubscribed' : 'subscribed';
+                    $this->Marketing_model->update_subscriber($item['id'], ['email_status' => $email_status, 'sms_status' => $sms_status]);
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Subscribers updated successfully.'), RestController::HTTP_OK);
             } else {
