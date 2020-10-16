@@ -267,7 +267,9 @@ class Marketing_model extends CI_Model {
     public function fetch_messages($status, $date, $limit = 0, $offset = 0) {
         $this->db->from('st_marketing_messages');
         $this->db->where('status', $status);
-        //$this->db->order_by('id', 'DESC');
+        if (!empty($date)) {
+            $this->db->where('publish_at <= ', $date);
+        }
         if (!empty($limit)) {
             $this->db->limit($limit, $offset);
         }
@@ -302,12 +304,12 @@ class Marketing_model extends CI_Model {
     }
 
     public function fetch_subscribers_by_segment($user_id, $segment, $type, $count = false) {
-        $list = [
-            'all-subscribers' => 'All Subscribers in Audience',
-            'new-subscribers' => 'New Subscribers',
-            'purchase' => 'Has made a purchase',
-            'no-purchase' => "Hasn't Purchased yet"
-        ];
+//        $list = [
+//            'all-subscribers' => 'All Subscribers in Audience',
+//            'new-subscribers' => 'New Subscribers',
+//            'purchase' => 'Has made a purchase',
+//            'no-purchase' => "Hasn't Purchased yet"
+//        ];
         $sql = '';
         if ($segment == 'all-subscribers') {
             if ($count) {
@@ -319,9 +321,9 @@ class Marketing_model extends CI_Model {
             $sql .= "WHERE ";
             $sql .= "user_id =  '" . $user_id . "' ";
             if ($type == 'email') {
-                $sql .= "AND email_status = 'subscribed'";
+                $sql .= "AND email_status = 'subscribed' ";
             } else {
-                $sql .= "AND sms_status = 'subscribed'";
+                $sql .= "AND sms_status = 'subscribed' ";
             }
             $sql .= "ORDER BY id";
         } elseif ($segment == 'new-subscribers') {
@@ -335,11 +337,11 @@ class Marketing_model extends CI_Model {
             $sql .= "WHERE ";
             $sql .= "user_id =  '" . $user_id . "' ";
             if ($type == 'email') {
-                $sql .= "AND email_status = 'subscribed'";
+                $sql .= "AND email_status = 'subscribed' ";
             } else {
-                $sql .= "AND sms_status = 'subscribed'";
+                $sql .= "AND sms_status = 'subscribed' ";
             }
-            $sql .= "AND created_at >= '" . $date . "'";
+            $sql .= "AND created_at >= '" . $date . "' ";
             $sql .= "ORDER BY id";
         } elseif ($segment == 'purchase') {
             
@@ -355,18 +357,28 @@ class Marketing_model extends CI_Model {
             $sql .= "WHERE ";
             $sql .= "user_id =  '" . $user_id . "' ";
             if ($type == 'email') {
-                $sql .= "AND email_status = 'subscribed'";
+                $sql .= "AND email_status = 'subscribed' ";
             } else {
-                $sql .= "AND sms_status = 'subscribed'";
+                $sql .= "AND sms_status = 'subscribed' ";
             }
-            $sql .= "AND tags LIKE '%" . $segment . "%'";
+            $sql .= "AND tags LIKE '%" . $segment . "%' ";
             $sql .= "ORDER BY id";
         }
-
         $query = $this->db->query($sql);
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+
+    public function insert_messages_log($data) {
+        $this->db->insert('st_marketing_messages_log', $data);
+        return $this->db->insert_id();
+    }
+
+    public function update_open_action($ref_id) {
+        $this->db->set('field', 'open + 1', FALSE);
+        $this->db->where('ref_id', $ref_id);
+        $this->db->update('st_marketing_messages_log');
     }
 
 }
