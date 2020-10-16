@@ -36,16 +36,16 @@ class C_notification extends CI_Controller {
         }
     }
 
-    public function action_open() {
-        if (!empty($this->input->get('ref_id'))) {
-            $ref_id = $this->input->get('ref_id');
-            $this->Marketing_model->update_open_action($ref_id);
-        }
-        $imagen_url = (ENV != 'live') ? 'https://dev-link-vue.link.stream/static/img/open.jpg' : 'https://linkstream/static/img/open.jpg';
-        header("Content-Type: image/jpeg"); // it will return image 
-        $logo = file_get_contents($imagen_url);
-        echo $logo;
-    }
+//    public function action_open() {
+//        if (!empty($this->input->get('ref_id'))) {
+//            $ref_id = $this->input->get('ref_id');
+//            $this->Marketing_model->update_open_action($ref_id);
+//        }
+//        $imagen_url = (ENV != 'live') ? 'https://dev-link-vue.link.stream/static/img/open.jpg' : 'https://linkstream/static/img/open.jpg';
+//        header("Content-Type: image/jpeg"); // it will return image 
+//        $logo = file_get_contents($imagen_url);
+//        echo $logo;
+//    }
 
     public function messages_cron() {
         @ini_set('zlib.output_compression', 0);
