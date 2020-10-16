@@ -490,7 +490,7 @@ class Marketing extends RestController {
         $action = (!empty($this->input->post('action'))) ? $this->input->post('action') : '';
         $list = (!empty($this->input->post('list'))) ? $this->input->post('list') : ''; //id list
         if (!empty($user_id) && !empty($action) && !empty($list)) {
-            if ($action == 'unsubscribe' || $action == 'resubscribe') {
+            if ($action == 'unsubscribe' || $action == 'resubscribe' || $action == 'unsubscribe_email' || $action == 'resubscribe_email' || $action == 'unsubscribe_sms' || $action == 'resubscribe_sms') {
                 $list = json_decode($list, true);
                 foreach ($list as $item) {
 
