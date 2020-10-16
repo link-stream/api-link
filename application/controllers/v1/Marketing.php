@@ -271,9 +271,9 @@ class Marketing extends RestController {
             //ACTIONS
             $list = [
                 'all-subscribers' => 'All Subscribers in Audience',
-                'new-subscribers' => 'New Subscribers',
-                'purchase' => 'Has made a purchase',
-                'no-purchase' => "Hasn't Purchased yet"
+                'new-subscribers' => 'New Subscribers'
+//                'purchase' => 'Has made a purchase',
+//                'no-purchase' => "Hasn't Purchased yet"
             ];
             //ADD Tags Subscriber to $list
             $tags_list = $this->Marketing_model->fetch_subscribers_tags_by_user_id($id);
@@ -291,6 +291,14 @@ class Marketing extends RestController {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function subscribers_count_by_segment_get($user_id, $segment, $type) {
+        if (!$this->general_library->header_token($user_id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
+        $subscribers_count = $this->Marketing_model->fetch_subscribers_by_segment($user_id, $segment, $type, TRUE);
+        $this->response(array('status' => 'success', 'env' => ENV, 'count' => $subscribers_count[0]['Count']), RestController::HTTP_OK);
     }
 
     public function messages_report_get($id = null, $message_id = null) {

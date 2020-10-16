@@ -263,4 +263,110 @@ class Marketing_model extends CI_Model {
         return $result;
     }
 
+    //Messages Cron
+    public function fetch_messages($status, $date, $limit = 0, $offset = 0) {
+        $this->db->from('st_marketing_messages');
+        $this->db->where('status', $status);
+        //$this->db->order_by('id', 'DESC');
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_sms_subscribers_by_user_id($user_id, $segment) {
+        $this->db->select('id, phone');
+        $this->db->from('st_marketing_subscribers');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('sms_status', 'subscribed');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_email_subscribers_by_user_id($user_id, $segment) {
+        $this->db->select('id, email, name');
+        $this->db->from('st_marketing_subscribers');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('email_status', 'subscribed');
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_subscribers_by_segment($user_id, $segment, $type, $count = false) {
+        $list = [
+            'all-subscribers' => 'All Subscribers in Audience',
+            'new-subscribers' => 'New Subscribers',
+            'purchase' => 'Has made a purchase',
+            'no-purchase' => "Hasn't Purchased yet"
+        ];
+        $sql = '';
+        if ($segment == 'all-subscribers') {
+            if ($count) {
+                $sql .= "SELECT count(*) as Count ";
+            } else {
+                $sql .= "SELECT id, email, name, phone ";
+            }
+            $sql .= "FROM st_marketing_subscribers ";
+            $sql .= "WHERE ";
+            $sql .= "user_id =  '" . $user_id . "' ";
+            if ($type == 'email') {
+                $sql .= "AND email_status = 'subscribed'";
+            } else {
+                $sql .= "AND sms_status = 'subscribed'";
+            }
+            $sql .= "ORDER BY id";
+        } elseif ($segment == 'new-subscribers') {
+            $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('-15 days'))));
+            if ($count) {
+                $sql .= "SELECT count(*) as Count ";
+            } else {
+                $sql .= "SELECT id, email, name, phone ";
+            }
+            $sql .= "FROM st_marketing_subscribers ";
+            $sql .= "WHERE ";
+            $sql .= "user_id =  '" . $user_id . "' ";
+            if ($type == 'email') {
+                $sql .= "AND email_status = 'subscribed'";
+            } else {
+                $sql .= "AND sms_status = 'subscribed'";
+            }
+            $sql .= "AND created_at >= '" . $date . "'";
+            $sql .= "ORDER BY id";
+        } elseif ($segment == 'purchase') {
+            
+        } elseif ($segment == 'no-purchase') {
+            
+        } elseif (!empty($segment)) {
+            if ($count) {
+                $sql .= "SELECT count(*) as Count ";
+            } else {
+                $sql .= "SELECT id, email, name, phone ";
+            }
+            $sql .= "FROM st_marketing_subscribers ";
+            $sql .= "WHERE ";
+            $sql .= "user_id =  '" . $user_id . "' ";
+            if ($type == 'email') {
+                $sql .= "AND email_status = 'subscribed'";
+            } else {
+                $sql .= "AND sms_status = 'subscribed'";
+            }
+            $sql .= "AND tags LIKE '%" . $segment . "%'";
+            $sql .= "ORDER BY id";
+        }
+
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

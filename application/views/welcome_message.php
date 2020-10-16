@@ -4337,6 +4337,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>Get Subscribers Count by Segment:</h3>
+                <code>GET <?= base_url() ?>v1/marketing/subscribers_count_by_segment_get/{user_id}/{segment}/{type}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>segment</li>
+                    <li>type (sms or email)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "count": "1"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>
