@@ -118,6 +118,16 @@ class Marketing_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_message_log_by_id($message_id) {
+        $this->db->from('st_marketing_messages_log');
+        $this->db->where('message_id', $message_id);
+        $this->db->order_by('id');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function fetch_media_files_by_user_id($user_id, $media_id) {
         $this->db->from('st_user_media_files');
         $this->db->where('user_id', $user_id);
@@ -395,7 +405,10 @@ class Marketing_model extends CI_Model {
 //        exit;
         //STEP 2
         if ($result['open'] != '1') {
-            $this->db->set('open', '1', FALSE);
+            $this->db->set('open', '1');
+            $this->db->set('open_at', date('Y-m-d H:i:s'));
+            //$this->db->set('open', '1', FALSE);
+            //$this->db->set('open_at', date('Y-m-d H:i:s'), FALSE);
             $this->db->where('ref_id', $ref_id);
             $this->db->update('st_marketing_messages_log');
             //STEP 3

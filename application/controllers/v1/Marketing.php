@@ -323,12 +323,18 @@ class Marketing extends RestController {
                     $open_rate = number_format($message_cleaned['open'] * 100 / $message_cleaned['sent_to'], 1);
                     $click_rate = number_format($message_cleaned['click'] * 100 / $message_cleaned['sent_to'], 1);
                 }
+//                $message_log = $this->Marketing_model->fetch_message_log_by_id($message_id);
+//                $hours = [];
+//                foreach($message_log as $item){
+//                   $hours[] =  ['Open' => '20', 'Click' => '1'];
+//                }
+                //NOTE: Hours & Activity - incluir en st_marketing_messages_log open_date - click_date
                 $data = [
                     'Message' => $message_cleaned,
                     'Overview' => [
                         'Total' => $message_cleaned['sent_to'],
-                        'Open_rate' => $open_rate.'%',
-                        'Click_rate' => $click_rate.'%',
+                        'Open_rate' => $open_rate . '%',
+                        'Click_rate' => $click_rate . '%',
                         'Orders' => '0',
                         'Revenue' => '$ 0',
                         'Unsubscribed' => '0',

@@ -708,7 +708,7 @@ class Users extends RestController {
     public function purchases_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $purchases = $this->User_model->fetch_user_purchases($user_id);
             $response = [];
@@ -716,26 +716,27 @@ class Users extends RestController {
             foreach ($purchases as $invoice) {
 //                $invoice['details'] = $this->User_model->fetch_user_purchases_details($invoice['id']);
 //                $response[] = $invoice;
-                $details = $this->User_model->fetch_user_purchases_details($invoice['id']);
+                $details = $this->User_model->fetch_user_purchases_details_2($invoice['id']);
                 $response_details = [];
                 foreach ($details as $detail) {
                     $item_id = $detail['item_id'];
                     $item_track_type = $detail['item_track_type'];
-                    if ($item_track_type == '1' || $item_track_type == '2' || $item_track_type == '3') {
+                    if ($item_track_type == 'beat' || $item_track_type == 'kit') {
                         $audio = $this->Audio_model->fetch_audio_by_id($item_id);
                     } else {
                         $audio = $this->Album_model->fetch_album_by_id($item_id);
                     }
                     $detail['data_image'] = '';
                     if (!empty($audio['coverart'])) {
-                        $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
-                        if (!empty($data_image)) {
-                            $img_file = $audio['coverart'];
-                            file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
-                            $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
-                            $detail['data_image'] = $src;
-                            unlink($this->temp_dir . '/' . $audio['coverart']);
-                        }
+                        $detail['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+//                        $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
+//                        if (!empty($data_image)) {
+//                            $img_file = $audio['coverart'];
+//                            file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
+//                            $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
+//                            $detail['data_image'] = $src;
+//                            unlink($this->temp_dir . '/' . $audio['coverart']);
+//                        }
                     }
                     $response_details[] = $detail;
                 }
@@ -1108,6 +1109,9 @@ class Users extends RestController {
         }
     }
 
+    //END STRIPE CONNECT//
+    //
+    //
     public function dashboard_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
@@ -1236,8 +1240,10 @@ class Users extends RestController {
         }
     }
 
-    //END STRIPE CONNECT//
-    //
+    public function orders_get($user_id = null) {
+        
+    }
+
     //
 //    public function connect_account_post() {
 //        $connect_account = [];

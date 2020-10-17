@@ -1711,6 +1711,11 @@ class App extends CI_Controller {
         $data = array();
         $this->load->view('app/email/confirm-email', $data);
     }
+    
+    public function email_confirmation() {
+        $data = array();
+        $this->load->view('app/email/email-confirm-pay', $data);
+    }
 
     public function send_sms() {
         $this->aws_pinpoint->send('13059705118', 'Welcome to LinkStream');
