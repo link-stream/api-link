@@ -419,6 +419,7 @@ class Marketing extends RestController {
                             $open_rate = number_format($open * 100 / $i, 1);
                             $click_rate = number_format($click * 100 / $i, 1);
                         }
+                        $subscriber['created_at'] = $this->general_library->gmt_to_est($subscriber['created_at']);
                         //EXAMPLE
                         $subscriber_extra_info = [
                             'open_rate' => $open_rate,
