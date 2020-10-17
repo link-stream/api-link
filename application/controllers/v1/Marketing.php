@@ -320,8 +320,8 @@ class Marketing extends RestController {
                 $open_rate = 0;
                 $click_rate = 0;
                 if ($message_cleaned['sent_to'] > 0) {
-                    $open_rate = number_format($open * 100 / $message_cleaned['sent_to'], 1);
-                    $click_rate = number_format($click * 100 / $message_cleaned['sent_to'], 1);
+                    $open_rate = number_format($message_cleaned['open'] * 100 / $message_cleaned['sent_to'], 1);
+                    $click_rate = number_format($message_cleaned['click'] * 100 / $message_cleaned['sent_to'], 1);
                 }
                 $data = [
                     'Message' => $message_cleaned,
@@ -329,9 +329,9 @@ class Marketing extends RestController {
                         'Total' => $message_cleaned['sent_to'],
                         'Open_rate' => $open_rate,
                         'Click_rate' => $click_rate,
-                        'Orders' => '2',
-                        'Revenue' => '$33',
-                        'Unsubscribed' => '1',
+                        'Orders' => '0',
+                        'Revenue' => '0',
+                        'Unsubscribed' => '0',
                         'Hours' => [
                             '0000' => ['Open' => '20', 'Click' => '1'],
                             '0100' => ['Open' => '20', 'Click' => '1'],
