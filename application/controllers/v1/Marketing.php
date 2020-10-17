@@ -327,10 +327,10 @@ class Marketing extends RestController {
                     'Message' => $message_cleaned,
                     'Overview' => [
                         'Total' => $message_cleaned['sent_to'],
-                        'Open_rate' => $open_rate,
-                        'Click_rate' => $click_rate,
+                        'Open_rate' => $open_rate.'%',
+                        'Click_rate' => $click_rate.'%',
                         'Orders' => '0',
-                        'Revenue' => '0',
+                        'Revenue' => '$ 0',
                         'Unsubscribed' => '0',
                         'Hours' => [
                             '0000' => ['Open' => '20', 'Click' => '1'],
