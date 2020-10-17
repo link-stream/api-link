@@ -401,16 +401,22 @@ class Marketing extends RestController {
                 } else {
                     foreach ($subscribers as $subscriber) {
                         //FIND SUBSCRIBER INFO
+                        $feed = [];
+                        $subscriber_log = $this->Marketing_model->fetch_subscriber_log_by_id($subscriber['id']);
+                        foreach ($subscriber_log as $item) {
+                            $feed[] = ['date' => $item['transDateTime'], 'log' => $item['log']];
+                        }
                         //EXAMPLE
                         $subscriber_extra_info = [
                             'open_rate' => '0',
                             'click_rate' => '0',
                             //'total_revenue'=>'0',
                             //'average'=>'0',
-                            'feed' => [
-                                ['date' => '09/10/2020 12:20:00', 'log' => 'Was Sent email Someone To Love You'],
-                                ['date' => '09/01/2020 09:00:00', 'log' => 'Was Sent email Welcome']
-                            ]
+//                            'feed' => [
+//                                ['date' => '09/10/2020 12:20:00', 'log' => 'Was Sent email Someone To Love You'],
+//                                ['date' => '09/01/2020 09:00:00', 'log' => 'Was Sent email Welcome']
+//                            ]
+                            'feed' => $feed
                         ];
                         $subscriber = $resultado = array_merge($subscriber, $subscriber_extra_info);
                         $subscribers_reply[] = $subscriber;

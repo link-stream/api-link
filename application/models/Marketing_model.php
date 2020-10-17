@@ -108,6 +108,16 @@ class Marketing_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_subscriber_log_by_id($id) {
+        $this->db->from('st_marketing_messages_log');
+        $this->db->where('subscriber_id', $id);
+        $this->db->order_by('id', 'DESC');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function fetch_media_files_by_user_id($user_id, $media_id) {
         $this->db->from('st_user_media_files');
         $this->db->where('user_id', $user_id);
