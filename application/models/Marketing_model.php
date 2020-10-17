@@ -387,16 +387,33 @@ class Marketing_model extends CI_Model {
 
     public function update_open_action($ref_id) {
         //STEP 1
-        $this->db->set('open', 'open + 1', FALSE);
+        $this->db->select('message_id, open');
         $this->db->where('ref_id', $ref_id);
-        $this->db->update('st_marketing_messages_log');
+        $query = $this->db->get('st_marketing_messages_log');
+        $result = $query->row_array();
+//        print_r($result);
+//        exit;
         //STEP 2
-        $this->db->where('ref_id', $ref_id);
-        $message_id = $this->db->get('st_marketing_messages_log')->row()->message_id;
-        //STEP 3
-        $this->db->set('open', 'open + 1', FALSE);
-        $this->db->where('id', $message_id);
-        $this->db->update('st_marketing_messages');
+        if ($result['open'] != '1') {
+            $this->db->set('open', '1', FALSE);
+            $this->db->where('ref_id', $ref_id);
+            $this->db->update('st_marketing_messages_log');
+            //STEP 3
+            $this->db->set('open', 'open + 1', FALSE);
+            $this->db->where('id', $result['message_id']);
+            $this->db->update('st_marketing_messages');
+        }
+//        //STEP 1
+//        $this->db->set('open', 'open + 1', FALSE);
+//        $this->db->where('ref_id', $ref_id);
+//        $this->db->update('st_marketing_messages_log');
+//        //STEP 2
+//        $this->db->where('ref_id', $ref_id);
+//        $message_id = $this->db->get('st_marketing_messages_log')->row()->message_id;
+//        //STEP 3
+//        $this->db->set('open', 'open + 1', FALSE);
+//        $this->db->where('id', $message_id);
+//        $this->db->update('st_marketing_messages');
     }
 
 }
