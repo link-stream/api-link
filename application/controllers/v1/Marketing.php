@@ -317,12 +317,18 @@ class Marketing extends RestController {
             } else {
                 $message_cleaned = $this->message_clean($message);
                 //ACTIONS
+                $open_rate = 0;
+                $click_rate = 0;
+                if ($message_cleaned['sent_to'] > 0) {
+                    $open_rate = number_format($open * 100 / $message_cleaned['sent_to'], 1);
+                    $click_rate = number_format($click * 100 / $message_cleaned['sent_to'], 1);
+                }
                 $data = [
                     'Message' => $message_cleaned,
                     'Overview' => [
-                        'Total' => '1000',
-                        'Open_rate' => '24%',
-                        'Click_rate' => '4.66%',
+                        'Total' => $message_cleaned['sent_to'],
+                        'Open_rate' => $open_rate,
+                        'Click_rate' => $click_rate,
                         'Orders' => '2',
                         'Revenue' => '$33',
                         'Unsubscribed' => '1',
