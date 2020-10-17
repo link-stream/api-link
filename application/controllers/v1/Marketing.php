@@ -412,7 +412,7 @@ class Marketing extends RestController {
                             $i++;
                             $open += $item['open'];
                             $click += $item['click'];
-                            $feed[] = ['date' => $item['transDateTime'], 'log' => $item['log']];
+                            $feed[] = ['date' => $this->general_library->gmt_to_est($item['transDateTime']), 'log' => $item['log']];
                         }
                         if ($i > 0) {
                             //$data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
@@ -423,12 +423,6 @@ class Marketing extends RestController {
                         $subscriber_extra_info = [
                             'open_rate' => $open_rate,
                             'click_rate' => $click_rate,
-                            //'total_revenue'=>'0',
-                            //'average'=>'0',
-//                            'feed' => [
-//                                ['date' => '09/10/2020 12:20:00', 'log' => 'Was Sent email Someone To Love You'],
-//                                ['date' => '09/01/2020 09:00:00', 'log' => 'Was Sent email Welcome']
-//                            ]
                             'feed' => $feed
                         ];
                         $subscriber = $resultado = array_merge($subscriber, $subscriber_extra_info);
