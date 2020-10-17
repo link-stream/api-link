@@ -21,7 +21,7 @@ class Users extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model', 'License_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
         //Helpers
@@ -1243,7 +1243,7 @@ class Users extends RestController {
     public function orders_get($user_id = null, $invoice_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $response = [];
             if (empty($invoice_id)) {
@@ -1266,7 +1266,7 @@ class Users extends RestController {
                     $response['invoice_number'] = $order['invoice_number'] .= '-' . $user_id;
                     $response['created_at'] = $this->general_library->gmt_to_est($order['created_at']);
                     $response['customer'] = $order['first_name'] . ' ' . $order['last_name'];
-                    $response['email'] = $order['email'] ;
+                    $response['email'] = $order['email'];
                     $item_id = $order['item_id'];
                     $item_track_type = $order['item_track_type'];
                     if ($item_track_type == 'beat' || $item_track_type == 'kit') {
@@ -1278,6 +1278,14 @@ class Users extends RestController {
                     if (!empty($audio['coverart'])) {
                         $order['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                     }
+                    $order['license'] = '';
+                    if (!empty($order['license_id'])) {
+                        $license = $this->License_model->fetch_license_by_id($order['license_id']);
+                        if (!empty($license)) {
+                            $order['license'] = $license['title'];
+                        }
+                    }
+
                     unset($order['billingCC6']);
                     unset($order['billingCC']);
                     unset($order['invoice_number']);
