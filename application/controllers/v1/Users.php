@@ -708,7 +708,7 @@ class Users extends RestController {
     public function purchases_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
-//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $purchases = $this->User_model->fetch_user_purchases($user_id);
             $response = [];
@@ -1240,8 +1240,62 @@ class Users extends RestController {
         }
     }
 
-    public function orders_get($user_id = null) {
-        
+    public function orders_get($user_id = null, $invoice_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $response = [];
+            if (empty($invoice_id)) {
+                $orders = $this->User_model->fetch_user_orders($user_id);
+                foreach ($orders as $order) {
+                    $order['invoice_number'] .= '-' . $user_id;
+                    $order['created_at'] = $this->general_library->gmt_to_est($order['created_at']);
+                    $response[] = $order;
+                }
+            } else {
+                $orders = $this->User_model->fetch_user_order_detail($user_id, $invoice_id);
+
+                $response['invoice_number'] = '';
+                $response['customer'] = '';
+                $response['email'] = '';
+                $response['total'] = 0;
+                $response['created_at'] = '';
+                $response['cc_type'] = '';
+                foreach ($orders as $order) {
+                    $response['invoice_number'] = $order['invoice_number'] .= '-' . $user_id;
+                    $response['created_at'] = $this->general_library->gmt_to_est($order['created_at']);
+                    $response['customer'] = $order['first_name'] . ' ' . $order['last_name'];
+                    $response['email'] = $order['email'] ;
+                    $item_id = $order['item_id'];
+                    $item_track_type = $order['item_track_type'];
+                    if ($item_track_type == 'beat' || $item_track_type == 'kit') {
+                        $audio = $this->Audio_model->fetch_audio_by_id($item_id);
+                    } else {
+                        $audio = $this->Album_model->fetch_album_by_id($item_id);
+                    }
+                    $order['data_image'] = '';
+                    if (!empty($audio['coverart'])) {
+                        $order['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                    }
+                    unset($order['billingCC6']);
+                    unset($order['billingCC']);
+                    unset($order['invoice_number']);
+                    unset($order['created_at']);
+                    unset($order['first_name']);
+                    unset($order['last_name']);
+                    unset($order['email']);
+                    $response['total'] += $order['item_amount'];
+                    $response['cc_type'] = (!empty($order['cc_type'])) ? $order['cc_type'] : 'Visa';
+                    $response['items'][] = $order;
+                }
+                $response['total'] = number_format($response['total'], 2);
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $response), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
     }
 
     //

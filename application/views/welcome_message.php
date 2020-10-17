@@ -4360,24 +4360,100 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-                <!-- EXAMPLE 
                 <hr>
-                <h3>Name:</h3>
-                <code>POST <?= base_url() ?>v1/users/example</code>
+                <h3>Get Customer Orders:</h3>
+                <code>GET <?= base_url() ?>v1/users/orders/{user_id}/{invoice_id}</code>
                 <h3>Parameters:</h3>
-                 <ul>
-                    <li></li>
-                    <li></li>
+                <ul>
+                    <li>user_id</li>
+                    <li>invoice_id {optional}</li>
                 </ul>
-                 <h3>Response Example:</h3>
+                <h3>Response Example:</h3>
                 <p>
-                <?php
-                echo '<pre>';
-                print_r('');
-                echo '</pre>';
-                ?>
-                </p>
-                -->
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "42",
+            "invoice_number": "LS0000042-35",
+            "created_at": "2020-10-16 15:25:13",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "30.00",
+            "items": "1"
+        },
+        {
+            "id": "41",
+            "invoice_number": "LS0000041-35",
+            "created_at": "2020-10-16 12:58:21",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "80.00",
+            "items": "2"
+        },
+        {
+            "id": "40",
+            "invoice_number": "LS0000040-35",
+            "created_at": "2020-10-16 09:18:52",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "60.00",
+            "items": "2"
+        },
+        {
+            "id": "39",
+            "invoice_number": "LS0000039-35",
+            "created_at": "2020-10-15 17:12:07",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "30.00",
+            "items": "1"
+        },
+        {
+            "id": "38",
+            "invoice_number": "LS0000038-35",
+            "created_at": "2020-10-15 17:09:32",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "30.00",
+            "items": "1"
+        },
+        {
+            "id": "37",
+            "invoice_number": "LS0000037-35",
+            "created_at": "2020-10-15 15:23:01",
+            "first_name": "Paolo",
+            "last_name": "LinkStream",
+            "total": "15.00",
+            "items": "1"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+
+
+                    <!-- EXAMPLE 
+                    <hr>
+                    <h3>Name:</h3>
+                    <code>POST <?= base_url() ?>v1/users/example</code>
+                    <h3>Parameters:</h3>
+                     <ul>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                     <h3>Response Example:</h3>
+                    <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('');
+                    echo '</pre>';
+                    ?>
+                    </p>
+                    -->
 
 <!--                <p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>-->
             </div>

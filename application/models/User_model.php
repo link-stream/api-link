@@ -186,7 +186,7 @@ class User_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function fetch_user_purchases_details_2($invoice_id) {
         $this->db->select('a.*, b.display_name');
         $this->db->from('st_user_invoice_detail a');
@@ -301,6 +301,29 @@ class User_model extends CI_Model {
         $this->db->where('processor', $processor);
         $query = $this->db->get();
         $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_user_orders($user_id) {
+        $sql = "SELECT b.id, b.invoice_number,b.created_at,c.first_name,c.last_name,sum(a.item_amount) as total, count(*) as items FROM st_user_invoice_detail a 
+inner join st_user_invoice b on a.invoice_id = b.id
+inner join st_user c on b.user_id = c.id
+where a.producer_id = '" . $user_id . "' group by b.invoice_number order by b.id desc ";
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_user_order_detail($user_id, $invoice_id) {
+        $sql = "SELECT a.id, b.invoice_number,b.created_at,c.first_name,c.last_name,a.item_title,a.item_amount,a.item_track_type,a.license_id,b.billingCC6,b.billingCC,c.email,a.item_id
+FROM linkstream_dev.st_user_invoice_detail a 
+inner join linkstream_dev.st_user_invoice b on a.invoice_id = b.id
+inner join linkstream_dev.st_user c on b.user_id = c.id
+where a.producer_id = '" . $user_id . "' and b.id = '" . $invoice_id . "' ";
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
         $query->free_result();
         return $result;
     }

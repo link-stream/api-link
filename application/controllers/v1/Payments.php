@@ -70,7 +70,7 @@ class Payments extends RestController {
                 }
                 $exp_month = (!empty($payment['exp_month'])) ? $payment['exp_month'] : null;
                 $exp_year = (!empty($payment['exp_year'])) ? $payment['exp_year'] : null;
-                $number = (!empty($payment['number'])) ? $payment['number'] : null;
+                $number = (!empty($payment['number'])) ? trim(str_replace(' ', '', $payment['number'])) : null;
                 $cvc = (!empty($payment['cvc'])) ? $payment['cvc'] : null;
                 $name = (!empty($payment['name'])) ? $payment['name'] : null;
                 $address_zip = (!empty($payment['address_zip'])) ? $payment['address_zip'] : null;
@@ -78,6 +78,7 @@ class Payments extends RestController {
                 $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
                 $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
                 $total = (!empty($payment['total'])) ? $payment['total'] : 0;
+                $utm_source = (!empty($payment['utm_source'])) ? $payment['utm_source'] : '';
                 if (empty($exp_month) || empty($exp_year) || empty($number) || empty($cvc) || empty($name) || empty($address_zip) || empty($subtotal) || empty($total)) {
                     $this->error = 'Provide Complete Payment Info';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -145,6 +146,7 @@ class Payments extends RestController {
                         $this->error = 'Payment Error: ' . $charge['error'];
                         $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                     } else {
+                        $cc_type = $this->general_library->card_type($number);
                         $charge_id = $charge['charge_id'];
                         $receipt_url = $charge['receipt_url'];
                         $invoice['invoice_number'] = $invoice_number;
@@ -155,6 +157,8 @@ class Payments extends RestController {
                         $invoice['billingCC6'] = substr($number, 6);
                         $invoice['billingCC'] = substr($number, -4);
                         $invoice['billingName'] = $name;
+                        $invoice['cc_type'] = $cc_type;
+                        $invoice['utm_source'] = $utm_source;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
                         //UPDATE DETAILS
@@ -170,9 +174,8 @@ class Payments extends RestController {
                             $this->User_model->insert_user_purchase_details($item);
                         }
                         //SEND CONFIRMATION EMAIL
-                        
                         //RESPONSE TRUE
-                        $cc_type = $this->general_library->card_type($number);
+                        //$cc_type = $this->general_library->card_type($number);
                         $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
                     }
                 }
