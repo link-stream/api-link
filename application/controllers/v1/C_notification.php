@@ -46,6 +46,8 @@ class C_notification extends CI_Controller {
 //        $logo = file_get_contents($imagen_url);
 //        echo $logo;
 //    }
+//    
+    //Messages
 
     public function messages_cron() {
         @ini_set('zlib.output_compression', 0);
@@ -166,7 +168,7 @@ class C_notification extends CI_Controller {
         $this->Marketing_model->update_message($id, ['status' => 'Sent', 'sent_at' => date("Y-m-d H:i:s"), 'sent_to' => $i]);
     }
 
-    //
+    //Messages End
 
     public function payouts_cron() {
         $lockFile = $this->temp_dir . DIRECTORY_SEPARATOR . 'payouts_cron.lock';

@@ -402,14 +402,27 @@ class Marketing extends RestController {
                     foreach ($subscribers as $subscriber) {
                         //FIND SUBSCRIBER INFO
                         $feed = [];
+                        $open = 0;
+                        $click = 0;
+                        $open_rate = 0;
+                        $click_rate = 0;
+                        $i = 0;
                         $subscriber_log = $this->Marketing_model->fetch_subscriber_log_by_id($subscriber['id']);
                         foreach ($subscriber_log as $item) {
+                            $i++;
+                            $open += $item['open'];
+                            $click += $item['click'];
                             $feed[] = ['date' => $item['transDateTime'], 'log' => $item['log']];
+                        }
+                        if ($i > 0) {
+                            //$data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);
+                            $open_rate = number_format($open * 100 / $i, 1);
+                            $click_rate = number_format($click * 100 / $i, 1);
                         }
                         //EXAMPLE
                         $subscriber_extra_info = [
-                            'open_rate' => '0',
-                            'click_rate' => '0',
+                            'open_rate' => $open_rate,
+                            'click_rate' => $click_rate,
                             //'total_revenue'=>'0',
                             //'average'=>'0',
 //                            'feed' => [
