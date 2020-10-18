@@ -15,6 +15,7 @@ class Payments extends RestController {
     private $s3_path;
     private $s3_folder;
     private $temp_dir;
+    private $server_url = '';
 
     public function __construct() {
         parent::__construct();
@@ -31,6 +32,7 @@ class Payments extends RestController {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_folder = 'Coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
     public function cc_payment_post() {
@@ -161,6 +163,7 @@ class Payments extends RestController {
                         $invoice['utm_source'] = $utm_source;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
+                        $producer_extra = [];
                         //UPDATE DETAILS
                         foreach ($cart as $item) {
                             $item['invoice_id'] = $invoice_id;
@@ -171,9 +174,31 @@ class Payments extends RestController {
                             //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
+                            $producer_extra[] = $this->producer_item_info($item_id, $item_track_type);
                             $this->User_model->insert_user_purchase_details($item);
                         }
                         //SEND CONFIRMATION EMAIL
+                        $linkstream = (ENV == 'live') ? 'https://www.linkstream.com/' : 'https://dev-link-vue.link.stream/';
+                        if ($cc_type == 'Amex') {
+                            $cc = $linkstream . '/public/static/img/amex.svg';
+                        } elseif ($cc_type == 'Diners Club') {
+                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                        } elseif ($cc_type == 'Discover') {
+                            $cc = $linkstream . '/public/static/img/discover.svg';
+                        } elseif ($cc_type == 'Jcb') {
+                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                        } elseif ($cc_type == 'Mastercard') {
+                            $cc = $linkstream . '/public/static/img/mastercard.svg';
+                        } elseif ($cc_type == 'Visa') {
+                            $cc = $linkstream . '/public/static/img/visa.svg';
+                        } elseif ($cc_type == 'Pay Pal') {
+                            $cc = $linkstream . '/public/static/img/paypal.svg';
+                        } else {
+                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                        }
+                        $data = ['invoice' => $invoice, 'cart' => $cart, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc, 'producer_item' => $producer_extra];
+                        $body = $this->load->view('app/email/email-confirm-pay', $data, true);
+                        $this->general_library->send_ses($receipt_email, $name, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
                         //RESPONSE TRUE
                         //$cc_type = $this->general_library->card_type($number);
                         $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
@@ -187,6 +212,14 @@ class Payments extends RestController {
             $this->error = 'Provide Data.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
+    }
+
+    private function producer_item_info($item_id, $item_track_type) {
+        $producer_item = $this->User_model->fetch_confirmation_detail_item($item_id, $item_track_type);
+        if (!empty($producer_item['coverart'])) {
+            $producer_item['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $producer_item['coverart'];
+        }
+        return $producer_item;
     }
 
     //NOTE: 

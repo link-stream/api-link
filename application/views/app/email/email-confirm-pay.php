@@ -152,7 +152,7 @@
                 letter-spacing: 0;
                 line-height: 14px;
             }
-            
+
             .customer-information {  
                 color: #000000;
                 font-family: Montserrat;
@@ -267,10 +267,10 @@
                     </div>
                     <div>
                         <div class="row" style="margin-top: 20px;">
-                            <span class="thank-you">Thank you, Paolo!</span>
+                            <span class="thank-you">Thank you, <?= (!empty($invoice['billingName'])) ? $invoice['billingName'] : 'Dear Customer' ?> !</span>
                         </div>
                         <div class="row mt-3" style="margin-top: 7px;">
-                            <span class="your-files-are-now-a">Your files are now available to download below</span>
+                            <span class="your-files-are-now-a">Your files are now available to download in your <a href="<?= (!empty($linkstream)) ? $linkstream : 'https://dev-link-vue.link.stream/' ?>" class="details-items-pay-link" target="_self">LinkStream Account.</a></span>
                         </div>  
                         <div class="row" style="margin-top: 10px;">
                             <div class="col" style="margin-top: 10px; margin-rigth: 10px; margin-left: 5px; width: 390px;">
@@ -280,10 +280,36 @@
                                             <span class="items-purchased"> Items purchased</span>
                                         </div>
                                         <div class="col" style="margin-top: 5px;">
-                                            <span class="order">LS0000041</span>
+                                            <span class="order"><?= (!empty($invoice['invoice_number'])) ? $invoice['invoice_number'] : 'LS0000000' ?></span>
                                         </div>
                                     </div>
                                     <div class="divider"></div>
+                                    <ul style="list-style-type:none; padding-left:0;">
+                                        <?php
+                                        if (!empty($cart)) {
+                                            foreach ($cart as $key->$item) {
+                                                ?>
+                                                <li class="row" style="margin-left: 5px; padding-top: 5px;">
+                                                    <div class="col">
+                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg">
+                                                    </div>
+                                                    <div class="center col" style="margin-left: 5px;">
+                                                        <div class="row">
+                                                            <span class="details-items-pay"><?= (!empty($item['item_title'])) ? $item['item_title'] : 'Title'; ?></span>
+                                                        </div>
+                                                        <div class="row">
+                                                            <span class="details-items-pay"> <?= (!empty($item['item_track_type'])) ? ucwords($item['item_track_type']) : 'Beat'; ?> sold by </span>
+                                                            <a href="<?= (!empty($producer_item[$key]['url'])) ? $linkstream . $producer_item[$key]['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($producer_item[$key]['display_name'])) ? ucwords($producer_item[$key]['display_name']) : 'Paolo LinkStream'; ?> </a>
+                                                            <span class="details-items-pay"> - $<?= (!empty($item['item_amount'])) ? $item['item_amount'] : '30.00'; ?></span>
+                                                        </div>                                                
+                                                    </div>                                            
+                                                </li>
+                                                <div class="divider"></div>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </ul>
                                     <ul style="list-style-type:none; padding-left:0;">
                                         <li class="row" style="margin-left: 5px; padding-top: 5px;">
                                             <div class="col">
@@ -331,7 +357,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price" style="text-align: right">80.00</span>
+                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? $invoice['sub_total'] : '80.00' ?></span>
                                             </div>
                                         </div>                                    
                                         <div class="row" style="margin-top: 3px;">
@@ -340,7 +366,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price">4.99</span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? $invoice['feeService'] : '4.99' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 3px;">
@@ -349,7 +375,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price">2.55</span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? $invoice['feeCC'] : '2.55' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 5px;">
@@ -358,7 +384,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-total-price">$ </span>
-                                                <span class="summary-total-price">87.54</span>
+                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? $invoice['total'] : '87.54' ?></span>
                                             </div>
                                         </div>
                                     </div>                                    
@@ -372,18 +398,18 @@
                                             <span class="card-summary-details"> Email</span>
                                         </div>
                                         <div class="row" style="margin-top: 1px;">
-                                            <span class="summary-details-price"> paul@link.stream</span>
+                                            <span class="summary-details-price"> <?= (!empty($email)) ? $email : 'paul@link.stream' ?></span>
                                         </div>
                                         <div class="row" style="margin-top: 7px;">
                                             <span class="card-summary-details"> Payment Method</span>
                                         </div>
                                         <div class="row" style="margin-top: 1px;">
-                                            <img src="/static/img/visa.svg" style="width:30px; height:30px;">
+                                            <img src="<?= (!empty($cc)) ? $cc : 'https://dev-link-vue.link.stream/static/img/visa.svg' ?>" style="width:30px; height:30px;">
                                             <span class="summary-details-price"> ending in</span>
-                                            <span class="summary-details-price"> 4242</span>
+                                            <span class="summary-details-price"> <?= (!empty($invoice['billingCC'])) ? $invoice['billingCC'] : '4242' ?></span>
                                         </div> 
                                     </div>                                                                       
-                                </div>                                
+                                </div>                               
                             </div>
                         </div> 
                     </div> 
