@@ -4454,25 +4454,41 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
 
-
-                    <!-- EXAMPLE 
-                    <hr>
-                    <h3>Name:</h3>
-                    <code>POST <?= base_url() ?>v1/users/example</code>
-                    <h3>Parameters:</h3>
-                     <ul>
-                        <li></li>
-                        <li></li>
-                    </ul>
-                     <h3>Response Example:</h3>
-                    <p>
+                <hr>
+                <h3>Action Click:</h3>
+                <code>POST <?= base_url() ?>v1/a/action_click/{ref_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>ref_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
                     <?php
                     echo '<pre>';
-                    print_r('');
+                    print_r('true');
                     echo '</pre>';
                     ?>
-                    </p>
-                    -->
+                </p>
+
+
+                <!-- EXAMPLE 
+                <hr>
+                <h3>Name:</h3>
+                <code>POST <?= base_url() ?>v1/users/example</code>
+                <h3>Parameters:</h3>
+                 <ul>
+                    <li></li>
+                    <li></li>
+                </ul>
+                 <h3>Response Example:</h3>
+                <p>
+                <?php
+                echo '<pre>';
+                print_r('');
+                echo '</pre>';
+                ?>
+                </p>
+                -->
 
 <!--                <p>If you are exploring CodeIgniter for the very first time, you should start by reading the <a href="user_guide/">User Guide</a>.</p>-->
             </div>
