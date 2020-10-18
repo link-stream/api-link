@@ -291,7 +291,7 @@
                                                 ?>
                                                 <li class="row" style="margin-left: 5px; padding-top: 5px;">
                                                     <div class="col">
-                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($item['data_image'])) ? $item['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
+                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($producer_item[$key]['data_image'])) ? $producer_item[$key]['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
                                                     </div>
                                                     <div class="center col" style="margin-left: 5px;">
                                                         <div class="row">
@@ -357,7 +357,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'],2) : '80.00' ?></span>
+                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'], 2) : '80.00' ?></span>
                                             </div>
                                         </div>                                    
                                         <div class="row" style="margin-top: 3px;">
@@ -366,7 +366,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'],2) : '4.99' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'], 2) : '4.99' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 3px;">
@@ -375,7 +375,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'],2) : '2.55' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'], 2) : '2.55' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 5px;">
@@ -384,7 +384,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-total-price">$ </span>
-                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'],2) : '87.54' ?></span>
+                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'], 2) : '87.54' ?></span>
                                             </div>
                                         </div>
                                     </div>                                    
