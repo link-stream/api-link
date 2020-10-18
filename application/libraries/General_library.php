@@ -155,7 +155,9 @@ class General_library {
         //
         $this->ci->email->from($femail, $fname);
         $this->ci->email->to($to_email, $to_name);
-        $this->ci->email->reply_to($reply_to, $reply_to_name);
+        if(!empty($reply_to)){
+          $this->ci->email->reply_to($reply_to, $reply_to_name);  
+        }     
         $this->ci->email->subject($subject);
         $this->ci->email->message($message);
         try {
