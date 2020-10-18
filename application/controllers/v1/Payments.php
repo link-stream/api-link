@@ -200,7 +200,7 @@ class Payments extends RestController {
                         }
                         $data = ['invoice' => $invoice, 'cart' => $cart, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc, 'producer_item' => $producer_extra];
                         $body = $this->load->view('app/email/email-confirm-pay', $data, true);
-                        $this->general_library->send_ses($receipt_email, $name, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
+                        $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
                         //RESPONSE TRUE
                         //$cc_type = $this->general_library->card_type($number);
                         $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
