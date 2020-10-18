@@ -347,7 +347,7 @@ class Marketing extends RestController {
                 $hours_data = $this->Marketing_model->fetch_message_hours_data($message_id, $date);
                 $hours_arr = [];
                 foreach ($hours_data as $hour) {
-                    $tmp = [$hour['HOURS'] => ['Open' => $hour['OPEN'], 'Click' => $hour['CLICK']]];
+                    $tmp = [$hour['HOURS'].'00' => ['Open' => $hour['OPEN'], 'Click' => $hour['CLICK']]];
                     $hours_arr[] = $tmp;
                 }
                 //print_r($hours_arr);
