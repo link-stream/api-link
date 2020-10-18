@@ -299,7 +299,7 @@
                                                         </div>
                                                         <div class="row">
                                                             <span class="details-items-pay"> <?= (!empty($item['item_track_type'])) ? ucwords($item['item_track_type']) : 'Beat'; ?> sold by </span>
-                                                            <a href="<?= (!empty($producer_item[$key]['url'])) ? $linkstream . $producer_item[$key]['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($producer_item[$key]['display_name'])) ? ucwords($producer_item[$key]['display_name']) : 'Paolo LinkStream'; ?> </a>
+                                                            <a href="<?= (!empty($producer_item[$key]['data_image'])) ? $linkstream . $producer_item[$key]['data_image'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($producer_item[$key]['display_name'])) ? ucwords($producer_item[$key]['display_name']) : 'Paolo LinkStream'; ?> </a>
                                                             <span class="details-items-pay"> - $<?= (!empty($item['item_amount'])) ? number_format($item['item_amount'], 2) : '30.00'; ?></span>
                                                         </div>                                                
                                                     </div>                                            
@@ -357,7 +357,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'],2) : '80.00' ?></span>
+                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'], 2) : '80.00' ?></span>
                                             </div>
                                         </div>                                    
                                         <div class="row" style="margin-top: 3px;">
@@ -366,7 +366,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'],2) : '4.99' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'], 2) : '4.99' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 3px;">
@@ -375,7 +375,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'],2) : '2.55' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'], 2) : '2.55' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 5px;">
@@ -384,7 +384,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-total-price">$ </span>
-                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'],2) : '87.54' ?></span>
+                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'], 2) : '87.54' ?></span>
                                             </div>
                                         </div>
                                     </div>                                    
