@@ -1066,7 +1066,7 @@
 
 
 
-                    <div>
+                    <div align="center">
 
 
 
