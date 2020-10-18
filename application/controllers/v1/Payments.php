@@ -200,7 +200,7 @@ class Payments extends RestController {
                             $cc = $linkstream . 'static/img/credit-card.svg';
                         }
                         $data = ['invoice' => $invoice, 'cart' => $cart_email, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc];
-                        $body = $this->load->view('app/email/email-confirm-pay3', $data, true);
+                        $body = $this->load->view('app/email/email-confirm-pay4', $data, true);
                         $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
                         //RESPONSE TRUE
                         //$cc_type = $this->general_library->card_type($number);
