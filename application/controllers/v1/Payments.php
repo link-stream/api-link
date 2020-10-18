@@ -177,7 +177,7 @@ class Payments extends RestController {
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
                             $this->User_model->insert_user_purchase_details($item);
-                            $item['extra_info'] = $this->producer_item_info($item['invoice_id'], $item['item_track_type']);
+                            $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
                         }
                         //SEND CONFIRMATION EMAIL
