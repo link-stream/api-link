@@ -14,6 +14,7 @@ class Payments extends RestController {
     private $bucket;
     private $s3_path;
     private $s3_folder;
+    private $s3_coverart;
     private $temp_dir;
     private $server_url = '';
 
@@ -29,6 +30,7 @@ class Payments extends RestController {
         //VARS
         $this->error = '';
         $this->bucket = 'files.link.stream';
+        $this->s3_coverart = 'Coverart';
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_folder = 'Coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
