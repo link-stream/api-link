@@ -351,7 +351,7 @@ class Marketing extends RestController {
                         'Open_rate' => $open_rate . '%',
                         'Click_rate' => $click_rate . '%',
                         'Orders' => (!empty($revenue_data['Count'])) ? $revenue_data['Count'] : '0',
-                        'Revenue' => (!empty($revenue_data['Total'])) ? $revenue_data['Total'] : '$ 0',
+                        'Revenue' => (!empty($revenue_data['Total'])) ? '$ '.$revenue_data['Total'] : '$ 0',
                         'Unsubscribed' => '0',
 //                        'Hours1' => [
 //                            '0000' => ['Open' => '20', 'Click' => '1'],
