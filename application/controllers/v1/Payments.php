@@ -165,7 +165,7 @@ class Payments extends RestController {
                         $invoice['utm_source'] = $utm_source;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
-                        $producer_extra = [];
+                        $cart_email = [];
                         //UPDATE DETAILS
                         foreach ($cart as $item) {
                             $item['invoice_id'] = $invoice_id;
@@ -176,8 +176,9 @@ class Payments extends RestController {
                             //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
-                            $producer_extra[] = $this->producer_item_info($item_id, $item_track_type);
                             $this->User_model->insert_user_purchase_details($item);
+                            $item['extra_info'] = $this->producer_item_info($item_id, $item_track_type);
+                            $cart_email[] = $item;
                         }
                         //SEND CONFIRMATION EMAIL
                         $linkstream = (ENV == 'live') ? 'https://www.linkstream.com/' : 'https://dev-link-vue.link.stream/';
@@ -198,7 +199,7 @@ class Payments extends RestController {
                         } else {
                             $cc = $linkstream . 'static/img/credit-card.svg';
                         }
-                        $data = ['invoice' => $invoice, 'cart' => $cart, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc, 'producer_item' => $producer_extra];
+                        $data = ['invoice' => $invoice, 'cart' => $cart_email, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc];
                         $body = $this->load->view('app/email/email-confirm-pay', $data, true);
                         $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
                         //RESPONSE TRUE
@@ -223,6 +224,8 @@ class Payments extends RestController {
         }
         return $producer_item;
     }
+    
+    
 
     //NOTE: 
 //    private function image_decode_put($image) {

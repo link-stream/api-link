@@ -291,7 +291,7 @@
                                                 ?>
                                                 <li class="row" style="margin-left: 5px; padding-top: 5px;">
                                                     <div class="col">
-                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($producer_item[$key]['data_image'])) ? $producer_item[$key]['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
+                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($item['extra_info']['data_image'])) ? $item['extra_info']['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
                                                     </div>
                                                     <div class="center col" style="margin-left: 5px;">
                                                         <div class="row">
@@ -299,7 +299,7 @@
                                                         </div>
                                                         <div class="row">
                                                             <span class="details-items-pay"> <?= (!empty($item['item_track_type'])) ? ucwords($item['item_track_type']) : 'Beat'; ?> sold by </span>
-                                                            <a href="<?= (!empty($producer_item[$key]['url'])) ? $linkstream . $producer_item[$key]['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($producer_item[$key]['display_name'])) ? ucwords($producer_item[$key]['display_name']) : 'Paolo LinkStream'; ?> </a>
+                                                            <a href="<?= (!empty($item['extra_info']['url'])) ? $linkstream . $item['extra_info']['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($item['extra_info']['display_name'])) ? ucwords($item['extra_info']['display_name']) : 'Paolo LinkStream'; ?> </a>
                                                             <span class="details-items-pay"> - $<?= (!empty($item['item_amount'])) ? number_format($item['item_amount'], 2) : '30.00'; ?></span>
                                                         </div>                                                
                                                     </div>                                            
