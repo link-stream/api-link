@@ -287,7 +287,7 @@
                                     <ul style="list-style-type:none; padding-left:0;">
                                         <?php
                                         if (!empty($cart)) {
-                                            foreach ($cart as $key->$item) {
+                                            foreach ($cart as $key => $item) {
                                                 ?>
                                                 <li class="row" style="margin-left: 5px; padding-top: 5px;">
                                                     <div class="col">
