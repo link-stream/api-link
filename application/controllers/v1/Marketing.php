@@ -351,6 +351,17 @@ class Marketing extends RestController {
                     }
                     $location_arr[] = [$country['Country'], $country['Count'], $country_percent];
                 }
+                //ACTIVITY
+                $open_data = $this->Marketing_model->fetch_open_activity($message_id);
+                $click_data = $this->Marketing_model->fetch_click_activity($message_id);
+                $res = array_merge($open_data, $click_data);
+                arsort($res, 0);
+                $activity_arr = [];
+                foreach ($res as $act) {
+                    $activity_arr[$this->general_library->gmt_to_est($act['action_date'])] = $act['action'];
+                }
+
+
                 $data = [
                     'Message' => $message_cleaned,
                     'Overview' => [
@@ -370,15 +381,16 @@ class Marketing extends RestController {
                         'Hours' => $hours_arr,
                         'Location' => $location_arr
                     ],
-                    'Activity' => [
-                        '05/23/2020 15:37' => 'Open',
-                        '05/23/2020 15:00' => 'Open',
-                        '05/23/2020 14:21' => 'Click: https://www.linkstream.com/',
-                        '05/23/2020 14:20' => 'Open',
-                        '05/23/2020 13:37' => 'Open',
-                        '05/23/2020 13:00' => 'Open',
-                        '05/23/2020 12:20' => 'Open',
-                    ]
+//                    'Activity1' => [
+//                        '05/23/2020 15:37' => 'Open',
+//                        '05/23/2020 15:00' => 'Open',
+//                        '05/23/2020 14:21' => 'Click: https://www.linkstream.com/',
+//                        '05/23/2020 14:20' => 'Open',
+//                        '05/23/2020 13:37' => 'Open',
+//                        '05/23/2020 13:00' => 'Open',
+//                        '05/23/2020 12:20' => 'Open',
+//                    ],
+                    'Activity' => $activity_arr
                 ];
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
                 //END ACTIONS 

@@ -501,4 +501,26 @@ WHERE message_id = '" . $message_id . "' and open = '1'";
         return $result;
     }
 
+    public function fetch_open_activity($message_id) {
+        $this->db->select('open_at as action_date,"Open" as action ');
+        $this->db->from('st_marketing_messages_log');
+        $this->db->where('message_id', $message_id);
+        $this->db->where('open', '1');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_click_activity($message_id) {
+        $this->db->select('click_at as action_date,"Click" as action ');
+        $this->db->from('st_marketing_messages_log');
+        $this->db->where('message_id', $message_id);
+        $this->db->where('click', '1');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
