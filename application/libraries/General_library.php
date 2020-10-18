@@ -155,9 +155,9 @@ class General_library {
         //
         $this->ci->email->from($femail, $fname);
         $this->ci->email->to($to_email, $to_name);
-        if(!empty($reply_to)){
-          $this->ci->email->reply_to($reply_to, $reply_to_name);  
-        }     
+        if (!empty($reply_to)) {
+            $this->ci->email->reply_to($reply_to, $reply_to_name);
+        }
         $this->ci->email->subject($subject);
         $this->ci->email->message($message);
         try {
@@ -177,7 +177,19 @@ class General_library {
         //LOCATION ip-api.com
         $location = file_get_contents('http://ip-api.com/json/' . $ip);
         $data_loc = json_decode($location, true);
-        return $data_loc;
+        $data = array(
+            'ip' => $ip,
+            'country' => ($data_loc['status'] == 'success') ? $data_loc['country'] : 'United States',
+            'countryCode' => ($data_loc['status'] == 'success') ? $data_loc['countryCode'] : 'US',
+            'region' => ($data_loc['status'] == 'success') ? $data_loc['region'] : 'FL',
+            'regionName' => ($data_loc['status'] == 'success') ? $data_loc['regionName'] : 'Florida',
+            'city' => ($data_loc['status'] == 'success') ? $data_loc['city'] : 'Miami',
+            'zip' => ($data_loc['status'] == 'success') ? $data_loc['zip'] : '33132',
+            'lat' => ($data_loc['status'] == 'success') ? $data_loc['lat'] : '25.7806',
+            'lon' => ($data_loc['status'] == 'success') ? $data_loc['lon'] : '-80.1826',
+            'timezone' => ($data_loc['status'] == 'success') ? $data_loc['timezone'] : 'America/New_York',
+        );
+        return $data;
     }
 
     public function header_token($user_id) {

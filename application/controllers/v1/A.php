@@ -33,7 +33,11 @@ class A extends CI_Controller {
     public function action_open() {
         if (!empty($this->input->get('ref_id'))) {
             $ref_id = $this->input->get('ref_id');
-            $this->Marketing_model->update_open_action($ref_id);
+            //LOCATION
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+            $data_location = $this->general_library->ip_location($ip);
+            $this->Marketing_model->update_open_action($ref_id, $ip, $data_location['country']);
         }
         $imagen_url = (ENV != 'live') ? 'https://dev-link-vue.link.stream/static/img/open.jpg' : 'https://linkstream/static/img/open.jpg';
         header("Content-Type: image/jpeg"); // it will return image 

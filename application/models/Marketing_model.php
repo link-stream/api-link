@@ -395,7 +395,7 @@ class Marketing_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function update_open_action($ref_id) {
+    public function update_open_action($ref_id, $ip, $country) {
         //STEP 1
         $this->db->select('message_id, open');
         $this->db->where('ref_id', $ref_id);
@@ -407,6 +407,8 @@ class Marketing_model extends CI_Model {
         if ($result['open'] != '1') {
             $this->db->set('open', '1');
             $this->db->set('open_at', date('Y-m-d H:i:s'));
+            $this->db->set('open_ip', $ip);
+            $this->db->set('open_country', $country);
             //$this->db->set('open', '1', FALSE);
             //$this->db->set('open_at', date('Y-m-d H:i:s'), FALSE);
             $this->db->where('ref_id', $ref_id);
@@ -454,16 +456,37 @@ where click = "1" and click_at >= "' . $date . '" GROUP BY CLICK_HOURS';
     public function fetch_message_hours_data($message_id, $date) {
         $sql = 'SELECT HOURS, SUM(OPEN) as OPEN,SUM(CLICK) as CLICK FROM (
 SELECT HOUR(CONVERT_TZ(open_at,"GMT","America/New_York")) as HOURS, Count(*) as OPEN, 0 as CLICK
-FROM linkstream_dev.st_marketing_messages_log
+FROM st_marketing_messages_log
 where open = "1" and open_at >= "' . $date . '" GROUP BY HOURS
 UNION
 SELECT HOUR(CONVERT_TZ(click_at,"GMT","America/New_York")) as HOURS, 0 as OPEN,Count(*) as CLICK
-FROM linkstream_dev.st_marketing_messages_log
+FROM st_marketing_messages_log
 where click = "1" and click_at >= "' . $date . '" GROUP BY HOURS
 ) A  GROUP BY HOURS';
         //print_r($sql);
         $query = $this->db->query($sql);
         $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_country_open_data($message_id) {
+        $sql = 'SELECT open_country as Country, count(*) as Count  FROM st_marketing_messages_log
+WHERE message_id = "' . $message_id . '" and open_country is not null
+group by open_country order by Count Desc';
+        //print_r($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_email_revenue($message_id) {
+        $sql = "SELECT count(*) as Count, sum(total) as Total FROM st_marketing_messages_log a inner join st_user_invoice b
+on a.ref_id = b.ref_id
+WHERE message_id = '" . $message_id . "' and open = '1'";
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
         $query->free_result();
         return $result;
     }

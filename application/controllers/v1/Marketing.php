@@ -102,6 +102,11 @@ class Marketing extends RestController {
             $messages_reponse = [];
             foreach ($messages as $message) {
                 $message_cleaned = $this->message_clean($message);
+                if ($message_cleaned['status'] == 'Sent') {
+                    $message_cleaned['created_at'] = $this->general_library->gmt_to_est($message_cleaned['sent_at']);
+                } else {
+                    $message_cleaned['created_at'] = $this->general_library->gmt_to_est($message_cleaned['created_at']);
+                }
                 $messages_reponse[] = $message_cleaned;
             }
             $this->response(array('status' => 'success', 'env' => ENV, 'data' => $messages_reponse), RestController::HTTP_OK);
@@ -316,6 +321,7 @@ class Marketing extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
             } else {
                 $message_cleaned = $this->message_clean($message);
+                $message_cleaned['created_at'] = $this->general_library->gmt_to_est($message_cleaned['sent_at']);
                 //ACTIONS
                 $open_rate = 0;
                 $click_rate = 0;
@@ -323,51 +329,39 @@ class Marketing extends RestController {
                     $open_rate = number_format($message_cleaned['open'] * 100 / $message_cleaned['sent_to'], 1);
                     $click_rate = number_format($message_cleaned['click'] * 100 / $message_cleaned['sent_to'], 1);
                 }
-//                $message_log = $this->Marketing_model->fetch_message_log_by_id($message_id);
-//                $hours = [];
-//                foreach($message_log as $item){
-//                   $hours[] =  ['Open' => '20', 'Click' => '1'];
-//                }
+                $revenue_data = $this->Marketing_model->fetch_email_revenue($message_id);
                 $date = date('Y-m-d 00:00:00', strtotime(date('Y-m-d 00:00:00', strtotime('- 24 hours'))));
-//                $open_data = $this->Marketing_model->fetch_message_open_data($message_id, $date);
-//                $open_arr = [];
-//                foreach ($open_data as $open_item) {
-//                    $open_arr[$open_item['OPEN_HOURS']] = ['Open' => $open_item['OPEN']];
-//                }
-//                print_r($open_arr);
-//                $click_data = $this->Marketing_model->fetch_message_click_data($message_id, $date);
-//                $click_arr = [];
-//                foreach ($click_data as $click_item) {
-//                    $click_arr[$click_item['CLICK_HOURS']] = ['Click' => $click_item['CLICK']];
-//                }
-//                print_r($click_arr);
-//                $hours = $open_arr + $click_arr;
-//                print_r($hours);
-//                
                 $hours_data = $this->Marketing_model->fetch_message_hours_data($message_id, $date);
                 $hours_arr = [];
                 foreach ($hours_data as $hour) {
                     $hours_arr[$hour['HOURS'] . '00'] = ['Open' => $hour['OPEN'], 'Click' => $hour['CLICK']];
                 }
-                //print_r($hours_arr);
-                //NOTE: Hours & Activity - incluir en st_marketing_messages_log open_date - click_date
+                $location_arr = [];
+                $country_data = $this->Marketing_model->fetch_country_open_data($message_id);
+                foreach ($country_data as $country) {
+                    if ($message_cleaned['sent_to'] > 0) {
+                        $country_percent = number_format($country['Count'] * 100 / $message_cleaned['sent_to'], 1);
+                    }
+                    $location_arr[] = [$country['Country'], $country['Count'], $country_percent];
+                }
                 $data = [
                     'Message' => $message_cleaned,
                     'Overview' => [
                         'Total' => $message_cleaned['sent_to'],
                         'Open_rate' => $open_rate . '%',
                         'Click_rate' => $click_rate . '%',
-                        'Orders' => '0',
-                        'Revenue' => '$ 0',
+                        'Orders' => (!empty($revenue_data['Count'])) ? $revenue_data['Count'] : '0',
+                        'Revenue' => (!empty($revenue_data['Total'])) ? $revenue_data['Total'] : '$ 0',
                         'Unsubscribed' => '0',
-                        'Hours1' => [
-                            '0000' => ['Open' => '20', 'Click' => '1'],
-                            '0100' => ['Open' => '20', 'Click' => '1'],
-                            '0200' => ['Open' => '20', 'Click' => '1'],
-                            '0300' => ['Open' => '20', 'Click' => '1'],
-                            '1500' => ['Open' => '20', 'Click' => '1']
-                        ],
+//                        'Hours1' => [
+//                            '0000' => ['Open' => '20', 'Click' => '1'],
+//                            '0100' => ['Open' => '20', 'Click' => '1'],
+//                            '0200' => ['Open' => '20', 'Click' => '1'],
+//                            '0300' => ['Open' => '20', 'Click' => '1'],
+//                            '1500' => ['Open' => '20', 'Click' => '1']
+//                        ],
                         'Hours' => $hours_arr,
+                        'Location' => $location_arr
                     ],
                     'Activity' => [
                         '05/23/2020 15:37' => 'Open',

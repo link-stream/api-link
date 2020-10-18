@@ -41,6 +41,8 @@ class Payments extends RestController {
 
 //        $array = [
 //            'user_id' => '35',
+//            'utm_source' => '35',
+//            'ref_id' => '35',
 //            'payment' => [
 //                'exp_month' => '10',
 //                'exp_year' => '2021',
@@ -64,6 +66,8 @@ class Payments extends RestController {
             $data_info = json_decode($data, TRUE);
             if (is_array($data_info)) {
                 $user_id = (!empty($data_info['user_id'])) ? $data_info['user_id'] : null;
+                $utm_source = (!empty($data_info['utm_source'])) ? $data_info['utm_source'] : '';
+                $ref_id = (!empty($data_info['ref_id'])) ? $data_info['ref_id'] : '';
                 if (!$this->general_library->header_token($user_id)) {
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
                 }
@@ -82,7 +86,6 @@ class Payments extends RestController {
                 $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
                 $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
                 $total = (!empty($payment['total'])) ? $payment['total'] : 0;
-                $utm_source = (!empty($payment['utm_source'])) ? $payment['utm_source'] : '';
                 if (empty($exp_month) || empty($exp_year) || empty($number) || empty($cvc) || empty($name) || empty($address_zip) || empty($subtotal) || empty($total)) {
                     $this->error = 'Provide Complete Payment Info';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -163,6 +166,7 @@ class Payments extends RestController {
                         $invoice['billingName'] = $name;
                         $invoice['cc_type'] = $cc_type;
                         $invoice['utm_source'] = $utm_source;
+                        $invoice['ref_id'] = $utm_source;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
                         $cart_email = [];

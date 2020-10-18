@@ -3012,58 +3012,77 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "env": "dev",
     "data": {
         "Message": {
-            "id": "26",
+            "id": "77",
             "user_id": "35",
             "type": "Email",
-            "status": "Draft",
-            "created_at": "2020-09-22 04:48:27",
-            "campaing_name": "AAA",
-            "send_to": "",
-            "reply_to_name": "",
+            "status": "Sent",
+            "created_at": "2020-10-16 19:27:41",
+            "campaing_name": "Message Scheduled",
+            "send_to": "paolo_email",
+            "reply_to_name": "Paul Ferra",
             "reply_to": "paul@link.stream",
-            "subject": "A",
+            "subject": "Message Scheduled",
+            "headline": "My Moon Kit ",
+            "body": "Testin Scheduled Messages",
             "content": "",
-            "open": "0",
+            "promote_id": "https://dev-link-vue.link.stream/paolo_linkstream/kits/381",
+            "template_type": "release",
+            "logo": "35_05fc3000fdced8fa351a487a1cc26ddc.png",
+            "artwork": "35_33a56191afca1a684fac8ed7e445f8bd.png",
+            "button_color": "#DC2EA6",
+            "background_color": "",
+            "background_image": "",
+            "st_marketing_messagescol": null,
+            "sent_at": "2020-10-17 00:27:41",
+            "sent_to": "2",
+            "open": "2",
             "click": "0",
             "revenue": "0.00",
-            "logo": null,
-            "artwork": null,
-            "button_color": null,
-            "background_color": null,
-            "background_image": null,
-            "scheduled": false,
-            "date": "",
-            "time": ""
+            "scheduled": true,
+            "date": "2020-10-16",
+            "time": "00:00:00"
         },
         "Overview": {
-            "Total": "1000",
-            "Open_rate": "24%",
-            "Click_rate": "4.66%",
-            "Orders": "2",
-            "Revenue": "$33",
-            "Unsubscribed": "1",
+            "Total": "2",
+            "Open_rate": "100.0%",
+            "Click_rate": "0.0%",
+            "Orders": "0",
+            "Revenue": "$ 0",
+            "Unsubscribed": "0",
             "Hours": {
-                "0000": {
-                    "Open": "20",
+                "000": {
+                    "Open": "1",
+                    "Click": "0"
+                },
+                "100": {
+                    "Open": "1",
                     "Click": "1"
                 },
-                "0100": {
-                    "Open": "20",
+                "200": {
+                    "Open": "0",
                     "Click": "1"
                 },
-                "0200": {
-                    "Open": "20",
+                "300": {
+                    "Open": "0",
                     "Click": "1"
                 },
-                "0300": {
-                    "Open": "20",
-                    "Click": "1"
-                },
-                "1500": {
-                    "Open": "20",
-                    "Click": "1"
+                "1400": {
+                    "Open": "2",
+                    "Click": "0"
                 }
-            }
+            },
+            "Location": [
+                [
+                    "Japan",
+                    "1",
+                    "50.0"
+                ],
+                [
+                    "United States",
+                    "1",
+                    "50.0"
+                ]
+            ]
         },
         "Activity": {
             "05/23/2020 15:37": "Open",
