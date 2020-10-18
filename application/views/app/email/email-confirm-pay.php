@@ -300,7 +300,7 @@
                                                         <div class="row">
                                                             <span class="details-items-pay"> <?= (!empty($item['item_track_type'])) ? ucwords($item['item_track_type']) : 'Beat'; ?> sold by </span>
                                                             <a href="<?= (!empty($producer_item[$key]['url'])) ? $linkstream . $producer_item[$key]['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($producer_item[$key]['display_name'])) ? ucwords($producer_item[$key]['display_name']) : 'Paolo LinkStream'; ?> </a>
-                                                            <span class="details-items-pay"> - $<?= (!empty($item['item_amount'])) ? $item['item_amount'] : '30.00'; ?></span>
+                                                            <span class="details-items-pay"> - $<?= (!empty($item['item_amount'])) ? number_format($item['item_amount'], 2) : '30.00'; ?></span>
                                                         </div>                                                
                                                     </div>                                            
                                                 </li>
@@ -310,39 +310,39 @@
                                         }
                                         ?>
                                     </ul>
-                                    <ul style="list-style-type:none; padding-left:0;">
-                                        <li class="row" style="margin-left: 5px; padding-top: 5px;">
-                                            <div class="col">
-                                                <img style="width:50px; height:50px; padding-bottom: 5px;" src="https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg">
-                                            </div>
-                                            <div class="center col" style="margin-left: 5px;">
-                                                <div class="row">
-                                                    <span class="details-items-pay">My Beat 2Mb</span>
-                                                </div>
-                                                <div class="row">
-                                                    <span class="details-items-pay"> beat sold by </span>
-                                                    <a href="/paolo_linkstream" class="details-items-pay-link" target="_self">Paolo LinkStream</a>
-                                                    <span class="details-items-pay"> - $30.00</span>
-                                                </div>                                                
-                                            </div>                                            
-                                        </li>
-                                        <div class="divider"></div>
-                                        <li class="row" style="margin-left: 5px; padding-top: 5px;">
-                                            <div class="col">
-                                                <img style="width:50px; height:50px; padding-bottom: 5px;" src="https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg">
-                                            </div>
-                                            <div class="center col" style="margin-left: 5px;">
-                                                <div class="row">
-                                                    <span class="details-items-pay">My Beat 2Mb</span>
-                                                </div>
-                                                <div class="row">
-                                                    <span class="details-items-pay"> beat sold by </span>
-                                                    <a href="/paolo_linkstream" class="details-items-pay-link" target="_self">Paolo LinkStream</a>
-                                                    <span class="details-items-pay"> - $30.00</span>
-                                                </div>                                                
-                                            </div>                                            
-                                        </li>
-                                    </ul>
+                                    <!--                                    <ul style="list-style-type:none; padding-left:0;">
+                                                                            <li class="row" style="margin-left: 5px; padding-top: 5px;">
+                                                                                <div class="col">
+                                                                                    <img style="width:50px; height:50px; padding-bottom: 5px;" src="https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg">
+                                                                                </div>
+                                                                                <div class="center col" style="margin-left: 5px;">
+                                                                                    <div class="row">
+                                                                                        <span class="details-items-pay">My Beat 2Mb</span>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <span class="details-items-pay"> beat sold by </span>
+                                                                                        <a href="/paolo_linkstream" class="details-items-pay-link" target="_self">Paolo LinkStream</a>
+                                                                                        <span class="details-items-pay"> - $30.00</span>
+                                                                                    </div>                                                
+                                                                                </div>                                            
+                                                                            </li>
+                                                                            <div class="divider"></div>
+                                                                            <li class="row" style="margin-left: 5px; padding-top: 5px;">
+                                                                                <div class="col">
+                                                                                    <img style="width:50px; height:50px; padding-bottom: 5px;" src="https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg">
+                                                                                </div>
+                                                                                <div class="center col" style="margin-left: 5px;">
+                                                                                    <div class="row">
+                                                                                        <span class="details-items-pay">My Beat 2Mb</span>
+                                                                                    </div>
+                                                                                    <div class="row">
+                                                                                        <span class="details-items-pay"> beat sold by </span>
+                                                                                        <a href="/paolo_linkstream" class="details-items-pay-link" target="_self">Paolo LinkStream</a>
+                                                                                        <span class="details-items-pay"> - $30.00</span>
+                                                                                    </div>                                                
+                                                                                </div>                                            
+                                                                            </li>
+                                                                        </ul>-->
                                 </div>
                             </div>
                             <div class="col" style="margin-top: 10px; margin-left: 10px; margin-bottom: 5px; width: 210px;">
@@ -357,7 +357,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? $invoice['sub_total'] : '80.00' ?></span>
+                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'],2) : '80.00' ?></span>
                                             </div>
                                         </div>                                    
                                         <div class="row" style="margin-top: 3px;">
@@ -366,7 +366,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? $invoice['feeService'] : '4.99' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'],2) : '4.99' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 3px;">
@@ -375,7 +375,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-details-price">$</span>
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? $invoice['feeCC'] : '2.55' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'],2) : '2.55' ?></span>
                                             </div>
                                         </div>
                                         <div class="row" style="margin-top: 5px;">
@@ -384,7 +384,7 @@
                                             </div>
                                             <div class="col">
                                                 <span class="summary-total-price">$ </span>
-                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? $invoice['total'] : '87.54' ?></span>
+                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'],2) : '87.54' ?></span>
                                             </div>
                                         </div>
                                     </div>                                    
