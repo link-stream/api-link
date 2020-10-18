@@ -304,7 +304,7 @@ class Marketing extends RestController {
     public function messages_report_get($id = null, $message_id = null) {
         if (!empty($id)) {
             if (!$this->general_library->header_token($id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             if (empty($message_id)) {
                 $this->error = 'Provide Message ID.';
@@ -347,7 +347,8 @@ class Marketing extends RestController {
                 $hours_data = $this->Marketing_model->fetch_message_hours_data($message_id, $date);
                 $hours_arr = [];
                 foreach ($hours_data as $hour) {
-                    $hours_arr[$hour['HOURS']] = ['Open' => $hour['OPEN'],'Click' => $hour['CLICK']];
+                    $tmp = [$hour['HOURS'] => ['Open' => $hour['OPEN'], 'Click' => $hour['CLICK']]];
+                    $hours_arr[] = $tmp;
                 }
                 //print_r($hours_arr);
                 //NOTE: Hours & Activity - incluir en st_marketing_messages_log open_date - click_date
@@ -360,13 +361,13 @@ class Marketing extends RestController {
                         'Orders' => '0',
                         'Revenue' => '$ 0',
                         'Unsubscribed' => '0',
-//                        'Hours' => [
-//                            '0000' => ['Open' => '20', 'Click' => '1'],
-//                            '0100' => ['Open' => '20', 'Click' => '1'],
-//                            '0200' => ['Open' => '20', 'Click' => '1'],
-//                            '0300' => ['Open' => '20', 'Click' => '1'],
-//                            '1500' => ['Open' => '20', 'Click' => '1']
-//                        ],
+                        'Hours1' => [
+                            '0000' => ['Open' => '20', 'Click' => '1'],
+                            '0100' => ['Open' => '20', 'Click' => '1'],
+                            '0200' => ['Open' => '20', 'Click' => '1'],
+                            '0300' => ['Open' => '20', 'Click' => '1'],
+                            '1500' => ['Open' => '20', 'Click' => '1']
+                        ],
                         'Hours' => $hours_arr,
                     ],
                     'Activity' => [
