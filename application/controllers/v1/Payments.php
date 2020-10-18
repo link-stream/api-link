@@ -182,21 +182,21 @@ class Payments extends RestController {
                         //SEND CONFIRMATION EMAIL
                         $linkstream = (ENV == 'live') ? 'https://www.linkstream.com/' : 'https://dev-link-vue.link.stream/';
                         if ($cc_type == 'Amex') {
-                            $cc = $linkstream . '/public/static/img/amex.svg';
+                            $cc = $linkstream . 'static/img/amex.svg';
                         } elseif ($cc_type == 'Diners Club') {
-                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                            $cc = $linkstream . 'static/img/credit-card.svg';
                         } elseif ($cc_type == 'Discover') {
-                            $cc = $linkstream . '/public/static/img/discover.svg';
+                            $cc = $linkstream . 'static/img/discover.svg';
                         } elseif ($cc_type == 'Jcb') {
-                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                            $cc = $linkstream . 'static/img/credit-card.svg';
                         } elseif ($cc_type == 'Mastercard') {
-                            $cc = $linkstream . '/public/static/img/mastercard.svg';
+                            $cc = $linkstream . 'static/img/mastercard.svg';
                         } elseif ($cc_type == 'Visa') {
-                            $cc = $linkstream . '/public/static/img/visa.svg';
+                            $cc = $linkstream . 'static/img/visa.svg';
                         } elseif ($cc_type == 'Pay Pal') {
-                            $cc = $linkstream . '/public/static/img/paypal.svg';
+                            $cc = $linkstream . 'static/img/paypal.svg';
                         } else {
-                            $cc = $linkstream . '/public/static/img/credit-card.svg';
+                            $cc = $linkstream . 'static/img/credit-card.svg';
                         }
                         $data = ['invoice' => $invoice, 'cart' => $cart, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc, 'producer_item' => $producer_extra];
                         $body = $this->load->view('app/email/email-confirm-pay', $data, true);
