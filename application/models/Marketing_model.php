@@ -429,4 +429,43 @@ class Marketing_model extends CI_Model {
 //        $this->db->update('st_marketing_messages');
     }
 
+    public function fetch_message_open_data($message_id, $date) {
+        $sql = 'SELECT HOUR(CONVERT_TZ(open_at,"GMT","America/New_York")) as OPEN_HOURS, Count(*) as OPEN
+FROM st_marketing_messages_log
+where open = "1" and open_at >= "' . $date . '" GROUP BY OPEN_HOURS';
+        //print_r($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_message_click_data($message_id, $date) {
+        $sql = 'SELECT HOUR(CONVERT_TZ(click_at,"GMT","America/New_York")) as CLICK_HOURS, Count(*) as CLICK
+FROM st_marketing_messages_log
+where click = "1" and click_at >= "' . $date . '" GROUP BY CLICK_HOURS';
+        //print_r($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_message_hours_data($message_id, $date) {
+        $sql = 'SELECT HOURS, SUM(OPEN) as OPEN,SUM(CLICK) as CLICK FROM (
+SELECT HOUR(CONVERT_TZ(open_at,"GMT","America/New_York")) as HOURS, Count(*) as OPEN, 0 as CLICK
+FROM linkstream_dev.st_marketing_messages_log
+where open = "1" and open_at >= "' . $date . '" GROUP BY HOURS
+UNION
+SELECT HOUR(CONVERT_TZ(click_at,"GMT","America/New_York")) as HOURS, 0 as OPEN,Count(*) as CLICK
+FROM linkstream_dev.st_marketing_messages_log
+where click = "1" and click_at >= "' . $date . '" GROUP BY HOURS
+) A  GROUP BY HOURS';
+        //print_r($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

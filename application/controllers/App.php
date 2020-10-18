@@ -1714,7 +1714,7 @@ class App extends CI_Controller {
     
     public function email_confirmation() {
         $data = array();
-        $this->load->view('app/email/email-confirm-pay', $data);
+        $this->load->view('app/email/email-confirm-pay4', $data);
     }
 
     public function send_sms() {
