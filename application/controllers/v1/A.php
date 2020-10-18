@@ -45,4 +45,16 @@ class A extends CI_Controller {
         echo $logo;
     }
 
+    public function action_click($ref_id) {
+        if (!empty($ref_id)) {
+//            $ref_id = $this->input->get('ref_id');
+            //LOCATION
+//            $ip = $_SERVER['REMOTE_ADDR'];
+//            $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+//            $data_location = $this->general_library->ip_location($ip);
+            $this->Marketing_model->update_click_action($ref_id);
+        }
+        return true;
+    }
+
 }

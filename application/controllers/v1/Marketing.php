@@ -104,6 +104,13 @@ class Marketing extends RestController {
                 $message_cleaned = $this->message_clean($message);
                 if ($message_cleaned['status'] == 'Sent') {
                     $message_cleaned['created_at'] = $this->general_library->gmt_to_est($message_cleaned['sent_at']);
+                    if ($message_cleaned['sent_to'] > 0) {
+                        $message_cleaned['open'] = number_format($message_cleaned['open'] * 100 / $message_cleaned['sent_to'], 1);
+                        $message_cleaned['click'] = number_format($message_cleaned['click'] * 100 / $message_cleaned['sent_to'], 1);
+                    } else {
+                        $message_cleaned['open'] = 0;
+                        $message_cleaned['click'] = 0;
+                    }
                 } else {
                     $message_cleaned['created_at'] = $this->general_library->gmt_to_est($message_cleaned['created_at']);
                 }
@@ -351,7 +358,7 @@ class Marketing extends RestController {
                         'Open_rate' => $open_rate . '%',
                         'Click_rate' => $click_rate . '%',
                         'Orders' => (!empty($revenue_data['Count'])) ? $revenue_data['Count'] : '0',
-                        'Revenue' => (!empty($revenue_data['Total'])) ? '$ '.$revenue_data['Total'] : '$ 0',
+                        'Revenue' => (!empty($revenue_data['Total'])) ? '$ ' . $revenue_data['Total'] : '$ 0',
                         'Unsubscribed' => '0',
 //                        'Hours1' => [
 //                            '0000' => ['Open' => '20', 'Click' => '1'],
