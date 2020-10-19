@@ -22,6 +22,7 @@ class Payments extends RestController {
         parent::__construct();
         //Models
         $this->load->model('User_model');
+        $this->load->model('Marketing_model');
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint'));
         $this->load->library('Stripe_library');
@@ -166,7 +167,7 @@ class Payments extends RestController {
                         $invoice['billingName'] = $name;
                         $invoice['cc_type'] = $cc_type;
                         $invoice['utm_source'] = $utm_source;
-                        $invoice['ref_id'] = $utm_source;
+                        $invoice['ref_id'] = $ref_id;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
                         $cart_email = [];
@@ -206,8 +207,10 @@ class Payments extends RestController {
                         $data = ['invoice' => $invoice, 'cart' => $cart_email, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc];
                         $body = $this->load->view('app/email/email-confirm-pay6', $data, true);
                         $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
+                        if (!empty($invoice['ref_id'])) {
+                            $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
+                        }
                         //RESPONSE TRUE
-                        //$cc_type = $this->general_library->card_type($number);
                         $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
                     }
                 }

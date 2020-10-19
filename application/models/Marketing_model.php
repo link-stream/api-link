@@ -523,4 +523,16 @@ WHERE message_id = '" . $message_id . "' and open = '1'";
         return $result;
     }
 
+    public function update_revenue_message_log($ref_id, $amount) {
+        //STEP 1
+        $this->db->select('message_id');
+        $this->db->where('ref_id', $ref_id);
+        $query = $this->db->get('st_marketing_messages_log');
+        $result = $query->row_array();
+        //STEP 2
+        $this->db->set('revenue', 'revenue +' . $amount, FALSE);
+        $this->db->where('id', $result['message_id']);
+        $this->db->update('st_marketing_messages');
+    }
+
 }

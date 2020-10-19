@@ -1611,5 +1611,9 @@ class Profiles extends RestController {
         }
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data_response), RestController::HTTP_OK);
     }
+    
+    public function visitor_post(){
+        
+    }
 
 }
