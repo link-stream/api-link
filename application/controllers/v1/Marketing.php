@@ -344,12 +344,24 @@ class Marketing extends RestController {
                     $hours_arr[$hour['HOURS'] . '00'] = ['Open' => $hour['OPEN'], 'Click' => $hour['CLICK']];
                 }
                 $location_arr = [];
+                $location_arr_2 = [];
                 $country_data = $this->Marketing_model->fetch_country_open_data($message_id);
                 foreach ($country_data as $country) {
+                    $country_percent = 0;
                     if ($message_cleaned['sent_to'] > 0) {
                         $country_percent = number_format($country['Count'] * 100 / $message_cleaned['sent_to'], 1);
                     }
+
+                    //
                     $location_arr[] = [$country['Country'], $country['Count'], $country_percent];
+                    $location_arr_2[] = [
+                        'country' => [
+                            'name' => $country['Country'],
+                            'code' => $country['Country_code']
+                        ],
+                        'opens' => $country['Count'],
+                        'percent' => $country_percent
+                    ];
                 }
                 //ACTIVITY
                 $open_data = $this->Marketing_model->fetch_open_activity($message_id);
@@ -379,7 +391,7 @@ class Marketing extends RestController {
 //                            '1500' => ['Open' => '20', 'Click' => '1']
 //                        ],
                         'Hours' => $hours_arr,
-                        'Location' => $location_arr
+                        'Location' => $location_arr_2
                     ],
 //                    'Activity1' => [
 //                        '05/23/2020 15:37' => 'Open',

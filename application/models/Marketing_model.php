@@ -482,7 +482,7 @@ where click = "1" and click_at >= "' . $date . '" GROUP BY HOURS
     }
 
     public function fetch_country_open_data($message_id) {
-        $sql = 'SELECT open_country as Country, count(*) as Count  FROM st_marketing_messages_log
+        $sql = 'SELECT open_country as Country, count(*) as Count, open_country_code as Country_code  FROM st_marketing_messages_log
 WHERE message_id = "' . $message_id . '" and open_country is not null
 group by open_country order by Count Desc';
         //print_r($sql);
