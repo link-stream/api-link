@@ -3072,16 +3072,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             },
             "Location": [
-                [
-                    "Japan",
-                    "1",
-                    "50.0"
-                ],
-                [
-                    "United States",
-                    "1",
-                    "50.0"
-                ]
+                {
+                    "country": {
+                        "name": "Japan",
+                        "code": "JP"
+                    },
+                    "opens": "1",
+                    "percent": "50.0"
+                },
+                {
+                    "country": {
+                        "name": "United States",
+                        "code": "US"
+                    },
+                    "opens": "1",
+                    "percent": "50.0"
+                }
             ]
         },
         "Activity": {
