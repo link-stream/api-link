@@ -395,7 +395,7 @@ class Marketing_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function update_open_action($ref_id, $ip, $country) {
+    public function update_open_action($ref_id, $ip, $country, $country_code) {
         //STEP 1
         $this->db->select('message_id, open');
         $this->db->where('ref_id', $ref_id);
@@ -407,6 +407,7 @@ class Marketing_model extends CI_Model {
             $this->db->set('open_at', date('Y-m-d H:i:s'));
             $this->db->set('open_ip', $ip);
             $this->db->set('open_country', $country);
+            $this->db->set('open_country_code', $country_code);
             //$this->db->set('open', '1', FALSE);
             //$this->db->set('open_at', date('Y-m-d H:i:s'), FALSE);
             $this->db->where('ref_id', $ref_id);
