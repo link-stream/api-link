@@ -4358,7 +4358,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Get Subscribers Count by Segment:</h3>
-                <code>GET <?= base_url() ?>v1/marketing/subscribers_count_by_segment_get/{user_id}/{segment}/{type}</code>
+                <code>GET <?= base_url() ?>v1/marketing/subscribers_count_by_segment/{user_id}/{segment}/{type}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
