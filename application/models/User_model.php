@@ -172,7 +172,7 @@ class User_model extends CI_Model {
 
     public function insert_user_purchase_details($data) {
         $this->db->insert('st_user_invoice_detail', $data);
-        //return $this->db->insert_id();
+        return $this->db->insert_id();
     }
 
     public function fetch_user_purchases_details($invoice_id) {

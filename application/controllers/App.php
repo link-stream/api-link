@@ -1711,7 +1711,7 @@ class App extends CI_Controller {
         $data = array();
         $this->load->view('app/email/confirm-email', $data);
     }
-    
+
     public function email_confirmation() {
         $data = array();
         $this->load->view('app/email/email-confirm-pay4', $data);
@@ -3967,9 +3967,24 @@ paypal.use( ["login"], function (login) {
         curl_close($curl);
         echo $response;
     }
-    
-    public function unique_id(){
-        echo uniqid('6780'.'600000');echo '<br>';echo uniqid('6780'.'600000');
+
+    public function unique_id() {
+        echo uniqid('6780' . '600000');
+        echo '<br>';
+        echo uniqid('6780' . '600000');
+    }
+
+    public function unique_url() {
+        $this->load->library('encryption');
+        $item_license['code'] = uniqid('LS');
+        //$item_license['encode'] = $this->encryption->encrypt('35' . '500');
+        $item_license['sha1'] = sha1('35' . '500');
+
+
+        //$item_license['decode'] = $this->encryption->decrypt($item_license['encode']);
+        echo '<pre>';
+        print_r($item_license);
+        echo '</pre>';
     }
 
 }

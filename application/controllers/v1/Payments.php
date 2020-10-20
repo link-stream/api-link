@@ -23,6 +23,7 @@ class Payments extends RestController {
         //Models
         $this->load->model('User_model');
         $this->load->model('Marketing_model');
+        $this->load->model('License_model');
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint'));
         $this->load->library('Stripe_library');
@@ -171,6 +172,7 @@ class Payments extends RestController {
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
                         $cart_email = [];
+                        $confirmation_url = [];
                         //UPDATE DETAILS
                         foreach ($cart as $item) {
                             $item['invoice_id'] = $invoice_id;
@@ -181,7 +183,11 @@ class Payments extends RestController {
                             //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
-                            $this->User_model->insert_user_purchase_details($item);
+                            $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
+                            //LOG Item License.
+                            $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
+                            $confirmation_url[$item['item_id']] = $log_license['code'] . '/' . $log_license['hash'];
+                            //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
                         }
@@ -211,7 +217,7 @@ class Payments extends RestController {
                             $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
                         }
                         //RESPONSE TRUE
-                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC']), RestController::HTTP_OK);
+                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC'], 'url' => $confirmation_url), RestController::HTTP_OK);
                     }
                 }
             } else {
@@ -230,6 +236,43 @@ class Payments extends RestController {
             $producer_item['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $producer_item['coverart'];
         }
         return $producer_item;
+    }
+
+    private function log_item_license($invoice, $invoice_detail_id, $item) {
+        $item_license = [];
+        $item_license['user_id'] = $invoice['user_id'];
+        $item_license['invoice_id'] = $item['invoice_id'];
+        $item_license['invoice_detail_id'] = $invoice_detail_id;
+        $item_license['item_id'] = $item['item_id'];
+        $item_license['item_title'] = $item['item_title'];
+        $item_license['item_amount'] = $item['item_amount'];
+        $item_license['producer_id'] = $item['producer_id'];
+        $item_license['item_track_type'] = $item['item_track_type'];
+        $item_license['license_id'] = $item['license_id'];
+        if (!empty($item_license['license_id'])) {
+            //LICENSE
+            $license = $this->License_model->fetch_license_by_id($item_license['license_id']);
+            if (!empty($license)) {
+                $item_license['title'] = $license['title'];
+                $item_license['mp3'] = $license['mp3'];
+                $item_license['wav'] = $license['wav'];
+                $item_license['trackout_stems'] = $license['trackout_stems'];
+                $item_license['distribution_copies'] = $license['distribution_copies'];
+                $item_license['free_download'] = $license['free_download'];
+                $item_license['audio_streams'] = $license['audio_streams'];
+                $item_license['music_videos'] = $license['music_videos'];
+                $item_license['video_streams'] = $license['video_streams'];
+                $item_license['broadcasting_rights'] = $license['broadcasting_rights'];
+                $item_license['radio_station'] = $license['radio_station'];
+                $item_license['paid_performances'] = $license['paid_performances'];
+                $item_license['non_profit_performances'] = $license['non_profit_performances'];
+            }
+        }
+        $item_license['code'] = uniqid('LS');
+        $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id']);
+        //INSERT Item license.
+        $item_license_id = $this->License_model->insert_item_license($item_license);
+        return $item_license;
     }
 
     //NOTE: 

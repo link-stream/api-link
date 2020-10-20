@@ -293,4 +293,9 @@ class License_model extends CI_Model {
         return $result;
     }
 
+    public function insert_item_license($data) {
+        $this->db->insert('st_item_license', $data);
+        return $this->db->insert_id();
+    }
+
 }
