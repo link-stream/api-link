@@ -269,9 +269,9 @@ class Payments extends RestController {
             }
         }
         $item_license['code'] = uniqid('LS');
-        $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id']);
+        $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id'] . $item_license['code']);
         //INSERT Item license.
-        $item_license_id = $this->License_model->insert_item_license($item_license);
+        //$item_license_id = $this->License_model->insert_item_license($item_license);
         return $item_license;
     }
 
