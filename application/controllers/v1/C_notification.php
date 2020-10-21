@@ -210,7 +210,8 @@ class C_notification extends CI_Controller {
     }
     
     public function ruta(){
-         echo getcwd();
+         //echo getcwd();
+         echo dirname(__FILE__);
     }
 
 }
