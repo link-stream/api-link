@@ -946,7 +946,7 @@ class Audios extends RestController {
         $file_name = $rand_name . '.' . $ext;
         //upload image to server 
         file_put_contents($this->temp_dir . '/' . $file_name, file_get_contents($file));
-        print_r($this->temp_dir . '/' . $file_name);
+        //print_r($this->temp_dir . '/' . $file_name);
         ## Extract the zip file ---- start
         $zip = new ZipArchive;
         $res = $zip->open($this->temp_dir . '/' . $file_name);
