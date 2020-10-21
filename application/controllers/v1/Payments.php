@@ -58,9 +58,9 @@ class Payments extends RestController {
 //                'total' => '200'
 //            ],
 //            'cart' => [
-//                ['item_id' => '10', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '30', 'license_id' => '5'],
-//                ['item_id' => '25', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '30', 'license_id' => ''],
-//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '24', 'license_id' => '']
+//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
+//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
+//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
 //            ]
 //        ];
         $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
@@ -71,7 +71,7 @@ class Payments extends RestController {
                 $utm_source = (!empty($data_info['utm_source'])) ? $data_info['utm_source'] : '';
                 $ref_id = (!empty($data_info['ref_id'])) ? $data_info['ref_id'] : '';
                 if (!$this->general_library->header_token($user_id)) {
-                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                    //////$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
                 }
                 $payment = (!empty($data_info['payment'])) ? $data_info['payment'] : null;
                 if (empty($payment)) {
@@ -271,7 +271,7 @@ class Payments extends RestController {
         $item_license['code'] = uniqid('LS');
         $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id'] . $item_license['code']);
         //INSERT Item license.
-        //$item_license_id = $this->License_model->insert_item_license($item_license);
+        $item_license_id = $this->License_model->insert_item_license($item_license);
         return $item_license;
     }
 

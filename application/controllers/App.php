@@ -3525,11 +3525,17 @@ paypal.use( ["login"], function (login) {
         $list = [
             'beat', 'tag', 'paolo'
         ];
-        print_r(json_encode($list));
+
+
+
+
+        //print_r(json_encode($list));
 
 
         $array = [
             'user_id' => '35',
+            'utm_source' => 'google',
+            'ref_id' => '33414fsdf5',
             'payment' => [
                 'exp_month' => '10',
                 'exp_year' => '2021',
@@ -3537,15 +3543,15 @@ paypal.use( ["login"], function (login) {
                 'cvc' => '314',
                 'name' => 'John Doe',
                 'address_zip' => '33312',
-                'subtotal' => '230',
-                'feeCC' => '7.05',
-                'feeService' => '4.99',
-                'total' => '242.04'
+                'subtotal' => '180',
+                'feeCC' => '10',
+                'feeService' => '10',
+                'total' => '200'
             ],
             'cart' => [
-                ['item_id' => '10', 'item_title' => 'Title 10', 'item_amount' => '50', 'item_track_type' => 'beat', 'producer_id' => '30', 'license_id' => '5', 'genre_id' => '3'],
-                ['item_id' => '25', 'item_title' => 'Title 25', 'item_amount' => '150', 'item_track_type' => 'kit', 'producer_id' => '30', 'license_id' => '', 'genre_id' => '3'],
-                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '30', 'item_track_type' => 'pack', 'producer_id' => '24', 'license_id' => '', 'genre_id' => '3']
+                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
+                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
+                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
             ]
         ];
 
