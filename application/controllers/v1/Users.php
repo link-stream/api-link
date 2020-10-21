@@ -1226,8 +1226,9 @@ class Users extends RestController {
                 $data['plays_info'] = $this->Audio_model->fetch_audio_log_data($user_id, 'PLAY', $date);
                 $data['marketing_info'] = $this->Audio_model->fetch_earning_marketing($user_id, $date);
                 $data['top_beat_sales'] = $this->Audio_model->fetch_top_sales($user_id, $date, 5);
-                $data['top_referrers'] = $this->Audio_model->fetch_top_referrers($user_id, $date, 5);
+                //$data['top_referrers'] = $this->Audio_model->fetch_top_referrers($user_id, $date, 5);
                 
+                $data['top_referrers'] = $this->Visitor_model->fetch_top_referrers($user_id, $date, 5);
                 $data['visitors'] = $this->Visitor_model->fetch_visitors($user_id, $date);
 
 

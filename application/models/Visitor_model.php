@@ -68,6 +68,16 @@ group by TransDate order by TransDate';
         $query->free_result();
         return $result;
     }
+    
+    public function fetch_top_referrers($user_id, $date, $limit = 5) {
+        $sql = "SELECT utm_source,count(*) as Count 
+            FROM st_visitor
+where user_id = '" . $user_id . "' and transDateTime >= '" . $date . "' and utm_source <> '' and utm_source is not null group by utm_source order by Count desc limit " . $limit;
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
 
 //    public function order_id($email) {
 //        $this->db->select('id');
