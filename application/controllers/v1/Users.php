@@ -21,7 +21,7 @@ class Users extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model', 'License_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model', 'License_model','Visitor_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
         //Helpers
@@ -1227,6 +1227,8 @@ class Users extends RestController {
                 $data['marketing_info'] = $this->Audio_model->fetch_earning_marketing($user_id, $date);
                 $data['top_beat_sales'] = $this->Audio_model->fetch_top_sales($user_id, $date, 5);
                 $data['top_referrers'] = $this->Audio_model->fetch_top_referrers($user_id, $date, 5);
+                
+                $data['visitors'] = $this->Visitor_model->fetch_visitors($user_id, $date);
 
 
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);

@@ -3978,7 +3978,7 @@ paypal.use( ["login"], function (login) {
         $this->load->library('encryption');
         $item_license['code'] = uniqid('LS');
         //$item_license['encode'] = $this->encryption->encrypt('35' . '500');
-        $item_license['sha1'] = sha1('35' . '500');
+        $item_license['sha1'] = sha1('35' . '392' . $item_license['code']);
 
 
         //$item_license['decode'] = $this->encryption->decrypt($item_license['encode']);

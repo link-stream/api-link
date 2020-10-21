@@ -57,6 +57,17 @@ class Visitor_model extends CI_Model {
         $query->free_result();
         return $result;
     }
+    
+    public function fetch_visitors($user_id, $date){
+         $sql = 'SELECT DATE(CONVERT_TZ(transDateTime,"GMT","America/New_York")) as TransDate, count(*) as Count 
+             FROM st_visitor 
+where user_id = "' . $user_id . '" and transDateTime >= "' . $date . '" 
+group by TransDate order by TransDate';
+        $query = $this->db->query($sql);
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
 
 //    public function order_id($email) {
 //        $this->db->select('id');

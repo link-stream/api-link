@@ -730,7 +730,7 @@ where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' and i
 
     public function fetch_top_referrers($user_id, $from, $limit = 5) {
         $sql = "SELECT utm_source,count(*) as Count FROM st_user_invoice_detail a inner join st_user_invoice b on a.invoice_id = b.id
-where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' group by utm_source order by Count desc limit " . $limit;
+where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' and utm_source <> '' and utm_source is not null group by utm_source order by Count desc limit " . $limit;
         $query = $this->db->query($sql);
         $result = $query->result_array();
         $query->free_result();

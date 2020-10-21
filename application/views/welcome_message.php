@@ -4254,21 +4254,41 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "status": "success",
     "env": "dev",
     "data": {
-        "plays": 739,
+        "plays": 170,
         "free_downloads": 1,
-        "sales_count": 31,
-        "sales_amount": 2150.25,
-        "conversion": "4.19",
+        "sales_count": 101,
+        "sales_amount": 5810,
+        "conversion": "59.41",
         "beats_info": [
             {
-                "TransDate": "2020-10-13",
-                "Count": "19",
-                "Total": "1135.00"
+                "TransDate": "2020-10-15",
+                "Count": "3",
+                "Total": "75.00"
             },
             {
-                "TransDate": "2020-10-14",
-                "Count": "12",
-                "Total": "1015.25"
+                "TransDate": "2020-10-16",
+                "Count": "5",
+                "Total": "170.00"
+            },
+            {
+                "TransDate": "2020-10-17",
+                "Count": "40",
+                "Total": "1730.00"
+            },
+            {
+                "TransDate": "2020-10-18",
+                "Count": "5",
+                "Total": "155.00"
+            },
+            {
+                "TransDate": "2020-10-19",
+                "Count": "22",
+                "Total": "940.00"
+            },
+            {
+                "TransDate": "2020-10-20",
+                "Count": "26",
+                "Total": "2740.00"
             }
         ],
         "free_downloads_info": [
@@ -4279,79 +4299,95 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         ],
         "plays_info": [
             {
-                "TransDate": "2020-10-07",
-                "Count": "1"
-            },
-            {
-                "TransDate": "2020-10-08",
-                "Count": "214"
-            },
-            {
-                "TransDate": "2020-10-09",
-                "Count": "81"
-            },
-            {
-                "TransDate": "2020-10-10",
-                "Count": "104"
-            },
-            {
-                "TransDate": "2020-10-11",
-                "Count": "24"
-            },
-            {
-                "TransDate": "2020-10-12",
-                "Count": "139"
-            },
-            {
-                "TransDate": "2020-10-13",
-                "Count": "77"
-            },
-            {
                 "TransDate": "2020-10-14",
                 "Count": "32"
             },
             {
                 "TransDate": "2020-10-15",
                 "Count": "67"
+            },
+            {
+                "TransDate": "2020-10-16",
+                "Count": "12"
+            },
+            {
+                "TransDate": "2020-10-18",
+                "Count": "8"
+            },
+            {
+                "TransDate": "2020-10-19",
+                "Count": "30"
+            },
+            {
+                "TransDate": "2020-10-20",
+                "Count": "21"
             }
         ],
         "marketing_info": [
             {
-                "TransDate": "2020-10-13",
-                "Count": "1",
-                "Total": "30.00"
+                "TransDate": "2020-10-17",
+                "Count": "40",
+                "Total": "1730.00"
             },
             {
-                "TransDate": "2020-10-14",
-                "Count": "2",
-                "Total": "45.25"
+                "TransDate": "2020-10-18",
+                "Count": "5",
+                "Total": "155.00"
+            },
+            {
+                "TransDate": "2020-10-19",
+                "Count": "22",
+                "Total": "940.00"
+            },
+            {
+                "TransDate": "2020-10-20",
+                "Count": "26",
+                "Total": "2740.00"
             }
         ],
         "top_beat_sales": [
             {
                 "item_title": "My Beat 2Mb",
-                "Count": "10"
-            },
-            {
-                "item_title": "Stranger",
-                "Count": "6"
+                "Count": "22"
             },
             {
                 "item_title": "Picture Perfect",
-                "Count": "2"
+                "Count": "15"
             },
             {
-                "item_title": "Up Go",
-                "Count": "1"
+                "item_title": "One Way",
+                "Count": "15"
+            },
+            {
+                "item_title": "Stranger",
+                "Count": "15"
+            },
+            {
+                "item_title": "Wide Eyes",
+                "Count": "5"
             }
         ],
         "top_referrers": [
             {
-                "utm_source": null,
-                "Count": "28"
+                "utm_source": "email_campaign",
+                "Count": "3"
             },
             {
-                "utm_source": "email",
+                "utm_source": "test",
+                "Count": "2"
+            }
+        ],
+        "visitors": [
+            {
+                "TransDate": "2020-10-18",
+                "Count": "2"
+            },
+            {
+                "TransDate": "2020-10-19",
+                "Count": "2"
+            },
+            {
+                "TransDate": "2020-10-20",
                 "Count": "3"
             }
         ]
