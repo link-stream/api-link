@@ -203,5 +203,9 @@ class C_notification extends CI_Controller {
     public function testing_cron() {
         $this->general_library->send_ses('Paul', 'paolofq@gmail.com', 'LinkStream', 'noreply@linkstream.com', 'Linkstream Cron', 'Testng Linkstream Cron: ' . date("Y-m-d H:i:s"), '', '');
     }
+    
+    public function print_hour(){
+        echo date("Y-m-d H:i:s");
+    }
 
 }
