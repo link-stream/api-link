@@ -507,7 +507,7 @@ class Audios extends RestController {
                 $ext = pathinfo($this->temp_dir . '/' . $track_stems_name, PATHINFO_EXTENSION);
                 //if ($ext == 'zip') {
                 //Audio List.
-                print_r($this->temp_dir . '/' . $track_stems_name);
+                //print_r($this->temp_dir . '/' . $track_stems_name);
                 $zip = new ZipArchive;
                 $res = $zip->open($this->temp_dir . '/' . $track_stems_name);
                 if ($res === TRUE) {
