@@ -18,6 +18,7 @@ class Payments extends RestController {
     private $temp_dir;
     private $server_url;
     private $linkstream_url;
+    private $api_url;
 
     public function __construct() {
         parent::__construct();
@@ -39,6 +40,7 @@ class Payments extends RestController {
         $this->temp_dir = $this->general_library->get_temp_dir();
         $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
         $this->linkstream_url = (ENV == 'live') ? 'https://www.linkstream.com/' : 'https://dev-link-vue.link.stream/';
+        $this->api_url = (ENV == 'live') ? 'https://api.link.stream/' : 'https://api-dev.link.stream/';
     }
 
     public function cc_payment_post() {
@@ -188,7 +190,7 @@ class Payments extends RestController {
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                             //LOG Item License.
                             $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            $confirmation_url[$item['item_id']] = $this->linkstream_url.'a/download/' . $user_id . '/' . $item['item_id'] . '/' . $log_license['code'] . '/' . $log_license['hash'];
+                            $confirmation_url[$item['item_id']] = $this->api_url.'a/download/' . $user_id . '/' . $item['item_id'] . '/' . $log_license['code'] . '/' . $log_license['hash'];
                             //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;

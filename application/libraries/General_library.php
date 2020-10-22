@@ -325,4 +325,34 @@ class General_library {
         return $card_type;
     }
 
+    public function encode_download_url($st_item_license_id, $user_id, $item_id, $producer_id) {
+        $data = [
+            'st_item_license_id' => $st_item_license_id,
+            'user_id' => $user_id,
+            'item_id' => $item_id,
+            'key' => sha1($producer_id)
+        ];
+        return $this->encode_data($data);
+    }
+
+    public function decode_download_url($base_string) {
+        return $this->decode_url($base_string);
+    }
+
+    public function encode_data($data) {
+        $ser_data = serialize($data);
+        $this->ci->load->library('encryption');
+        $encrypted_string = $this->ci->encryption->encrypt($ser_data);
+        $base_string = $this->urlsafe_b64encode($encrypted_string);
+        return $base_string;
+    }
+
+    public function decode_url($base_string) {
+        $encrypted_string = $this->urlsafe_b64decode($base_string);
+        $this->ci->load->library('encryption');
+        $ser_data = $this->ci->encryption->decrypt($encrypted_string);
+        $data = unserialize($ser_data);
+        return $data;
+    }
+
 }

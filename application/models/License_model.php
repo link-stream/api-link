@@ -294,12 +294,12 @@ class License_model extends CI_Model {
     }
 
     public function insert_item_license($data) {
-        $this->db->insert('st_item_license', $data);
+        $this->db->insert('st_user_invoice_license', $data);
         return $this->db->insert_id();
     }
 
     public function fetch_item_license($user_id, $item_id, $code, $hash) {
-        $this->db->from('st_item_license');
+        $this->db->from('st_user_invoice_license');
         $this->db->where(array('user_id' => $user_id, 'item_id' => $item_id, 'code' => $code, 'hash' => $hash));
         $query = $this->db->get();
         $result = $query->row_array();
