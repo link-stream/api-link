@@ -309,7 +309,7 @@ class License_model extends CI_Model {
 
     public function fetch_item_license($user_id, $item_id, $id) {
 
-        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file
+        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file,d.license_id as album_license 
 FROM linkstream_dev.st_user_invoice_license a
 left join linkstream_dev.st_audio c on a.item_id = c.id AND (a.item_track_type = 'beat' or a.item_track_type = 'kit')
 left join linkstream_dev.st_album d on a.item_id = d.id AND (a.item_track_type = 'pack')
