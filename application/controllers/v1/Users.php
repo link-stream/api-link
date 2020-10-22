@@ -730,7 +730,7 @@ class Users extends RestController {
                     if (!empty($audio['coverart'])) {
                         $detail['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                     }
-                    $detail['url'] = $this->general_library->encode_download_url($detail['invoice_id'], $user_id, $detail['item_id'], $detail['producer_id']);
+                    $detail['url'] = $this->general_library->encode_download_url($detail['invoice_id'], $user_id, $detail['item_id'], $detail['producer_id'], $detail['id']);
                     $response_details[] = $detail;
                 }
                 $invoice['details'] = $response_details;

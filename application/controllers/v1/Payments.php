@@ -222,7 +222,7 @@ class Payments extends RestController {
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                             //LOG Item License.
                             //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id']);
+                            $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
                             //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;

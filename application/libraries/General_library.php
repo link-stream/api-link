@@ -327,11 +327,12 @@ class General_library {
         return $card_type;
     }
 
-    public function encode_download_url($invoice_id, $user_id, $item_id, $producer_id) {
+    public function encode_download_url($invoice_id, $user_id, $item_id, $producer_id, $invoice_detail_id) {
         $data = [
             'invoice_id' => $invoice_id,
             'user_id' => $user_id,
             'item_id' => $item_id,
+            'invoice_detail_id' => $invoice_detail_id,
             'key' => sha1($producer_id)
         ];
         $encode_data = $this->encode_data($data);
