@@ -109,7 +109,7 @@ class Profiles extends RestController {
         if (!empty($url)) {
             $register_user = $this->User_model->fetch_user_by_search(['url' => $url]);
             if (!empty($register_user)) {
-                $user_response = $this->user_clean($register_user);
+                $user_response = $this->user_clean_2($register_user);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Profile Not Found.';
