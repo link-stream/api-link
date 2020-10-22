@@ -359,7 +359,7 @@ $config['cache_query_string'] = FALSE;
   | https://codeigniter.com/user_guide/libraries/encryption.html
   |
  */
-$config['encryption_key'] = 's0@psud$&*';
+$config['encryption_key'] = 's0@psud$&*ls2021';
 
 /*
   |--------------------------------------------------------------------------
