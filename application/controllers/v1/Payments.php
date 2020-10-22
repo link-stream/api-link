@@ -193,7 +193,7 @@ class Payments extends RestController {
 
                             //NEW -LICENSE//
                             if ($item['item_track_type'] == 'pack') {
-                                $item_album = $this->Album_model->fetch_album_by_id($item_id);
+                                $item_album = $this->Album_model->fetch_album_by_id($item['item_id']);
                                 if (!empty($item_album)) {
                                     $item['license_id'] = $item_album['license_id'];
                                 }
