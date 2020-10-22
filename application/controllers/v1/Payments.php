@@ -187,10 +187,41 @@ class Payments extends RestController {
                             //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
+
+
+
+                            //NEW -LICENSE//
+                            if ($item['item_track_type'] == 'pack') {
+                                $item_album = $this->Album_model->fetch_album_by_id($item_id);
+                                if (!empty($item_album)) {
+                                    $item['license_id'] = $item_album['license_id'];
+                                }
+                            }
+
+                            if (!empty($item['license_id'])) {
+                                //LICENSE
+                                $license = $this->License_model->fetch_license_by_id($item['license_id']);
+                                if (!empty($license)) {
+                                    $item['license_title'] = $license['title'];
+                                    $item['mp3'] = $license['mp3'];
+                                    $item['wav'] = $license['wav'];
+                                    $item['trackout_stems'] = $license['trackout_stems'];
+                                    $item['distribution_copies'] = $license['distribution_copies'];
+                                    $item['free_download'] = $license['free_download'];
+                                    $item['audio_streams'] = $license['audio_streams'];
+                                    $item['music_videos'] = $license['music_videos'];
+                                    $item['video_streams'] = $license['video_streams'];
+                                    $item['broadcasting_rights'] = $license['broadcasting_rights'];
+                                    $item['radio_station'] = $license['radio_station'];
+                                    $item['paid_performances'] = $license['paid_performances'];
+                                    $item['non_profit_performances'] = $license['non_profit_performances'];
+                                }
+                            }
+                            //END-LICENSE//
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                             //LOG Item License.
-                            $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            $confirmation_url[$item['item_id']] = $log_license['url'];
+                            //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
+                            $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id']);
                             //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
@@ -408,10 +439,37 @@ class Payments extends RestController {
                     //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                     //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                     $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
+                    //NEW -LICENSE//
+                    if ($item['item_track_type'] == 'pack') {
+                        $item_album = $this->Album_model->fetch_album_by_id($item_id);
+                        if (!empty($item_album)) {
+                            $item['license_id'] = $item_album['license_id'];
+                        }
+                    }
+                    if (!empty($item['license_id'])) {
+                        //LICENSE
+                        $license = $this->License_model->fetch_license_by_id($item['license_id']);
+                        if (!empty($license)) {
+                            $item['license_title'] = $license['title'];
+                            $item['mp3'] = $license['mp3'];
+                            $item['wav'] = $license['wav'];
+                            $item['trackout_stems'] = $license['trackout_stems'];
+                            $item['distribution_copies'] = $license['distribution_copies'];
+                            $item['free_download'] = $license['free_download'];
+                            $item['audio_streams'] = $license['audio_streams'];
+                            $item['music_videos'] = $license['music_videos'];
+                            $item['video_streams'] = $license['video_streams'];
+                            $item['broadcasting_rights'] = $license['broadcasting_rights'];
+                            $item['radio_station'] = $license['radio_station'];
+                            $item['paid_performances'] = $license['paid_performances'];
+                            $item['non_profit_performances'] = $license['non_profit_performances'];
+                        }
+                    }
+                    //END-LICENSE//
                     $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                     //LOG Item License.
-                    $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                    $confirmation_url[$item['item_id']] = $log_license['url'];
+                    //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
+                    $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id']);
                     //
                     $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                     $cart_email[] = $item;
