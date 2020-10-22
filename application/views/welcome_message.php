@@ -3936,7 +3936,41 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     "id": "LS0000012",
     "email": "paul@link.stream",
     "cc_type": "Visa",
-    "billingCC": "4242"
+    "billingCC": "4242",
+    "url": {
+        "33": "http://localhost/api.link.stream/v1/a/download/NDcxZjllOWMxMGM0YzkzMDNhNGI5OWFkOTc1ZDRjMDMzYTYxMGI4MzIwNzc2OGI1YzdhNTdiMTM5NTc2NjRlNjQ1OTQ5NmUyNDEzNTU4N2EwNGZmZTI2YTVmMDYzMmUwYjIzODQ4MGZjNzI1NDU5NzA2MzRiZmYxZDJmM2I5YTRsK2VYK1c0c00xWXVYWFFSOEpKTVJFMFp5VjliOHdnUzRlTFlxSWUxcWp1Z3gwdWJIUHNwTXhTLzVkYW9JQzhURllxb0xDR1lRLzJsRlJSYWdLcU1mT3FNUmVHc29QNkZRQlJtVkN2Slp2ek5YNjVtRkFZa05KTm5PSlRWTkJiRzN2dExoaTFFUC8xVnhWdDlyVm5ldEdxRkk0SFdLajRYenpmSFRnRk5FRnRmV2hjdGlBYTFrenMyVHU0MHU4WnJJZ1A2WThvMFBteEJoRkRiSjVEOWVnPT0.",
+        "381": "http://localhost/api.link.stream/v1/a/download/NjU1NWM1YTVhNjI0MWM1NDgwZjQxYzM5YzE0N2VhYTYwNmNiMDUwOTdjOWU5ZjU4NDNlMzZhODg5NWE2MTUzMDJjZDAxMDk5ZDAxNDRhNGJiYzEzMDVkZTIzNDA2ZmI4OTZlZDM5YTVlOTg1ZDBlYjJmOTUzZGI3ZTljNjEyYmZzWW5JQmNFK3NVYW5ZbjdPTjRSMW5uSVJ2MHJ1eXFEc3ZhM1pRa2FzcFZFcm1PajZFeTc4dG9XU1B2eWQ3TXZsT0JmRWlWODB2T1JZdUU1Z0tBeHBrSmVEclJ4TW54ZTR5NlNNK0paaGhDdVRxc29YcUpsTnVtK3VaNGIrTHJNKy9YZkFKa29ucjdZK2JyYWNUTlg1ZWtKUjA2SWJGbzdva2pvb1c2WnFTQlNPeWV1YzhqWElqWllGV01UeklaRjVkUkNqbWRrTTNIVkE0YWNBR2pWT1FRPT0.",
+        "67": "http://localhost/api.link.stream/v1/a/download/NTMzZTU1ZDg5MDI2Nzc2OGVhYWZiZmI0ZTdjN2Q3MjEyZDliNGViZWQxYjgzMmYyODVlNTc4Y2JiZjM0YmEzNTk1OTgxNjJiMDgwODlhZjhmYzc2NWJkMzZlNTFhOTBhODI3YWIxOTI2MDUyMDgyY2Q1OGI4ZjAzZjVmMTNhMDkvWExkODlESFMxVlM2TUM2U21ISFRpdkhUV21uR28wKytoZW8yR3hzTGdFN0xHajNEWUwzNjZsQlptRU16US9rLy9iTE1qTVRiVGVtTmlkQm92ZFFMWE9SK2tCSHE0bUp6dEIyVTRzWUhWSlJBYldaZTdhUHJEaWQzdDJRYjJQeG9qSWt2d2FZN2JlN3NIMTlESVBiR3ZXVWxXRG9rYld2V2NhUHJ1ZGgwVWNVZWlzR2FidWQyQjhpZWt6dnpYQnlnbVBKRXpINmRTeXNKMFdqRFZtTnpBPT0."
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Paypal Payment:</h3>
+                <code>POST <?= base_url() ?>v1/payments/paypal_payment</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>data (json_array)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The order was created succefully",
+    "id": "LS0000111",
+    "email": "paul@link.stream",
+    "cc_type": "PayPal",
+    "billingCC": "",
+    "url": {
+        "33": "http://localhost/api.link.stream/v1/a/download/NDcxZjllOWMxMGM0YzkzMDNhNGI5OWFkOTc1ZDRjMDMzYTYxMGI4MzIwNzc2OGI1YzdhNTdiMTM5NTc2NjRlNjQ1OTQ5NmUyNDEzNTU4N2EwNGZmZTI2YTVmMDYzMmUwYjIzODQ4MGZjNzI1NDU5NzA2MzRiZmYxZDJmM2I5YTRsK2VYK1c0c00xWXVYWFFSOEpKTVJFMFp5VjliOHdnUzRlTFlxSWUxcWp1Z3gwdWJIUHNwTXhTLzVkYW9JQzhURllxb0xDR1lRLzJsRlJSYWdLcU1mT3FNUmVHc29QNkZRQlJtVkN2Slp2ek5YNjVtRkFZa05KTm5PSlRWTkJiRzN2dExoaTFFUC8xVnhWdDlyVm5ldEdxRkk0SFdLajRYenpmSFRnRk5FRnRmV2hjdGlBYTFrenMyVHU0MHU4WnJJZ1A2WThvMFBteEJoRkRiSjVEOWVnPT0.",
+        "381": "http://localhost/api.link.stream/v1/a/download/NjU1NWM1YTVhNjI0MWM1NDgwZjQxYzM5YzE0N2VhYTYwNmNiMDUwOTdjOWU5ZjU4NDNlMzZhODg5NWE2MTUzMDJjZDAxMDk5ZDAxNDRhNGJiYzEzMDVkZTIzNDA2ZmI4OTZlZDM5YTVlOTg1ZDBlYjJmOTUzZGI3ZTljNjEyYmZzWW5JQmNFK3NVYW5ZbjdPTjRSMW5uSVJ2MHJ1eXFEc3ZhM1pRa2FzcFZFcm1PajZFeTc4dG9XU1B2eWQ3TXZsT0JmRWlWODB2T1JZdUU1Z0tBeHBrSmVEclJ4TW54ZTR5NlNNK0paaGhDdVRxc29YcUpsTnVtK3VaNGIrTHJNKy9YZkFKa29ucjdZK2JyYWNUTlg1ZWtKUjA2SWJGbzdva2pvb1c2WnFTQlNPeWV1YzhqWElqWllGV01UeklaRjVkUkNqbWRrTTNIVkE0YWNBR2pWT1FRPT0.",
+        "67": "http://localhost/api.link.stream/v1/a/download/NTMzZTU1ZDg5MDI2Nzc2OGVhYWZiZmI0ZTdjN2Q3MjEyZDliNGViZWQxYjgzMmYyODVlNTc4Y2JiZjM0YmEzNTk1OTgxNjJiMDgwODlhZjhmYzc2NWJkMzZlNTFhOTBhODI3YWIxOTI2MDUyMDgyY2Q1OGI4ZjAzZjVmMTNhMDkvWExkODlESFMxVlM2TUM2U21ISFRpdkhUV21uR28wKytoZW8yR3hzTGdFN0xHajNEWUwzNjZsQlptRU16US9rLy9iTE1qTVRiVGVtTmlkQm92ZFFMWE9SK2tCSHE0bUp6dEIyVTRzWUhWSlJBYldaZTdhUHJEaWQzdDJRYjJQeG9qSWt2d2FZN2JlN3NIMTlESVBiR3ZXVWxXRG9rYld2V2NhUHJ1ZGgwVWNVZWlzR2FidWQyQjhpZWt6dnpYQnlnbVBKRXpINmRTeXNKMFdqRFZtTnpBPT0."
+    }
 }');
                     echo '</pre>';
                     ?>

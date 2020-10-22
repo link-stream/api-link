@@ -1092,7 +1092,7 @@
 
                         </div>  
 
-                        
+
                         <div class="row" style="margin-top: 10px; display: flex; justify-content:center">                  
 
 
@@ -1145,17 +1145,11 @@
 
 
                                         <?php
-
-
-
                                         if (!empty($cart)) {
 
 
 
                                             foreach ($cart as $key => $item) {
-
-
-
                                                 ?>
 
 
@@ -1225,17 +1219,8 @@
 
 
                                                 <?php
-
-
-
                                             }
-
-
-
                                         }
-
-
-
                                         ?>
 
 
@@ -1376,14 +1361,14 @@
 
 
 
-                             </div>
+                                </div>
 
 
 
                             </div>
-                                    
 
-                                    
+
+
 
                             <div class="col" style="margin-top: 10px; margin-left: 10px; margin-bottom: 5px;" align="left">
 
@@ -1433,7 +1418,7 @@
 
 
 
-                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'],2) : '80.00' ?></span>
+                                                <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'], 2) : '80.00' ?></span>
 
 
 
@@ -1469,7 +1454,7 @@
 
 
 
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'],2) : '4.99' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeService'])) ? number_format($invoice['feeService'], 2) : '4.99' ?></span>
 
 
 
@@ -1505,7 +1490,7 @@
 
 
 
-                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'],2) : '2.55' ?></span>
+                                                <span class="summary-details-price"><?= (!empty($invoice['feeCC'])) ? number_format($invoice['feeCC'], 2) : '2.55' ?></span>
 
 
 
@@ -1541,7 +1526,7 @@
 
 
 
-                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'],2) : '87.54' ?></span>
+                                                <span class="summary-total-price"><?= (!empty($invoice['total'])) ? number_format($invoice['total'], 2) : '87.54' ?></span>
 
 
 
@@ -1632,21 +1617,21 @@
                                             </div>
 
 
-
-                                            <div class="col" style="margin-left: 3px;">
-
-
-
-                                                <span class="summary-details-price"> ending in</span>
+                                            <?php if (!empty($invoice['billingCC'])) { ?>
+                                                <div class="col" style="margin-left: 3px;">
 
 
 
-                                                <span class="summary-details-price"> <?= (!empty($invoice['billingCC'])) ? $invoice['billingCC'] : '4242' ?></span>
+                                                    <span class="summary-details-price"> ending in</span>
 
 
 
-                                            </div>                                            
+                                                    <span class="summary-details-price"> <?= (!empty($invoice['billingCC'])) ? $invoice['billingCC'] : '4242' ?></span>
 
+
+
+                                                </div>                                            
+                                            <?php } ?>
 
 
                                         </div> 
@@ -1662,7 +1647,7 @@
 
 
                             </div>
-                                
+
 
 
                         </div> 

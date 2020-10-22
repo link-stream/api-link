@@ -281,5 +281,164 @@ class Payments extends RestController {
         return $item_license;
     }
 
+    public function paypal_payment_post() {
+
+//        $array = [
+//            'user_id' => '35',
+//            'utm_source' => 'email',
+//            'ref_id' => '54645',
+//            'country' => 'United States',
+//            'payment' => [
+//                'paymentID' => 'PAYID-L6I46DY94893457Y3361140Y',
+//                'paymentToken' => 'EC-9LX554202G293421G',
+//                'name' => 'John Doe',
+//                'subtotal' => '180',
+//                'feeCC' => '10',
+//                'feeService' => '10',
+//                'total' => '200'
+//            ],
+//            'cart' => [
+//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
+//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
+//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
+//            ]
+//        ];
+        $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
+        if (!empty($data)) {
+            $data_info = json_decode($data, TRUE);
+            if (is_array($data_info)) {
+                $user_id = (!empty($data_info['user_id'])) ? $data_info['user_id'] : null;
+                $utm_source = (!empty($data_info['utm_source'])) ? $data_info['utm_source'] : '';
+                $ref_id = (!empty($data_info['ref_id'])) ? $data_info['ref_id'] : '';
+                if (!$this->general_library->header_token($user_id)) {
+                    //////$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $payment = (!empty($data_info['payment'])) ? $data_info['payment'] : null;
+                if (empty($payment)) {
+                    $this->error = 'Provide Payment Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+
+                $paymentID = (!empty($payment['paymentID'])) ? $payment['paymentID'] : null;
+                $paymentToken = (!empty($payment['paymentToken'])) ? $payment['paymentToken'] : null;
+                $name = (!empty($payment['name'])) ? $payment['name'] : null;
+                $subtotal = (!empty($payment['subtotal'])) ? $payment['subtotal'] : 0;
+                $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
+                $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
+                $total = (!empty($payment['total'])) ? $payment['total'] : 0;
+
+                if (empty($paymentID) || empty($paymentToken) || empty($subtotal) || empty($total)) {
+                    $this->error = 'Provide Complete Payment Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                $cart = (!empty($data_info['cart'])) ? $data_info['cart'] : null;
+                if (empty($cart)) {
+                    $this->error = 'Provide Cart Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                $subtotal_cart = 0;
+                $cart_success = true;
+                foreach ($cart as $item) {
+                    $subtotal_cart += (!empty($item['item_amount'])) ? $item['item_amount'] : 0;
+                    $item_id = (!empty($item['item_id'])) ? $item['item_id'] : null;
+                    $item_title = (!empty($item['item_title'])) ? $item['item_title'] : null;
+                    $item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
+                    $producer_id = (!empty($item['producer_id'])) ? $item['producer_id'] : null;
+                    if (empty($item_id) || empty($item_title) || empty($item_track_type) || empty($producer_id)) {
+                        $cart_success = false;
+                        break;
+                    }
+                }
+                if (!$cart_success) {
+                    $this->error = 'Provide Complete Cart Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                if ($subtotal_cart != $subtotal) {
+                    $this->error = 'The sum of the amount of the items is not equal to the subtotal amount';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+
+                $subtotal_fees = $subtotal + $feeService + $feeCC;
+                $a = (string) $subtotal_fees;
+                $b = $total;
+                if ($a != $b) {
+                    $this->error = 'The total amount is not equal to the sum of other amounts';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                //Validation OK
+                //PAYMENT
+                //
+                $invoice = [
+                    'user_id' => $user_id,
+                    'status' => 'COMPLETED',
+                    'sub_total' => $subtotal,
+                    'feeCC' => $feeCC,
+                    'feeService' => $feeService,
+                    'total' => $total,
+                    'payment_customer_id' => $paymentToken,
+                ];
+                $invoice_id = $this->User_model->insert_user_purchase($invoice);
+                $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
+                $invoice['invoice_number'] = $invoice_number;
+                $invoice['status'] = 'COMPLETED';
+                $invoice['payment_charge_id'] = $paymentID;
+                //$invoice['billingZip'] = $address_zip;
+                //$invoice['billingCVV'] = $cvc;
+                //$invoice['billingCC6'] = substr($number, 6);
+                //$invoice['billingCC'] = substr($number, -4);
+                $invoice['billingName'] = $name;
+                $invoice['cc_type'] = 'PayPal';
+                $invoice['utm_source'] = $utm_source;
+                $invoice['ref_id'] = $ref_id;
+                //UPDATE PURSHASE
+                $this->User_model->update_user_purchase($invoice_id, $invoice);
+                //$invoice_id = $this->User_model->insert_user_purchase($invoice);
+                //$invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
+                $transfer_group = $invoice_number;
+                $description = 'Linkstream - Invoice: ' . $invoice_number;
+                $user_data = $this->User_model->fetch_user_by_id($user_id);
+                $receipt_email = $user_data['email'];
+                //UPDATE DETAILS
+                foreach ($cart as $item) {
+                    $item['invoice_id'] = $invoice_id;
+                    //$item_id = (!empty($item['item_id'])) ? $item['item_id'] : null;
+                    //$item_title = (!empty($item['item_title'])) ? $item['item_title'] : null;
+                    //$item_amount =  (!empty($item['item_amount'])) ? $item['item_amount'] : 0;
+                    //$producer_id = (!empty($item['producer_id'])) ? $item['producer_id'] : null;
+                    //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
+                    //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
+                    $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
+                    $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
+                    //LOG Item License.
+                    $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
+                    $confirmation_url[$item['item_id']] = $log_license['url'];
+                    //
+                    $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
+                    $cart_email[] = $item;
+                }
+                //
+                //SEND CONFIRMATION EMAIL
+                $linkstream = $this->linkstream_url;
+                $cc_type = 'PayPal';
+                $cc = $linkstream . 'static/img/paypal.svg';
+                $data = ['invoice' => $invoice, 'cart' => $cart_email, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc];
+                $body = $this->load->view('app/email/email-confirm-pay6', $data, true);
+                $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
+                if (!empty($invoice['ref_id'])) {
+                    $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
+                }
+                //RESPONSE TRUE
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => '', 'url' => $confirmation_url), RestController::HTTP_OK);
+                //
+            } else {
+                $this->error = 'Provide Correct Data Format';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Data.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     //NOTE: 
 }

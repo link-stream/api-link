@@ -3532,17 +3532,38 @@ paypal.use( ["login"], function (login) {
         //print_r(json_encode($list));
 
 
+//        $array = [
+//            'user_id' => '35',
+//            'utm_source' => 'google',
+//            'ref_id' => '33414fsdf5',
+//            'payment' => [
+//                'exp_month' => '10',
+//                'exp_year' => '2021',
+//                'number' => '4242424242424242',
+//                'cvc' => '314',
+//                'name' => 'John Doe',
+//                'address_zip' => '33312',
+//                'subtotal' => '180',
+//                'feeCC' => '10',
+//                'feeService' => '10',
+//                'total' => '200'
+//            ],
+//            'cart' => [
+//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
+//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
+//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
+//            ]
+//        ];
+
         $array = [
             'user_id' => '35',
-            'utm_source' => 'google',
-            'ref_id' => '33414fsdf5',
+            'utm_source' => 'email',
+            'ref_id' => '54645',
+            'country' => 'United States',
             'payment' => [
-                'exp_month' => '10',
-                'exp_year' => '2021',
-                'number' => '4242424242424242',
-                'cvc' => '314',
+                'paymentID' => 'PAYID-L6I46DY94893457Y3361140Y',
+                'paymentToken' => 'EC-9LX554202G293421G',
                 'name' => 'John Doe',
-                'address_zip' => '33312',
                 'subtotal' => '180',
                 'feeCC' => '10',
                 'feeService' => '10',
