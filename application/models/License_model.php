@@ -307,13 +307,21 @@ class License_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_item_license($user_id, $item_id, $invoice_id) {
+    public function fetch_item_license($user_id, $item_id, $invoice_id, $id) {
 
-        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file,d.license_id as album_license 
-FROM linkstream_dev.st_user_invoice_license a
-left join linkstream_dev.st_audio c on a.item_id = c.id AND (a.item_track_type = 'beat' or a.item_track_type = 'kit')
-left join linkstream_dev.st_album d on a.item_id = d.id AND (a.item_track_type = 'pack')
-where a.invoice_id = '" . $invoice_id . "' AND a.user_id = '" . $user_id . "' AND a.item_id = '" . $item_id . "'";
+//        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file,d.license_id as album_license 
+//FROM st_user_invoice_license a
+//left join st_audio c on a.item_id = c.id AND (a.item_track_type = 'beat' or a.item_track_type = 'kit')
+//left join st_album d on a.item_id = d.id AND (a.item_track_type = 'pack')
+//where a.invoice_id = '" . $invoice_id . "' AND a.user_id = '" . $user_id . "' AND a.item_id = '" . $item_id . "'";
+
+
+        $sql = "SELECT a.*,d.license_id as album_license,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file
+FROM st_user_invoice_detail a 
+inner join st_user_invoice b on a.invoice_id = b.id
+left join st_audio c on a.item_id = c.id AND (a.item_table = 'st_audio') 
+left join st_album d on a.item_id = d.id AND (a.item_table = 'st_album') 
+where a.invoice_id = '" . $invoice_id . "' AND b.user_id = '" . $user_id . "' AND a.item_id = '" . $item_id . "' AND a.id = '" . $id . "'";
 
         $query = $this->db->query($sql);
         $result = $query->row_array();
