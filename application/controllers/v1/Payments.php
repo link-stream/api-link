@@ -277,7 +277,7 @@ class Payments extends RestController {
         //INSERT Item license.
         $item_license_id = $this->License_model->insert_item_license($item_license);
         //URL
-        $item_license['url'] = $this->general_library->encode_download_url($item_license_id, $item_license['user_id'], $item_license['item_id'], $item_license['producer_id']);
+        $item_license['url'] = $this->general_library->encode_download_url($item_license['invoice_id'], $item_license['user_id'], $item_license['item_id'], $item_license['producer_id']);
         return $item_license;
     }
 

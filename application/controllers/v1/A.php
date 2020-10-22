@@ -403,23 +403,100 @@ class A extends CI_Controller {
         if (empty($data)) {
             return false;
         }
-        $this->load->library('zip');
-        echo '<pre>';
-        print_r($data);
-        echo '</pre>';
-        $item_license = $this->License_model->fetch_item_license($data['user_id'], $data['item_id'], $data['st_item_license_id']);
+//        echo '<pre>';
+//        print_r($data);
+//        echo '</pre>';
+        $item_license = $this->License_model->fetch_item_license($data['user_id'], $data['item_id'], $data['invoice_id']);
         if (empty($item_license)) {
             return false;
         }
-        echo '<pre>';
-        print_r($item_license);
-        echo '</pre>';
+        if ($data['key'] != sha1($item_license['producer_id'])) {
+            return false;
+        }
+//        echo '<pre>';
+//        print_r($item_license);
+//        echo '</pre>';
+//        exit;
+        $this->load->library('zip');
+        $path = $this->s3_path . $this->s3_audio;
         if ($item_license['item_track_type'] == 'pack') {
-            
+            $license_info = $this->License_model->fetch_license_by_id($item_license['album_license']);
+            $album_items = $this->Album_model->fetch_album_audio_by_album_id($item_license['item_id']);
+            if (empty($album_items)) {
+                return false;
+            }
+            foreach ($album_items as $item) {
+                $audio = $this->Audio_model->fetch_audio_by_id($item['id_audio']);
+                if (!empty($audio)) {
+                    if ($license_info['mp3']) {
+                        if (!empty($audio['untagged_mp3'])) {
+                            $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
+                            $this->zip->add_data($audio['untagged_mp3_name'], $data_track_stems);
+                        }
+                    }
+                    if ($license_info['wav']) {
+                        if (!empty($audio['untagged_wav'])) {
+                            $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
+                            $this->zip->add_data($audio['untagged_wav_name'], $data_track_stems);
+                        }
+                    }
+                    if ($license_info['trackout_stems']) {
+                        if (!empty($audio['track_stems'])) {
+                            $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
+                            $this->zip->add_data($audio['track_stems_name'], $data_track_stems);
+                        }
+                    }
+                }
+            }
+            $file_name = $item_license['item_title'];
+            $file_name = urlencode($file_name);
+            // Write the zip file to a folder on your server. Name it "my_backup.zip"
+            //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+            // Download the file to your desktop. Name it "my_backup.zip"
+            $this->zip->download($file_name . '.zip');
         } elseif ($item_license['item_track_type'] == 'kit') {
-            
+            //echo $item_license['title'];exit;
+            if (!empty($item_license['track_stems'])) {
+                $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $item_license['track_stems']);
+                $this->zip->add_data($item_license['track_stems_name'], $data_track_stems);
+            }
+            if (!empty($item_license['tagged_file'])) {
+                $data_tagged_file = $this->aws_s3->s3_read($this->bucket, $path, $item_license['tagged_file']);
+                $this->zip->add_data($item_license['tagged_file_name'], $data_tagged_file);
+            }
+            $file_name = $item_license['item_title'];
+            $file_name = urlencode($file_name);
+            // Write the zip file to a folder on your server. Name it "my_backup.zip"
+            //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+            // Download the file to your desktop. Name it "my_backup.zip"
+            $this->zip->download($file_name . '.zip');
         } elseif ($item_license['item_track_type'] == 'beat') {
-            
+            if ($item_license['mp3']) {
+                if (!empty($item_license['untagged_mp3'])) {
+                    $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $item_license['untagged_mp3']);
+                    $this->zip->add_data($item_license['untagged_mp3_name'], $data_track_stems);
+                }
+            }
+            if ($item_license['wav']) {
+                if (!empty($item_license['untagged_wav'])) {
+                    $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $item_license['untagged_wav']);
+                    $this->zip->add_data($item_license['untagged_wav_name'], $data_track_stems);
+                }
+            }
+            if (!empty($item_license['track_stems'])) {
+                $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $item_license['track_stems']);
+                $this->zip->add_data($item_license['track_stems_name'], $data_track_stems);
+            }
+            if (!empty($item_license['tagged_file'])) {
+                $data_tagged_file = $this->aws_s3->s3_read($this->bucket, $path, $item_license['tagged_file']);
+                $this->zip->add_data($item_license['tagged_file_name'], $data_tagged_file);
+            }
+            $file_name = $item_license['item_title'];
+            $file_name = urlencode($file_name);
+            // Write the zip file to a folder on your server. Name it "my_backup.zip"
+            //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+            // Download the file to your desktop. Name it "my_backup.zip"
+            $this->zip->download($file_name . '.zip');
         }
     }
 

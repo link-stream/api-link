@@ -21,7 +21,7 @@ class Users extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model', 'License_model','Visitor_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Marketing_model', 'License_model', 'Visitor_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint', 'Stripe_library'));
         //Helpers
@@ -729,15 +729,8 @@ class Users extends RestController {
                     $detail['data_image'] = '';
                     if (!empty($audio['coverart'])) {
                         $detail['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
-//                        $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
-//                        if (!empty($data_image)) {
-//                            $img_file = $audio['coverart'];
-//                            file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
-//                            $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
-//                            $detail['data_image'] = $src;
-//                            unlink($this->temp_dir . '/' . $audio['coverart']);
-//                        }
                     }
+                    $detail['url'] = $this->general_library->encode_download_url($detail['invoice_id'], $user_id, $detail['item_id'], $detail['producer_id']);
                     $response_details[] = $detail;
                 }
                 $invoice['details'] = $response_details;
@@ -1227,7 +1220,7 @@ class Users extends RestController {
                 $data['marketing_info'] = $this->Audio_model->fetch_earning_marketing($user_id, $date);
                 $data['top_beat_sales'] = $this->Audio_model->fetch_top_sales($user_id, $date, 5);
                 //$data['top_referrers'] = $this->Audio_model->fetch_top_referrers($user_id, $date, 5);
-                
+
                 $data['top_referrers'] = $this->Visitor_model->fetch_top_referrers($user_id, $date, 5);
                 $data['visitors'] = $this->Visitor_model->fetch_visitors($user_id, $date);
 

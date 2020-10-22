@@ -4037,9 +4037,9 @@ paypal.use( ["login"], function (login) {
     }
 
     public function test_encrypt_2() {
-        $st_item_license_id = '7';
-        $user_id = '20';
-        $item_id = '7';
+        $st_item_license_id = '30';
+        $user_id = '35';
+        $item_id = '390';
         $producer_id = '35';
         $url = $this->general_library->encode_download_url($st_item_license_id, $user_id, $item_id, $producer_id);
         echo '<pre>';

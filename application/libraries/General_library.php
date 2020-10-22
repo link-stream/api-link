@@ -21,7 +21,7 @@ class General_library {
 
     //put your code here
     public function __construct() {
-        $this->api_url = (ENV == 'live') ? 'https://api.link.stream/v1/' : 'https://api-dev.link.stream/v1/';
+        $this->api_url = (ENV == 'live') ? 'https://api.link.stream/v1/' : ((ENV == 'staging') ? 'https://api-dev.link.stream/v1/' : 'http://localhost/api.link.stream/v1/');
         $CI = & get_instance();
         $CI->load->model('User_model');
 //        $CI->load->model('returned_mail_model');
@@ -327,9 +327,9 @@ class General_library {
         return $card_type;
     }
 
-    public function encode_download_url($st_item_license_id, $user_id, $item_id, $producer_id) {
+    public function encode_download_url($invoice_id, $user_id, $item_id, $producer_id) {
         $data = [
-            'st_item_license_id' => $st_item_license_id,
+            'invoice_id' => $invoice_id,
             'user_id' => $user_id,
             'item_id' => $item_id,
             'key' => sha1($producer_id)
