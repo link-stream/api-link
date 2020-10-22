@@ -26,6 +26,7 @@ class Payments extends RestController {
         $this->load->model('User_model');
         $this->load->model('Marketing_model');
         $this->load->model('License_model');
+        $this->load->model('Album_model');
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint'));
         $this->load->library('Stripe_library');
