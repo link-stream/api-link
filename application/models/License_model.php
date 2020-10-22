@@ -298,10 +298,24 @@ class License_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function fetch_item_license($user_id, $item_id, $code, $hash) {
+    public function fetch_item_license_old($user_id, $item_id, $id) {
         $this->db->from('st_user_invoice_license');
-        $this->db->where(array('user_id' => $user_id, 'item_id' => $item_id, 'code' => $code, 'hash' => $hash));
+        $this->db->where(array('user_id' => $user_id, 'item_id' => $item_id, 'id' => $id));
         $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_item_license($user_id, $item_id, $id) {
+
+        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file
+FROM linkstream_dev.st_user_invoice_license a
+left join linkstream_dev.st_audio c on a.item_id = c.id AND (a.item_track_type = 'beat' or a.item_track_type = 'kit')
+left join linkstream_dev.st_album d on a.item_id = d.id AND (a.item_track_type = 'pack')
+where a.id = '" . $id . "' AND a.user_id = '" . $user_id . "' AND a.item_id = '" . $item_id . "'";
+
+        $query = $this->db->query($sql);
         $result = $query->row_array();
         $query->free_result();
         return $result;

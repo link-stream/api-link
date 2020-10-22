@@ -3993,4 +3993,62 @@ paypal.use( ["login"], function (login) {
         echo '</pre>';
     }
 
+    public function test_encrypt() {
+        $st_item_license_id = '7';
+        $user_id = '7';
+        $item_id = '7';
+        $uniqid = uniqid('LS');
+        $producer_id = '35';
+        $data = [
+            'st_item_license_id' => $st_item_license_id,
+            'user_id' => $user_id,
+            'item_id' => $item_id,
+            //'uniqid' => $uniqid,
+            'key' => sha1($producer_id)
+        ];
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $ser_data = serialize($data);
+        echo '<pre>';
+        print_r($ser_data);
+        echo '</pre>';
+        $this->load->library('encryption');
+        $encrypted_string = $this->encryption->encrypt($ser_data);
+        echo '<pre>';
+        print_r($encrypted_string);
+        echo '</pre>';
+        $base_string = $this->general_library->urlsafe_b64encode($encrypted_string);
+        echo '<pre>';
+        print_r($base_string);
+        echo '</pre>';
+
+        //DESC
+        $encrypted_string = $this->general_library->urlsafe_b64decode($base_string);
+        $ser_data = $this->encryption->decrypt($encrypted_string);
+        $data = unserialize($ser_data);
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $sha1 = sha1($producer_id);
+        echo '<pre>';
+        print_r($sha1);
+        echo '</pre>';
+    }
+
+    public function test_encrypt_2() {
+        $st_item_license_id = '7';
+        $user_id = '20';
+        $item_id = '7';
+        $producer_id = '35';
+        $url = $this->general_library->encode_download_url($st_item_license_id, $user_id, $item_id, $producer_id);
+        echo '<pre>';
+        print_r($url);
+        echo '</pre>';
+        $data = $this->general_library->decode_download_url($url);
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+    }
+
 }

@@ -190,7 +190,7 @@ class Payments extends RestController {
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                             //LOG Item License.
                             $log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            $confirmation_url[$item['item_id']] = $this->api_url.'a/download/' . $user_id . '/' . $item['item_id'] . '/' . $log_license['code'] . '/' . $log_license['hash'];
+                            $confirmation_url[$item['item_id']] = $log_license['url'];
                             //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
@@ -272,13 +272,14 @@ class Payments extends RestController {
                 $item_license['non_profit_performances'] = $license['non_profit_performances'];
             }
         }
-        $item_license['code'] = uniqid('LS');
-        $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id'] . $item_license['code']);
+//        $item_license['code'] = uniqid('LS');
+//        $item_license['hash'] = sha1($item_license['user_id'] . $item_license['item_id'] . $item_license['code']);
         //INSERT Item license.
         $item_license_id = $this->License_model->insert_item_license($item_license);
+        //URL
+        $item_license['url'] = $this->general_library->encode_download_url($item_license_id, $item_license['user_id'], $item_license['item_id'], $item_license['producer_id']);
         return $item_license;
     }
 
     //NOTE: 
-
 }

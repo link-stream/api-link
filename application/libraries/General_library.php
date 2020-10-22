@@ -17,9 +17,11 @@ if (!defined('BASEPATH'))
 class General_library {
 
     public $ses_name = 'app_session';
+    private $api_url;
 
     //put your code here
     public function __construct() {
+        $this->api_url = (ENV == 'live') ? 'https://api.link.stream/v1/' : 'https://api-dev.link.stream/v1/';
         $CI = & get_instance();
         $CI->load->model('User_model');
 //        $CI->load->model('returned_mail_model');
@@ -332,7 +334,9 @@ class General_library {
             'item_id' => $item_id,
             'key' => sha1($producer_id)
         ];
-        return $this->encode_data($data);
+        $encode_data = $this->encode_data($data);
+        $url = $this->api_url . 'a/download/' . $encode_data;
+        return $url;
     }
 
     public function decode_download_url($base_string) {
