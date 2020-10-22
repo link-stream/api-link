@@ -164,6 +164,7 @@ class User_model extends CI_Model {
         $this->db->from('st_user_invoice');
         $this->db->where('user_id', $user_id);
         $this->db->where('status', 'COMPLETED');
+        $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
