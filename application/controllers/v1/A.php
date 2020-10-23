@@ -237,7 +237,7 @@ class A extends CI_Controller {
         }
     }
 
-    public function free_download($user_id = null, $item_id = null, $type = null, $code = null, $hash = null, $license_id = null) {
+    public function free_download_old($user_id = null, $item_id = null, $type = null, $code = null, $hash = null, $license_id = null) {
 
         if (empty($user_id) || empty($item_id) || empty($type) || empty($code) || empty($hash)) {
             echo 'Error';
@@ -496,6 +496,47 @@ class A extends CI_Controller {
             //$this->zip->archive($this->temp_dir . '/my_backup.zip');
             // Download the file to your desktop. Name it "my_backup.zip"
             $this->zip->download($file_name . '.zip');
+        }
+    }
+
+    public function free_download($user_id = null, $item_id = null, $type = null, $license_id = null) {
+        if (empty($user_id) || empty($item_id) || empty($type)) {
+            return false;
+        }
+        if ($type == 'beat' && empty($type)) {
+            return false;
+        }
+
+        if ($type == 'beat') {
+            $audio = $this->Audio_model->fetch_audio_by_id_user($item_id, $user_id);
+            if (empty($audio)) {
+                return false;
+            }
+            $license = $this->Audio_model->fetch_audio_license_by_id_license($item_id, $license_id);
+            if (empty($license)) {
+                return false;
+            }
+            if ($license['price'] == 0 && $license['status'] == '1') {
+                
+            }
+        }
+        if ($type == 'pack') {
+            $album = $this->Album_model->fetch_album_by_id_user($item_id, $user_id);
+            if (empty($album)) {
+                return false;
+            }
+            if ($album['price'] == 0) {
+                
+            }
+        }
+        if ($type == 'kit') {
+            $audio = $this->Audio_model->fetch_audio_by_id_user($item_id, $user_id);
+            if (empty($audio)) {
+                return false;
+            }
+            if ($audio['price'] == 0) {
+                
+            }
         }
     }
 

@@ -203,17 +203,22 @@ class C_notification extends CI_Controller {
     public function testing_cron() {
         $this->general_library->send_ses('Paul', 'paolofq@gmail.com', 'LinkStream', 'noreply@linkstream.com', 'Linkstream Cron', 'Testng Linkstream Cron: ' . date("Y-m-d H:i:s"), '', '');
     }
-    
-    public function print_hour(){
+
+    public function testing_cron_2() {
+        $this->general_library->send_ses('Paul', 'paolofq@gmail.com', 'LinkStream', 'noreply@linkstream.com', 'Linkstream Cron 2 ', 'Testng Linkstream Cron 2: ' . date("Y-m-d H:i:s"), '', '');
+    }
+
+    public function print_hour() {
         echo date("Y-m-d H:i:s");
         echo '<br>';
         echo date("Y-m-d H:i:s");
-        
+         echo '<br>';
+        echo date("Y-m-d H:i:s");
     }
-    
-    public function ruta(){
-         //echo getcwd();
-         echo dirname(__FILE__);
+
+    public function ruta() {
+        //echo getcwd();
+        echo dirname(__FILE__);
     }
 
 }
