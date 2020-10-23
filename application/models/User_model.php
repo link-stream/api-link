@@ -161,6 +161,7 @@ class User_model extends CI_Model {
     }
 
     public function fetch_user_purchases($user_id) {
+        $this->db->select('id,invoice_number,total,status,created_at');
         $this->db->from('st_user_invoice');
         $this->db->where('user_id', $user_id);
         $this->db->where('status', 'COMPLETED');
@@ -189,7 +190,8 @@ class User_model extends CI_Model {
     }
 
     public function fetch_user_purchases_details_2($invoice_id) {
-        $this->db->select('a.*, b.display_name');
+        //$this->db->select('a.*, b.display_name, b.url');
+        $this->db->select('a.id,a.item_id,a.item_title,a.item_amount,a.item_track_type,a.producer_id,a.invoice_id, b.display_name, b.url');
         $this->db->from('st_user_invoice_detail a');
         $this->db->join('st_user b', 'a.producer_id = b.id');
         //$this->db->join('st_track_type c', 'a.item_track_type = c.id');

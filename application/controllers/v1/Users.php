@@ -714,8 +714,7 @@ class Users extends RestController {
             $response = [];
             $path = $this->s3_path . $this->s3_coverart;
             foreach ($purchases as $invoice) {
-//                $invoice['details'] = $this->User_model->fetch_user_purchases_details($invoice['id']);
-//                $response[] = $invoice;
+                $invoice['created_at'] = $this->general_library->gmt_to_est($invoice['created_at']);
                 $details = $this->User_model->fetch_user_purchases_details_2($invoice['id']);
                 $response_details = [];
                 foreach ($details as $detail) {
@@ -730,7 +729,7 @@ class Users extends RestController {
                     if (!empty($audio['coverart'])) {
                         $detail['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                     }
-                    $detail['url'] = $this->general_library->encode_download_url($detail['invoice_id'], $user_id, $detail['item_id'], $detail['producer_id'], $detail['id']);
+                    $detail['download_url'] = $this->general_library->encode_download_url($detail['invoice_id'], $user_id, $detail['item_id'], $detail['producer_id'], $detail['id']);
                     $response_details[] = $detail;
                 }
                 $invoice['details'] = $response_details;
