@@ -211,7 +211,6 @@ class C_notification extends CI_Controller {
     public function print_hour() {
         echo date("Y-m-d H:i:s");
         echo '<br>';
-        echo date("Y-m-d H:i:s");
     }
 
     public function ruta() {
