@@ -340,6 +340,18 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_audio_license_by_id_license($id, $license_id) {
+        $this->db->select('a.license_id, a.price, a.status_id, b.mp3, b.wav, b.trackout_stems');
+        $this->db->from('st_audio_license a');
+        $this->db->join('st_user_license b', 'a.license_id = b.id');
+        $this->db->where('a.audio_id', $id);
+        $this->db->where('a.license_id', $license_id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function insert_audio_marketing($data) {
         $this->db->insert('st_audio_marketing', $data);
         //return $this->db->insert_id();

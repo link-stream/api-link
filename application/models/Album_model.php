@@ -47,6 +47,16 @@ class Album_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_album_by_id_user($id, $user_id) {
+        $this->db->from('st_album');
+        $this->db->where('id', $id);
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
 //    public function fetch_streamys_by_search($search, $limit = 0, $offset = 0) {
 //        $this->db->select('a.*,b.id as type_id,b.type as type_name');
 //        $this->db->from('st_streamy a');
