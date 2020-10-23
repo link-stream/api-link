@@ -222,7 +222,9 @@ class Payments extends RestController {
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                             //LOG Item License.
                             //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
+                            //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
+                            $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
+
                             //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
@@ -253,7 +255,7 @@ class Payments extends RestController {
                             $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
                         }
                         //RESPONSE TRUE
-                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC'], 'url' => $confirmation_url), RestController::HTTP_OK);
+                        $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC'], 'download' => $confirmation_url), RestController::HTTP_OK);
                     }
                 }
             } else {
