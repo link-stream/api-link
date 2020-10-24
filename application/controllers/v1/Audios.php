@@ -81,8 +81,8 @@ class Audios extends RestController {
         $resize_img = 'ls_' . $image_name;
         $config['new_image'] = $this->temp_dir . '/' . $resize_img;
         $config['maintain_ratio'] = TRUE;
-        $config['width'] = 640;
-        $config['height'] = 640;
+        $config['width'] = 960;
+        $config['height'] = 960;
         $this->image_lib->clear();
         $this->image_lib->initialize($config);
         $this->image_lib->resize();
@@ -473,6 +473,10 @@ class Audios extends RestController {
         if ($images) {
             if (!empty($audio['coverart'])) {
                 $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                //NEW ENCRYPTED IMAGE
+                $final_url = $this->general_library->encode_image_url($audio['user_id'], $audio['data_image']);
+                $audio['data_image'] = $final_url;
+                //END ENCRYPTED IMAGE
             }
         }
 
@@ -483,32 +487,18 @@ class Audios extends RestController {
             $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['track_stems'])) {
                 $audio['data_track_stems'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['track_stems'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_track_stems']);
+                $audio['data_track_stems'] = $final_url;
+                //END ENCRYPTED AUDIO
                 $audio['kit_files_name'] = (!empty($audio['kit_files_name'])) ? json_decode($audio['kit_files_name']) : [];
-//                $data_file = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
-//                if (!empty($data_file)) {
-//                    $img_file = $audio['track_stems'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['track_stems'], $data_file);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['track_stems']) . ';base64,' . base64_encode($data_file);
-//                    //Audio List.
-//                    $zip = new ZipArchive;
-//                    $res = $zip->open($this->temp_dir . '/' . $audio['track_stems']);
-//                    if ($res === TRUE) {
-//                        for ($i = 0; $i < $zip->numFiles; $i++) {
-//                            $filename = $zip->getNameIndex($i);
-//                            $pos = strpos($filename, 'MACOSX/.');
-//                            if ($pos === false) {
-//                                $audio['kit_files_name'][] = $filename;
-//                            }
-//                        }
-//                    }
-//                    $audio['samples'] = count($audio['kit_files_name']);
-//                    $this->Audio_model->update_streamy($audio['id'], ['samples' => $audio['samples']]);
-//                    //
-//                    unlink($this->temp_dir . '/' . $audio['track_stems']);
-//                }
             }
             if (!empty($audio['tagged_file'])) {
                 $audio['data_tagged_file'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['tagged_file'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_tagged_file']);
+                $audio['data_tagged_file'] = $final_url;
+                //END ENCRYPTED AUDIO
             }
         }
         unset($audio['publish_at']);
