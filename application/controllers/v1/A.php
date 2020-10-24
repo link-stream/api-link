@@ -623,4 +623,91 @@ class A extends CI_Controller {
         }
     }
 
+    public function imag_test($url) {
+        $new_url = "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg";
+        //$imagen_url = (ENV != 'live') ? 'https://dev-link-vue.link.stream/static/img/open.jpg' : 'https://linkstream/static/img/open.jpg';
+        header("Content-Type: image/jpeg"); // it will return image 
+        $logo = file_get_contents($new_url);
+        echo $logo;
+    }
+
+    public function audio($user_id, $url) {
+        if (empty($user_id) && empty($url)) {
+            return false;
+        }
+        $data = $this->general_library->decode_url($url);
+        if (empty($data)) {
+            return false;
+        }
+//        echo '<pre>';
+//        print_r($data);
+//        echo '</pre>';
+        if (empty($data['user_id']) || empty($data['key']) || empty($data['url'])) {
+            return false;
+        }
+        $sha1 = sha1($data['url'] . $data['user_id']);
+//        echo '<pre>';
+//        print_r($sha1);
+//        echo '</pre>';
+
+        if ($sha1 != $data['key']) {
+            return false;
+        }
+        if ($user_id != $data['user_id']) {
+            return false;
+        }
+
+        header("Content-Type: audio/mpeg"); // it will return image 
+        $logo = file_get_contents($data['url']);
+        echo $logo;
+    }
+
+    public function image($user_id, $url) {
+        if (empty($user_id) && empty($url)) {
+            return false;
+        }
+        $data = $this->general_library->decode_url($url);
+        if (empty($data)) {
+            return false;
+        }
+        if (empty($data['user_id']) || empty($data['key']) || empty($data['url'])) {
+            return false;
+        }
+        $sha1 = sha1($data['url'] . $data['user_id']);
+        if ($sha1 != $data['key']) {
+            return false;
+        }
+        if ($user_id != $data['user_id']) {
+            return false;
+        }
+
+        header("Content-Type: Content-Type: image/jpeg"); // it will return image 
+        $logo = file_get_contents($data['url']);
+        echo $logo;
+    }
+
+    public function file($user_id, $url) {
+        if (empty($user_id) && empty($url)) {
+            return false;
+        }
+        $data = $this->general_library->decode_url($url);
+        if (empty($data)) {
+            return false;
+        }
+        if (empty($data['user_id']) || empty($data['key']) || empty($data['url'])) {
+            return false;
+        }
+        $sha1 = sha1($data['url'] . $data['user_id']);
+        if ($sha1 != $data['key']) {
+            return false;
+        }
+        if ($user_id != $data['user_id']) {
+            return false;
+        }
+
+        header("Content-Type: Content-Type: application/zip"); // it will return image 
+        $logo = file_get_contents($data['url']);
+        echo $logo;
+    }
+
 }

@@ -360,4 +360,29 @@ class General_library {
         return $data;
     }
 
+    public function encode_audio_url($user_id, $s3_url, $zip = false) {
+        $data = [
+            'user_id' => $user_id,
+            'key' => sha1($s3_url . $user_id),
+            'url' => $s3_url
+        ];
+        $encode_data = $this->encode_data($data);
+        $url = $this->api_url . 'a/audio/' . $user_id . '/' . $encode_data;
+        if ($zip) {
+            $url = $this->api_url . 'a/file/' . $user_id . '/' . $encode_data;
+        }
+        return $url;
+    }
+
+    public function encode_image_url($user_id, $s3_url) {
+        $data = [
+            'user_id' => $user_id,
+            'key' => sha1($s3_url . $user_id),
+            'url' => $s3_url
+        ];
+        $encode_data = $this->encode_data($data);
+        $url = $this->api_url . 'a/image/' . $user_id . '/' . $encode_data;
+        return $url;
+    }
+
 }

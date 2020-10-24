@@ -298,6 +298,10 @@ class Audios extends RestController {
         if ($images) {
             if (!empty($audio['coverart'])) {
                 $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                //NEW ENCRYPTED IMAGE
+                $final_url = $this->general_library->encode_image_url($audio['user_id'], $audio['data_image']);
+                $audio['data_image'] = $final_url;
+                //END ENCRYPTED IMAGE
             }
         }
         $audio['licenses'] = $this->Audio_model->fetch_audio_license_by_id($audio['id']);
@@ -313,14 +317,19 @@ class Audios extends RestController {
                 $collaborator['data_image'] = '';
                 if (!empty($collaborator['image'])) {
 //                     $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
-                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
-                    if (!empty($data_image)) {
-                        $img_file = $collaborator['image'];
-                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
-                        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
-                        $collaborator['data_image'] = $src;
-                        unlink($this->temp_dir . '/' . $collaborator['image']);
-                    }
+//                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
+//                    if (!empty($data_image)) {
+//                        $img_file = $collaborator['image'];
+//                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
+//                        $src = 'data:' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+//                        $collaborator['data_image'] = $src;
+//                        unlink($this->temp_dir . '/' . $collaborator['image']);
+//                    }
+                    $collaborator['data_image'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
+                    //NEW ENCRYPTED IMAGE
+                    $final_url = $this->general_library->encode_image_url($audio['user_id'], $collaborator['data_image']);
+                    $collaborator['data_image'] = $final_url;
+                    //END ENCRYPTED IMAGE
                 }
                 $audio['collaborators'][] = $collaborator;
             }
@@ -328,17 +337,34 @@ class Audios extends RestController {
             $path = $this->s3_path . $this->s3_audio;
             if (!empty($audio['untagged_mp3'])) {
                 $audio['data_untagged_mp3'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['untagged_mp3'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_untagged_mp3']);
+                $audio['data_untagged_mp3'] = $final_url;
+                //END ENCRYPTED AUDIO
             }
             if (!empty($audio['untagged_wav'])) {
                 $audio['data_untagged_wav'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['untagged_wav'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_untagged_wav']);
+                $audio['data_untagged_wav'] = $final_url;
+                //END ENCRYPTED AUDIO
             }
             if (!empty($audio['track_stems'])) {
                 $audio['data_track_stems'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['track_stems'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_track_stems'], TRUE);
+                $audio['data_track_stems'] = $final_url;
+                //END ENCRYPTED AUDIO
             }
             if (!empty($audio['tagged_file'])) {
                 $audio['data_tagged_file'] = $this->server_url . $this->s3_path . $this->s3_audio . '/' . $audio['tagged_file'];
+                //NEW ENCRYPTED AUDIO
+                $final_url = $this->general_library->encode_audio_url($audio['user_id'], $audio['data_tagged_file']);
+                $audio['data_tagged_file'] = $final_url;
+                //END ENCRYPTED AUDIO
             }
         }
+
         unset($audio['publish_at']);
         unset($audio['price']);
         unset($audio['samples']);
