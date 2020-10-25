@@ -29,9 +29,9 @@ class Users extends RestController {
         //VARS
         $this->error = '';
         $this->bucket = 'files.link.stream';
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $this->s3_folder = 'Profile';
-        $this->s3_coverart = 'Coverart';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $this->s3_folder = 'profile';
+        $this->s3_coverart = 'coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
         $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }

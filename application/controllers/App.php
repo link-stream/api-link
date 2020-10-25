@@ -3530,8 +3530,6 @@ paypal.use( ["login"], function (login) {
 
 
         //print_r(json_encode($list));
-
-
 //        $array = [
 //            'user_id' => '35',
 //            'utm_source' => 'google',
@@ -4070,6 +4068,100 @@ paypal.use( ["login"], function (login) {
         echo '<pre>';
         print_r($data);
         echo '</pre>';
+    }
+
+    public function url_encrypt() {
+        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg";
+        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Audio/38ba7737fcb55e8144c788f3b776c984.mp3";
+        $user_id = '35';
+        echo '<pre>';
+        print_r($url);
+        echo '</pre>';
+        echo '<pre>';
+        print_r($user_id);
+        echo '</pre>';
+        $sha1 = sha1($url . $user_id);
+        echo '<pre>';
+        print_r($sha1);
+        echo '</pre>';
+        $data = [
+            'user_id' => '35',
+            'key' => $sha1,
+            'url' => $url
+        ];
+        $encode = $this->general_library->encode_data($data);
+        echo '<pre>';
+        print_r($encode);
+        echo '</pre>';
+
+
+        $final_url = 'https://api-dev.link.stream/v1/A/image/' . $user_id . '/' . $encode;
+        echo '<pre>';
+        print_r($final_url);
+        echo '</pre>';
+    }
+
+    public function url_audio($user_id, $url) {
+        if (empty($user_id) && empty($url)) {
+            return false;
+        }
+        $data = $this->general_library->decode_url($url);
+        if (empty($data)) {
+            return false;
+        }
+//        echo '<pre>';
+//        print_r($data);
+//        echo '</pre>';
+//        exit;
+        if (empty($data['user_id']) || empty($data['key']) || empty($data['url'])) {
+            return false;
+        }
+        $sha1 = sha1($data['url'] . $data['user_id']);
+//        echo '<pre>';
+//        print_r($sha1);
+//        echo '</pre>';
+
+        if ($sha1 != $data['key']) {
+            return false;
+        }
+        if ($user_id != $data['user_id']) {
+            return false;
+        }
+
+        header("Content-Type: audio/mpeg"); // it will return image 
+        $logo = file_get_contents($data['url']);
+        echo $logo;
+    }
+    
+    public function image($user_id, $url) {
+        if (empty($user_id) && empty($url)) {
+            return false;
+        }
+        $data = $this->general_library->decode_url($url);
+        if (empty($data)) {
+            return false;
+        }
+//        echo '<pre>';
+//        print_r($data);
+//        echo '</pre>';
+        if (empty($data['user_id']) || empty($data['key']) || empty($data['url'])) {
+            return false;
+        }
+        $sha1 = sha1($data['url'] . $data['user_id']);
+//        echo '<pre>';
+//        print_r($sha1);
+//        echo '</pre>';
+
+        if ($sha1 != $data['key']) {
+            return false;
+        }
+        if ($user_id != $data['user_id']) {
+            return false;
+        }
+
+        header("Content-Type: image/jpeg"); // it will return image 
+        $logo = file_get_contents($data['url']);
+        echo $logo;
     }
 
 }

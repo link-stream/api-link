@@ -27,7 +27,7 @@ class Videos extends RestController {
         //VARS
         $this->error = '';
         $this->bucket = 'files.link.stream';
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
         $this->s3_folder = '';
         $this->temp_dir = $this->general_library->get_temp_dir();
     }

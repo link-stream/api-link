@@ -18,7 +18,7 @@ class Landing extends RestController {
         parent::__construct();
         $this->error = '';
         $this->bucket = 'files.link.stream';
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
         //Models
         $this->load->model(array('User_model', 'Audio_model', 'Streamy_model'));
         //Libraries
