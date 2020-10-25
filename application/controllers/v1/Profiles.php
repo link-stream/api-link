@@ -1201,10 +1201,10 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image']  = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
-                $audio['data_image'] = $final_url;
+                $audio['data_image'] = $audio['coverart_url']= $final_url;
                 //END ENCRYPTED IMAGE
             }
         }
@@ -1359,10 +1359,10 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image']  = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
-                $audio['data_image'] = $final_url;
+                $audio['data_image'] = $audio['coverart_url']= $final_url;
                 //END ENCRYPTED IMAGE
             }
         }
@@ -1442,10 +1442,10 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
-                $audio['data_image'] = $final_url;
+                $audio['data_image'] = $audio['coverart_url'] = $final_url;
                 //END ENCRYPTED IMAGE
             }
         }
