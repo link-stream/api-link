@@ -918,6 +918,8 @@ class Profiles extends RestController {
                         $audio_response = $this->audio_clean_2($extra_streamy, null);
                         if (!empty($audio_response)) {
                             if ($audio_response['id'] != $audio_id) {
+                                $played_count = $this->Audio_model->fetch_audio_played($audio_id);
+                                $audio_response['played'] = $played_count['Count'];
                                 $data_response['extra'][] = $audio_response;
                             }
                         }
@@ -969,6 +971,8 @@ class Profiles extends RestController {
                         $audio_response = $this->audio_clean_2($extra_streamy, null);
                         if (!empty($audio_response)) {
                             if ($audio_response['id'] != $audio_id) {
+                                $played_count = $this->Audio_model->fetch_audio_played($audio_id);
+                                $audio_response['played'] = $played_count['Count'];
                                 $data_response['extra'][] = $audio_response;
                             }
                         }
@@ -1197,7 +1201,7 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] =$audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
                 $audio['data_image'] = $final_url;
@@ -1302,7 +1306,7 @@ class Profiles extends RestController {
         if (empty($audio_id)) {
             unset($audio['created_at']);
             unset($audio['status_id']);
-            unset($audio['bpm']);
+            //unset($audio['bpm']);
             unset($audio['key_id']);
             unset($audio['public']);
             unset($audio['publish_at']);
@@ -1355,7 +1359,7 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] =$audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
                 $audio['data_image'] = $final_url;
@@ -1438,7 +1442,7 @@ class Profiles extends RestController {
 //                    unlink($this->temp_dir . '/' . $audio['coverart']);
 //                    $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
 //                }
-                $audio['data_image'] = $audio['coverart_url'] =$this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                $audio['data_image'] = $audio['coverart_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
                 $audio['data_image'] = $final_url;

@@ -749,4 +749,14 @@ where a.producer_id = '" . $user_id . "' and created_at >= '" . $from . "' and u
         return $result;
     }
 
+    public function fetch_audio_played($audio_id) {
+        $sql = "select count(*) as Count 
+from st_audio_log a
+where a.audio_id = '" . $audio_id . "' and action = 'PLAY' ";
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
 }
