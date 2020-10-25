@@ -59,14 +59,38 @@ class Albums extends RestController {
 
 //
     private function image_decode_put($image) {
+//        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+//        $ext = (!empty($match[1])) ? $match[1] : '.png';
+//        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+//        //upload image to server 
+//        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+//        //SAVE S3
+//        $this->s3_push($image_name, $this->s3_coverart);
+//        return $image_name;
+        
+        
         preg_match("/^data:image\/(.*);base64/i", $image, $match);
-        $ext = (!empty($match[1])) ? $match[1] : '.png';
+        $ext = (!empty($match[1])) ? $match[1] : 'png';
         $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
         //upload image to server 
         file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //Image_Resize
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $this->temp_dir . '/' . $image_name;
+        $config['create_thumb'] = FALSE;
+        $resize_img = 'ls_' . $image_name;
+        $config['new_image'] = $this->temp_dir . '/' . $resize_img;
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 960;
+        $config['height'] = 960;
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
         //SAVE S3
-        $this->s3_push($image_name, $this->s3_coverart);
-        return $image_name;
+        $this->s3_push($resize_img, $this->s3_coverart);
+        unlink($this->temp_dir . '/' . $image_name);
+        return $resize_img;
+        
     }
 
 //
@@ -194,14 +218,10 @@ class Albums extends RestController {
         if ($images) {
             if (!empty($audio['coverart'])) {
                 $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
-//                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $audio['coverart']);
-//                if (!empty($data_image)) {
-//                    $img_file = $audio['coverart'];
-//                    file_put_contents($this->temp_dir . '/' . $audio['coverart'], $data_image);
-//                    $src = 'data:' . mime_content_type($this->temp_dir . '/' . $audio['coverart']) . ';base64,' . base64_encode($data_image);
-//                    $audio['data_image'] = $src;
-//                    unlink($this->temp_dir . '/' . $audio['coverart']);
-//                }
+                //NEW ENCRYPTED IMAGE
+                $final_url = $this->general_library->encode_image_url($audio['user_id'], $audio['data_image']);
+                $audio['data_image'] = $final_url;
+                //END ENCRYPTED IMAGE
             }
         }
         $audio['beats'] = $this->Album_model->fetch_album_audio_by_album_id($audio['id']);
