@@ -1086,7 +1086,7 @@
 
 
 
-                            <span class="your-files-are-now-a">Your files are now available to download in your <a href="<?= (!empty($linkstream)) ? $linkstream : 'https://dev-link-vue.link.stream/' ?>" class="details-items-pay-link" target="_self">LinkStream Account.</a></span>
+                            <span class="your-files-are-now-a">Your files are now available to download in your <a href="<?= (!empty($linkstream)) ? $linkstream.'login' : 'https://dev-link-vue.link.stream/login' ?>" class="details-items-pay-link" target="_self">LinkStream Account.</a></span>
 
 
 
@@ -1194,7 +1194,7 @@
 
 
 
-                                                            <a href="<?= $linkstream . 'login' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($item['extra_info']['display_name'])) ? ucwords($item['extra_info']['display_name']) : 'Paolo LinkStream'; ?> </a>
+                                                            <a href="<?= (!empty($item['extra_info']['url'])) ? $linkstream . $item['extra_info']['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($item['extra_info']['display_name'])) ? ucwords($item['extra_info']['display_name']) : 'Paolo LinkStream'; ?> </a>
 
 
 
