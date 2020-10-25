@@ -360,7 +360,7 @@ class Aws_s3 {
             // Expires: 100 //time to expire in seconds
         ]);
 
-        $request = $this->s3->createPresignedRequest($cmd, '+30 minutes');
+        $request = $this->s3->createPresignedRequest($cmd, '+60 minutes');
 
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
