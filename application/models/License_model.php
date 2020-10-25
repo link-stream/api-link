@@ -307,6 +307,15 @@ class License_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_invoice_detail_by_id($id) {
+        $this->db->from('st_user_invoice_detail');
+        $this->db->where(array('id' => $id));
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function fetch_item_license($user_id, $item_id, $invoice_id, $id) {
 
 //        $sql = "SELECT a.*,untagged_mp3_name,untagged_mp3,untagged_wav_name,untagged_wav,track_stems_name,track_stems,tagged_file_name,tagged_file,d.license_id as album_license 

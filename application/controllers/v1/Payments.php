@@ -432,6 +432,8 @@ class Payments extends RestController {
                 $description = 'Linkstream - Invoice: ' . $invoice_number;
                 $user_data = $this->User_model->fetch_user_by_id($user_id);
                 $receipt_email = $user_data['email'];
+                $cart_email = [];
+                $confirmation_url = [];
                 //UPDATE DETAILS
                 foreach ($cart as $item) {
                     $item['invoice_id'] = $invoice_id;
@@ -472,7 +474,8 @@ class Payments extends RestController {
                     $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
                     //LOG Item License.
                     //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                    $confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
+                    //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
+                    $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
                     //
                     $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                     $cart_email[] = $item;
