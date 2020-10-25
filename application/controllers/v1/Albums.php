@@ -23,7 +23,7 @@ class Albums extends RestController {
         //Models
         $this->load->model(array('User_model', 'Album_model'));
         //Libraries
-        $this->load->library(array('aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib'));
         //Helpers
         //$this->load->helper('email');
         //VARS
@@ -67,8 +67,8 @@ class Albums extends RestController {
 //        //SAVE S3
 //        $this->s3_push($image_name, $this->s3_coverart);
 //        return $image_name;
-        
-        
+
+
         preg_match("/^data:image\/(.*);base64/i", $image, $match);
         $ext = (!empty($match[1])) ? $match[1] : 'png';
         $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
@@ -90,7 +90,6 @@ class Albums extends RestController {
         $this->s3_push($resize_img, $this->s3_coverart);
         unlink($this->temp_dir . '/' . $image_name);
         return $resize_img;
-        
     }
 
 //
