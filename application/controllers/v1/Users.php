@@ -1144,7 +1144,7 @@ class Users extends RestController {
                 foreach ($top_5 as $item) {
                     $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
                     //NEW ENCRYPTED IMAGE
-                    $final_url = $this->general_library->encode_image_url($audio['user_id'],$this->s3_path . $this->s3_coverart . '/' . $item['coverart']);
+                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item['coverart']);
                     $item['image_url'] = $final_url;
                     //END ENCRYPTED IMAGE
                     $data['top_5'][] = $item;
@@ -1155,7 +1155,7 @@ class Users extends RestController {
                 foreach ($activity_5 as $item) {
                     $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
                     //NEW ENCRYPTED IMAGE
-                    $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_folder . '/' . $item['image']);
+                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item['image']);
                     $item['image_url'] = $final_url;
                     //END ENCRYPTED IMAGE
                     $data['activity'][] = $item;
@@ -1281,7 +1281,7 @@ class Users extends RestController {
                     if (!empty($audio['coverart'])) {
                         $order['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                         //NEW ENCRYPTED IMAGE
-                        $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
+                        $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
                         $order['data_image'] = $final_url;
                         //END ENCRYPTED IMAGE
                     }
