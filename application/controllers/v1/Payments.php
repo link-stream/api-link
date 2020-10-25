@@ -271,7 +271,9 @@ class Payments extends RestController {
     private function producer_item_info($item_id, $item_track_type) {
         $producer_item = $this->User_model->fetch_confirmation_detail_item($item_id, $item_track_type);
         if (!empty($producer_item['coverart'])) {
-            $producer_item['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $producer_item['coverart'];
+            //$producer_item['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $producer_item['coverart'];
+            $final_url = $this->general_library->encode_image_url('', $this->s3_path . $this->s3_coverart . '/' . $producer_item['coverart']);
+            $producer_item['data_image'] = $final_url;
         }
         return $producer_item;
     }
