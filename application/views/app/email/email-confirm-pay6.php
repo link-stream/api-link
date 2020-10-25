@@ -1194,7 +1194,7 @@
 
 
 
-                                                            <a href="<?= (!empty($item['extra_info']['url'])) ? $linkstream . $item['extra_info']['url'] : 'https://dev-link-vue.link.stream/paolo_linkstream' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($item['extra_info']['display_name'])) ? ucwords($item['extra_info']['display_name']) : 'Paolo LinkStream'; ?> </a>
+                                                            <a href="<?= $linkstream . 'login' ?>   " class="details-items-pay-link" target="_self"><?= (!empty($item['extra_info']['display_name'])) ? ucwords($item['extra_info']['display_name']) : 'Paolo LinkStream'; ?> </a>
 
 
 
