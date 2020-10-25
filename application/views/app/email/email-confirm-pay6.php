@@ -1162,7 +1162,7 @@
 
 
 
-                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($item['extra_info']['data_image'])) ? $item['extra_info']['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
+                                                        <img style="width:50px; height:50px; padding-bottom: 5px;" src="<?= (!empty($item['extra_info']['data_image'])) ? $item['extra_info']['data_image'] : 'https://s3.us-east-2.amazonaws.com/files.link.stream/dev/coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg'; ?>">
 
 
 
