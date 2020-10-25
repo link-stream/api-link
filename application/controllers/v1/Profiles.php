@@ -730,7 +730,7 @@ class Profiles extends RestController {
 //                }
                 $link['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $link['coverart'];
                 //NEW ENCRYPTED IMAGE
-                $final_url = $this->general_library->encode_image_url($link['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
+                $final_url = $this->general_library->encode_image_url($link['user_id'], $this->s3_path . $this->s3_coverart . '/' . $link['coverart']);
                 $link['data_image'] = $final_url;
                 //END ENCRYPTED IMAGE
             }
