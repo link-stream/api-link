@@ -413,8 +413,8 @@ class App extends CI_Controller {
                 file_put_contents($source . '/' . $image_name, $content);
                 //SAVE S3
                 $bucket = 'files.link.stream';
-                $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-                $dest_folder = 'Profile';
+                $path = (ENV == 'live') ? 'prod/' : 'dev/';
+                $dest_folder = 'profile';
                 $destination = $path . $dest_folder . '/' . $image_name;
                 $s3_source = $source . '/' . $image_name;
                 $this->aws_s3->s3push($s3_source, $destination, $bucket);
@@ -474,7 +474,7 @@ class App extends CI_Controller {
                     file_put_contents($source . '/' . $image_name, $content);
                     //SAVE S3
                     $bucket = 'files.link.stream';
-                    $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+                    $path = (ENV == 'live') ? 'prod/' : 'dev/';
                     $dest_folder = 'Profile';
                     $destination = $path . $dest_folder . '/' . $image_name;
                     $s3_source = $source . '/' . $image_name;
@@ -920,7 +920,7 @@ class App extends CI_Controller {
             $file_uploades = $this->upload->data();
             //SAVE S3
             $bucket = 'files.link.stream';
-            $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
+            $path = (ENV == 'live') ? 'prod/' : 'dev/';
             $destination = $path . $dest_folder . '/' . $file_uploades['file_name'];
             $s3_source = $source . '/' . $file_uploades['file_name'];
             $this->aws_s3->s3push($s3_source, $destination, $bucket);
@@ -1235,7 +1235,7 @@ class App extends CI_Controller {
     }
 
     public function audio_content($name = null) {
-        $path = (ENV == 'live') ? 'Prod/Audio/' : 'Dev/Audio/';
+        $path = (ENV == 'live') ? 'prod/audio/' : 'dev/audio/';
         $file = 'https://s3.us-east-2.amazonaws.com/files.link.stream/' . $path . $name;
         header("Cache-Control: no-cache, must-revalidate");
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
@@ -1267,7 +1267,7 @@ class App extends CI_Controller {
             $embed_url = '<div class="row"> <div class="col-md-12 p-10"><a href="' . $url . '" class="btn btn-success" target="_blank">View</a></div></div>';
         } elseif ($type == '4') {
             //Streamy
-            $path = (ENV == 'live') ? 'Prod/Audio/' : 'Dev/Audio/';
+            $path = (ENV == 'live') ? 'prod/audio/' : 'dev/audio/';
             $file = 'https://s3.us-east-2.amazonaws.com/files.link.stream/' . $path . $url;
             //$file = base_url() . 'app/audio_content/' . $url;
             $embed_url_old = '<audio id="myAudio">
@@ -1527,7 +1527,7 @@ class App extends CI_Controller {
         $register_user = $this->User_model->fetch_user_by_search(array('id' => $user_id));
         if (!empty($register_user['banner'])) {
             $bucket = $this->bucket;
-            $path = (ENV == 'live') ? 'Prod/Profile' : 'Dev/Profile';
+            $path = (ENV == 'live') ? 'prod/profile' : 'dev/profile';
             $s3_data = $this->aws_s3->s3_read($bucket, $path, $register_user['banner']);
             if (!empty($s3_data)) {
                 $data = $s3_data;
@@ -1549,7 +1549,7 @@ class App extends CI_Controller {
         $register_user = $this->User_model->fetch_user_by_search(array('id' => $user['id']));
         if (!empty($register_user['image'])) {
             $bucket = $this->bucket;
-            $path = (ENV == 'live') ? 'Prod/Profile' : 'Dev/Profile';
+            $path = (ENV == 'live') ? 'prod/profile' : 'dev/profile';
             $s3_data = $this->aws_s3->s3_read($bucket, $path, $register_user['image']);
             if (!empty($s3_data)) {
                 $data = $s3_data;
@@ -1587,8 +1587,8 @@ class App extends CI_Controller {
         file_put_contents($source . '/' . $image_name, $croped_image);
         //SAVE S3
         $bucket = 'files.link.stream';
-        $path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $dest_folder = 'Profile';
+        $path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $dest_folder = 'profile';
         $destination = $path . $dest_folder . '/' . $image_name;
         $s3_source = $source . '/' . $image_name;
         $this->aws_s3->s3push($s3_source, $destination, $bucket);
@@ -2600,7 +2600,7 @@ class App extends CI_Controller {
 
     public function zip_info_2() {
         $zip_name = '94303c1d12cafd95fcd1a8ce45572d91.zip';
-        $path = (ENV == 'live') ? 'Prod/Audio/' : 'Dev/Audio/';
+        $path = (ENV == 'live') ? 'prod/audio/' : 'dev/audio/';
         $zip_file = 'https://s3.us-east-2.amazonaws.com/files.link.stream/' . $path . $zip_name;
 //        $temp_dir = $this->general_library->get_temp_dir();
 //        $zip_file = $temp_dir . '/' . $zip_name;
@@ -3744,9 +3744,9 @@ paypal.use( ["login"], function (login) {
         $this->load->library('image_lib');
         $this->temp_dir = $this->general_library->get_temp_dir();
         $this->bucket = 'files.link.stream';
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $this->s3_coverart = 'Coverart';
-        $this->s3_audio = 'Audio';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $this->s3_coverart = 'coverart';
+        $this->s3_audio = 'audio';
         //*******REAL OPCION********//
         $time_start = microtime(true);
         $audio = $this->Audio_model->fetch_audio_by_id('379');
@@ -3933,8 +3933,8 @@ paypal.use( ["login"], function (login) {
     }
 
     public function s3_url() {
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $this->s3_audio = 'Audio';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $this->s3_audio = 'audio';
         $file_name = 'aaa.mp3';
         $destination = $this->s3_path . $this->s3_audio . '/' . $file_name;
         $destination = $file_name;
@@ -3944,8 +3944,8 @@ paypal.use( ["login"], function (login) {
     }
 
     public function s3_post() {
-        $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
-        $this->s3_audio = 'Audio';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $this->s3_audio = 'audio';
         $file_name = md5(uniqid(rand(), true)) . '.jpeg';
         //$file_name = 'te.mp3';
         $destination = $this->s3_path . $this->s3_audio . '/';
@@ -3974,7 +3974,7 @@ paypal.use( ["login"], function (login) {
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => array(
                 'acl' => 'public-read',
-                'key' => 'Dev/Audio/9a2b33a504f29f2e7d7dbb96d68b4333.jpeg',
+                'key' => 'dev/audio/9a2b33a504f29f2e7d7dbb96d68b4333.jpeg',
                 'X-Amz-Credential' => 'AKIAXBDC73PHUL3JUCGP/20201015/us-east-2/s3/aws4_request',
                 'X-Amz-Algorithm' => 'AWS4-HMAC-SHA256', 'X-Amz-Date' => '20201015T183840Z',
                 'Policy' => 'eyJleHBpcmF0aW9uIjoiMjAyMC0xMC0xNVQxOTowODo0MFoiLCJjb25kaXRpb25zIjpbeyJhY2wiOiJwdWJsaWMtcmVhZCJ9LHsiYnVja2V0IjoiZmlsZXMubGluay5zdHJlYW0ifSxbInN0YXJ0cy13aXRoIiwiJGtleSIsIkRldlwvQXVkaW9cLzlhMmIzM2E1MDRmMjlmMmU3ZDdkYmI5NmQ2OGI0MzMzLmpwZWciXSx7IlgtQW16LURhdGUiOiIyMDIwMTAxNVQxODM4NDBaIn0seyJYLUFtei1DcmVkZW50aWFsIjoiQUtJQVhCREM3M1BIVUwzSlVDR1BcLzIwMjAxMDE1XC91cy1lYXN0LTJcL3MzXC9hd3M0X3JlcXVlc3QifSx7IlgtQW16LUFsZ29yaXRobSI6IkFXUzQtSE1BQy1TSEEyNTYifV19',
@@ -4071,8 +4071,8 @@ paypal.use( ["login"], function (login) {
     }
 
     public function url_encrypt() {
-        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg";
-        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/Dev/Audio/38ba7737fcb55e8144c788f3b776c984.mp3";
+        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/dev/coverart/ls_b010473bdb62681c47a8c1ba59198454.jpeg";
+        $url = "https://s3.us-east-2.amazonaws.com/files.link.stream/dev/audio/38ba7737fcb55e8144c788f3b776c984.mp3";
         $user_id = '35';
         echo '<pre>';
         print_r($url);

@@ -18,12 +18,23 @@ class General_library {
 
     public $ses_name = 'app_session';
     private $api_url;
+    private $bucket;
+    private $s3_path;
+    private $s3_coverart;
+    private $s3_audio;
+    private $s3_folder;
 
     //put your code here
     public function __construct() {
         $this->api_url = (ENV == 'live') ? 'https://api.link.stream/v1/' : ((ENV == 'staging') ? 'https://api-dev.link.stream/v1/' : 'http://localhost/api.link.stream/v1/');
+        $this->bucket = 'files.link.stream';
+        $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
+        $this->s3_coverart = 'coverart';
+        $this->s3_audio = 'audio';
+        $this->s3_folder = 'profile';
         $CI = & get_instance();
         $CI->load->model('User_model');
+        $CI->load->library('aws_s3');
 //        $CI->load->model('returned_mail_model');
 //        $CI->load->helper('cookie');
         $this->ci = $CI;
@@ -360,28 +371,32 @@ class General_library {
         return $data;
     }
 
-    public function encode_audio_url($user_id, $s3_url, $zip = false) {
-        $data = [
-            'user_id' => $user_id,
-            'key' => sha1($s3_url . $user_id),
-            'url' => $s3_url
-        ];
-        $encode_data = $this->encode_data($data);
-        $url = $this->api_url . 'a/audio/' . $user_id . '/' . $encode_data;
-        if ($zip) {
-            $url = $this->api_url . 'a/file/' . $user_id . '/' . $encode_data;
-        }
+    public function encode_audio_url($user_id, $file_name, $zip = false) {
+//        $data = [
+//            'user_id' => $user_id,
+//            'key' => sha1($s3_url . $user_id),
+//            'url' => $s3_url
+//        ];
+//        $encode_data = $this->encode_data($data);
+//        $url = $this->api_url . 'a/audio/' . $user_id . '/' . $encode_data;
+//        if ($zip) {
+//            $url = $this->api_url . 'a/file/' . $user_id . '/' . $encode_data;
+//        }
+        $url = $this->ci->aws_s3->pre_signed_url($this->bucket, $file_name);
         return $url;
     }
 
-    public function encode_image_url($user_id, $s3_url) {
-        $data = [
-            'user_id' => $user_id,
-            'key' => sha1($s3_url . $user_id),
-            'url' => $s3_url
-        ];
-        $encode_data = $this->encode_data($data);
-        $url = $this->api_url . 'a/image/' . $user_id . '/' . $encode_data;
+    public function encode_image_url($user_id, $file_name) {
+//        $data = [
+//            'user_id' => $user_id,
+//            'key' => sha1($s3_url . $user_id),
+//            'url' => $s3_url
+//        ];
+//        $encode_data = $this->encode_data($data);
+//        $url = $this->api_url . 'a/image/' . $user_id . '/' . $encode_data;
+
+        
+        $url = $this->ci->aws_s3->pre_signed_url($this->bucket, $file_name);
         return $url;
     }
 

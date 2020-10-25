@@ -357,10 +357,10 @@ class Aws_s3 {
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $bucket,
             'Key' => $file_name,
-            // Expires: 100 //time to expire in seconds
+                // Expires: 100 //time to expire in seconds
         ]);
 
-        $request = $this->s3->createPresignedRequest($cmd, '+60 minutes');
+        $request = $this->s3->createPresignedRequest($cmd, '+180 minutes');
 
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
@@ -394,7 +394,7 @@ class Aws_s3 {
             ['acl' => 'public-read'],
             ['bucket' => $bucket],
             ['starts-with', '$key', $path . $file_name],
-            //["content-length-range", 100, 10000000],
+                //["content-length-range", 100, 10000000],
         ];
 
         // Optional: configure expiration time string

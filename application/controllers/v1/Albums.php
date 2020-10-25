@@ -218,7 +218,7 @@ class Albums extends RestController {
             if (!empty($audio['coverart'])) {
                 $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
-                $final_url = $this->general_library->encode_image_url($audio['user_id'], $audio['data_image']);
+                $final_url = $this->general_library->encode_image_url($audio['user_id'], $this->s3_path . $this->s3_coverart . '/' . $audio['coverart']);
                 //$audio['data_image'] = $final_url;
                 //END ENCRYPTED IMAGE
             }
