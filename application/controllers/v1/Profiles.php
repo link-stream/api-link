@@ -186,7 +186,7 @@ class Profiles extends RestController {
                 $audio['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
                 //NEW ENCRYPTED IMAGE
                 $final_url = $this->general_library->encode_image_url($audio['user_id'], $audio['data_image']);
-                $audio['data_image'] = $final_url;
+                //$audio['data_image'] = $final_url;
                 //END ENCRYPTED IMAGE
             }
         }
@@ -838,8 +838,6 @@ class Profiles extends RestController {
                         $title = urldecode($title);
                         //Audio List.
                         $zip = new ZipArchive;
-//                        print_r(urldecode($title));
-//                        exit;
                         if ($zip->open($this->temp_dir . '/' . $audio['track_stems']) === TRUE) {
                             $beat_file = $zip->getFromName($title);
                             $zip->close();
