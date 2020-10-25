@@ -1143,6 +1143,10 @@ class Users extends RestController {
                 $data['top_5'] = [];
                 foreach ($top_5 as $item) {
                     $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $item['coverart'];
+                    //NEW ENCRYPTED IMAGE
+                    $final_url = $this->general_library->encode_image_url($audio['user_id'], $item['image_url']);
+                    $item['image_url'] = $final_url;
+                    //END ENCRYPTED IMAGE
                     $data['top_5'][] = $item;
                 }
                 //ACTIVITY LOG
@@ -1150,6 +1154,10 @@ class Users extends RestController {
                 $data['activity'] = [];
                 foreach ($activity_5 as $item) {
                     $item['image_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $item['image'];
+                    //NEW ENCRYPTED IMAGE
+                    $final_url = $this->general_library->encode_image_url($audio['user_id'], $item['image_url']);
+                    $item['image_url'] = $final_url;
+                    //END ENCRYPTED IMAGE
                     $data['activity'][] = $item;
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
@@ -1272,6 +1280,10 @@ class Users extends RestController {
                     $order['data_image'] = '';
                     if (!empty($audio['coverart'])) {
                         $order['data_image'] = $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'];
+                        //NEW ENCRYPTED IMAGE
+                        $final_url = $this->general_library->encode_image_url($audio['user_id'], $order['data_image']);
+                        $order['data_image'] = $final_url;
+                        //END ENCRYPTED IMAGE
                     }
                     $order['license'] = '';
                     if (!empty($order['license_id'])) {

@@ -15,13 +15,14 @@ class Links extends RestController {
     private $s3_path;
     private $s3_folder;
     private $temp_dir;
+    private $server_url;
 
     public function __construct() {
         parent::__construct();
         //Models
         $this->load->model('Link_model');
         //Libraries
-        $this->load->library(array('aws_s3', 'Aws_pinpoint'));
+        $this->load->library(array('aws_s3', 'Aws_pinpoint', 'image_lib'));
         //Helpers
         //$this->load->helper('email');
         //VARS
@@ -30,17 +31,41 @@ class Links extends RestController {
         $this->s3_path = (ENV == 'live') ? 'Prod/' : 'Dev/';
         $this->s3_folder = 'Coverart';
         $this->temp_dir = $this->general_library->get_temp_dir();
+        $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
     }
 
     private function image_decode_put($image) {
+//        preg_match("/^data:image\/(.*);base64/i", $image, $match);
+//        $ext = (!empty($match[1])) ? $match[1] : '.png';
+//        $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
+//        //upload image to server 
+//        file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+//        //SAVE S3
+//        $this->s3_push($image_name);
+//        return $image_name;
+
+
         preg_match("/^data:image\/(.*);base64/i", $image, $match);
-        $ext = (!empty($match[1])) ? $match[1] : '.png';
+        $ext = (!empty($match[1])) ? $match[1] : 'png';
         $image_name = md5(uniqid(rand(), true)) . '.' . $ext;
         //upload image to server 
         file_put_contents($this->temp_dir . '/' . $image_name, file_get_contents($image));
+        //Image_Resize
+        $config['image_library'] = 'gd2';
+        $config['source_image'] = $this->temp_dir . '/' . $image_name;
+        $config['create_thumb'] = FALSE;
+        $resize_img = 'ls_' . $image_name;
+        $config['new_image'] = $this->temp_dir . '/' . $resize_img;
+        $config['maintain_ratio'] = TRUE;
+        $config['width'] = 960;
+        $config['height'] = 960;
+        $this->image_lib->clear();
+        $this->image_lib->initialize($config);
+        $this->image_lib->resize();
         //SAVE S3
-        $this->s3_push($image_name);
-        return $image_name;
+        $this->s3_push($resize_img);
+        unlink($this->temp_dir . '/' . $image_name);
+        return $resize_img;
     }
 
     private function s3_push($image_name) {
@@ -68,15 +93,22 @@ class Links extends RestController {
         $link['data_image'] = '';
         if ($images) {
             if (!empty($link['coverart'])) {
-                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
-                //$link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
-                if (!empty($data_image)) {
-                    $img_file = $link['coverart'];
-                    file_put_contents($this->temp_dir . '/' . $link['coverart'], $data_image);
-                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $link['coverart']) . ';base64,' . base64_encode($data_image);
-                    $link['data_image'] = $src;
-                    unlink($this->temp_dir . '/' . $link['coverart']);
-                }
+//                $data_image = $this->aws_s3->s3_read($this->bucket, $path, $link['coverart']);
+//                //$link['data_image'] = (!empty($data_image)) ? base64_encode($data_image) : '';
+//                if (!empty($data_image)) {
+//                    $img_file = $link['coverart'];
+//                    file_put_contents($this->temp_dir . '/' . $link['coverart'], $data_image);
+//                    $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $link['coverart']) . ';base64,' . base64_encode($data_image);
+//                    $link['data_image'] = $src;
+//                    unlink($this->temp_dir . '/' . $link['coverart']);
+//                }
+
+
+                $link['data_image'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $link['coverart'];
+                //NEW ENCRYPTED IMAGE
+                $final_url = $this->general_library->encode_image_url($link['user_id'], $link['data_image']);
+                $link['data_image'] = $final_url;
+                //END ENCRYPTED IMAGE
             }
         }
         unset($link['publish_at']);
