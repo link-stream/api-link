@@ -309,7 +309,7 @@ class Audio_model extends CI_Model {
     }
 
     public function fetch_audio_collaborator_by_id($id) {
-        $this->db->select('a.user_id, a.profit, a.publishing, b.user_name, b.image');
+        $this->db->select('a.user_id, a.profit, a.publishing, b.user_name, b.image,b.url,b.display_name');
         $this->db->from('st_audio_collaborator a');
         $this->db->join('st_user b', 'a.user_id = b.id');
         $this->db->where('a.audio_id', $id);
