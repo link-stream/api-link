@@ -520,8 +520,6 @@ class A extends CI_Controller {
 //            print_r($license);
 //            echo '</pre>';
 //            exit;
-        //INCLUIR LOG
-
 
         if ($type == 'beat') {
             $audio = $this->Audio_model->fetch_audio_by_id_user($item_id, $user_id);
@@ -560,6 +558,20 @@ class A extends CI_Controller {
                 $file_name = urlencode($file_name);
                 // Write the zip file to a folder on your server. Name it "my_backup.zip"
                 //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+                //INCLUIR LOG
+                $data_log = [];
+                $data_log['audio_id'] = $item_id;
+                $data_log['audio_type'] = $type;
+                $data_log['action'] = 'FREE_DOWNLOAD';
+                $data_log['user_id'] = $user_id;
+                $this->Audio_model->insert_audio_log($data_log);
+                $act_log = [];
+                $act_log['user_id'] = $user_id;
+                $act_log['action'] = 'FREE_DOWNLOAD';
+                $act_log['log'] = 'downloaded your ' . ucfirst($type) . ' "' . $audio['title'] . '"';
+                $act_log['ref_user_id'] = '';
+                $this->Audio_model->insert_profile_activity_log($act_log);
+                //st_profile_activity_log
                 // Download the file to your desktop. Name it "my_backup.zip"
                 $this->zip->download($file_name . '.zip');
             }
@@ -602,6 +614,19 @@ class A extends CI_Controller {
                 $file_name = urlencode($file_name);
                 // Write the zip file to a folder on your server. Name it "my_backup.zip"
                 //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+                //INCLUIR LOG
+                $data_log = [];
+                $data_log['audio_id'] = $item_id;
+                $data_log['audio_type'] = $type;
+                $data_log['action'] = 'FREE_DOWNLOAD';
+                $data_log['user_id'] = $user_id;
+                $this->Audio_model->insert_audio_log($data_log);
+                $act_log = [];
+                $act_log['user_id'] = $user_id;
+                $act_log['action'] = 'FREE_DOWNLOAD';
+                $act_log['log'] = 'downloaded your ' . ucfirst($type) . ' "' . $album['title'] . '"';
+                $act_log['ref_user_id'] = '';
+                $this->Audio_model->insert_profile_activity_log($act_log);
                 // Download the file to your desktop. Name it "my_backup.zip"
                 $this->zip->download($file_name . '.zip');
             }
@@ -624,6 +649,18 @@ class A extends CI_Controller {
                 $file_name = urlencode($file_name);
                 // Write the zip file to a folder on your server. Name it "my_backup.zip"
                 //$this->zip->archive($this->temp_dir . '/my_backup.zip');
+                //INCLUIR LOG
+                $data_log = [];
+                $data_log['audio_id'] = $item_id;
+                $data_log['audio_type'] = $type;
+                $data_log['action'] = 'FREE_DOWNLOAD';
+                $data_log['user_id'] = $user_id;
+                $this->Audio_model->insert_audio_log($data_log);
+                $act_log = [];
+                $act_log['user_id'] = $user_id;
+                $act_log['action'] = 'FREE_DOWNLOAD';
+                $act_log['log'] = 'downloaded your ' . ucfirst($type) . ' "' . $audio['title'] . '"';
+                $act_log['ref_user_id'] = '';
                 // Download the file to your desktop. Name it "my_backup.zip"
                 $this->zip->download($file_name . '.zip');
             }

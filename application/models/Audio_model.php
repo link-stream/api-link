@@ -692,8 +692,8 @@ where a.user_id = '" . $user_id . "' and a.transDateTime >= '" . $from . "' and 
     }
 
     public function fetch_top_activity($user_id, $from, $limit = 5) {
-        $sql = "select a.id, a.transDateTime, a.user_id, a.action, a.log, b.display_name, b.first_name, b.last_name, b.image, b.url
-FROM st_profile_activity_log a inner join st_user b on a.ref_user_id = b.id
+        $sql = "select a.id, a.transDateTime, a.user_id, a.action, a.log,a.ref_user_id, b.display_name, b.first_name, b.last_name, b.image, b.url
+FROM st_profile_activity_log a left join st_user b on a.ref_user_id = b.id
 where a.user_id = '" . $user_id . "' and a.transDateTime >= '" . $from . "' order by id desc limit " . $limit;
         $query = $this->db->query($sql);
         $result = $query->result_array();
@@ -757,6 +757,11 @@ where a.audio_id = '" . $audio_id . "' and action = 'PLAY' ";
         $result = $query->row_array();
         $query->free_result();
         return $result;
+    }
+
+    public function insert_profile_activity_log($data) {
+        $this->db->insert('st_profile_activity_log', $data);
+        //return $this->db->insert_id();
     }
 
 }
