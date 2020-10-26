@@ -422,25 +422,29 @@ class A extends CI_Controller {
         $path = $this->s3_path . $this->s3_audio;
         if ($item_license['item_track_type'] == 'pack') {
             $album_items = $this->Album_model->fetch_album_audio_by_album_id($item_license['item_id']);
+//            echo '<pre>';
+//            print_r($album_items);
+//            echo '</pre>';
+//            exit;
             if (empty($album_items)) {
                 return false;
             }
             foreach ($album_items as $item) {
                 $audio = $this->Audio_model->fetch_audio_by_id($item['id_audio']);
                 if (!empty($audio)) {
-                    if ($license_info['mp3']) {
+                    if ($item_license['mp3']) {
                         if (!empty($audio['untagged_mp3'])) {
                             $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_mp3']);
                             $this->zip->add_data($audio['untagged_mp3_name'], $data_track_stems);
                         }
                     }
-                    if ($license_info['wav']) {
+                    if ($item_license['wav']) {
                         if (!empty($audio['untagged_wav'])) {
                             $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['untagged_wav']);
                             $this->zip->add_data($audio['untagged_wav_name'], $data_track_stems);
                         }
                     }
-                    if ($license_info['trackout_stems']) {
+                    if ($item_license['trackout_stems']) {
                         if (!empty($audio['track_stems'])) {
                             $data_track_stems = $this->aws_s3->s3_read($this->bucket, $path, $audio['track_stems']);
                             $this->zip->add_data($audio['track_stems_name'], $data_track_stems);
@@ -516,6 +520,9 @@ class A extends CI_Controller {
 //            print_r($license);
 //            echo '</pre>';
 //            exit;
+        //INCLUIR LOG
+
+
         if ($type == 'beat') {
             $audio = $this->Audio_model->fetch_audio_by_id_user($item_id, $user_id);
             if (empty($audio)) {
