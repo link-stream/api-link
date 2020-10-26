@@ -21,7 +21,7 @@ class A extends CI_Controller {
         $this->load->model("Audio_model");
         $this->load->model("Album_model");
         //Libraries
-        $this->load->library(array('aws_s3'));
+        $this->load->library(array('aws_s3', 'parser'));
         //VARS
         $this->error = '';
         $this->bucket = 'files.link.stream';
@@ -667,15 +667,23 @@ class A extends CI_Controller {
         }
     }
 
-    public function license_pdf($invoice_detail_id = null) {
-//        $item_license = $this->License_model->fetch_invoice_detail_by_id($invoice_detail_id);
-//        if (empty($item_license)) {
-//            return false;
-//        }
-        $this->load->library('pdf');
-        $this->pdf->load_view('app/example/account');
-        $this->pdf->render();
-        $this->pdf->stream("welcome.pdf");
+    public function license_pdf($invoice_detail_id = null, $item_id = null) {
+        if (!empty($invoice_detail_id) && !empty($item_id)) {
+            $item_license = $this->License_model->fetch_invoice_detail_by_id($invoice_detail_id, $item_id);
+            if (!empty($item_license)) {
+                require_once APPPATH . 'third_party/vendor/autoload.php';
+                $data = [];
+                $mpdf = new \Mpdf\Mpdf();
+                $messagebody = $this->parser->parse('app/example/account', $data, true);
+                $mpdf->WriteHTML($messagebody);
+                $output = 'Linstream_License.pdf';
+                $mpdf->Output($output, 'I'); // save to file because we can 
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 //    public function imag_test($url) {

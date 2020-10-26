@@ -307,9 +307,12 @@ class License_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_invoice_detail_by_id($id) {
+    public function fetch_invoice_detail_by_id($id, $item_id = null) {
         $this->db->from('st_user_invoice_detail');
-        $this->db->where(array('id' => $id));
+        $this->db->where('id', $id);
+        if (!empty($item_id)) {
+            $this->db->where('item_id', $item_id);
+        }
         $query = $this->db->get();
         $result = $query->row_array();
         $query->free_result();
