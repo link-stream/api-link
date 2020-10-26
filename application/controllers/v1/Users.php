@@ -1134,7 +1134,7 @@ class Users extends RestController {
                 $data['free_downloads'] = $this->Audio_model->fetch_audio_log_count($user_id, 'FREE_DOWNLOAD', $date);
                 $sales = $this->Audio_model->fetch_sales_report($user_id, $date);
                 $data['sales_count'] = (!empty($sales['Count'])) ? (int) $sales['Count'] : 0;
-                $data['sales_amount'] = (!empty($sales['Total'])) ? (float)$sales['Total'] : 0;
+                $data['sales_amount'] = (!empty($sales['Total'])) ? (float) $sales['Total'] : 0;
                 $data['conversion'] = 0;
                 if ($data['plays'] > 0) {
                     $data['conversion'] = number_format(($data['sales_count'] * 100 / $data['plays']), 2);

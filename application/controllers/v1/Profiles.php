@@ -919,7 +919,7 @@ class Profiles extends RestController {
                         if (!empty($audio_response)) {
                             if ($audio_response['id'] != $audio_id) {
                                 $played_count = $this->Audio_model->fetch_audio_played($audio_id);
-                                $audio_response['played'] = $played_count['Count'];
+                                $audio_response['play'] = $played_count['Count'];
                                 $data_response['extra'][] = $audio_response;
                             }
                         }
@@ -972,7 +972,7 @@ class Profiles extends RestController {
                         if (!empty($audio_response)) {
                             if ($audio_response['id'] != $audio_id) {
                                 $played_count = $this->Audio_model->fetch_audio_played($audio_id);
-                                $audio_response['played'] = $played_count['Count'];
+                                $audio_response['play'] = $played_count['Count'];
                                 $data_response['extra'][] = $audio_response;
                             }
                         }
