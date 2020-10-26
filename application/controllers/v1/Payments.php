@@ -494,8 +494,7 @@ class Payments extends RestController {
                     $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
                 }
                 //RESPONSE TRUE
-                //$this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => '', 'url' => $confirmation_url), RestController::HTTP_OK);
-                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => $invoice['billingCC'], 'download' => $confirmation_url), RestController::HTTP_OK);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => '', 'download' => $confirmation_url), RestController::HTTP_OK);
                 //
             } else {
                 $this->error = 'Provide Correct Data Format';
