@@ -554,29 +554,28 @@ class Payments extends RestController {
 //                        print_r($item_audio);
 //                        echo '</pre>';
                     } elseif ($type == 'pack') {
-                        $item_album = $this->Album_model->fetch_album_by_id_user($user_id, $id);
-                        if (!empty($item_album)) {
+                        $item_audio = $this->Album_model->fetch_album_cart($user_id, $id);
+                        if (!empty($item_audio)) {
 //                            echo '<pre>';
 //                            print_r($item_album);
 //                            echo '</pre>';
-                            if (!empty($item_audio)) {
-                                $item_response = $item;
-                                $item_response['coverart_url'] = '';
-                                if (!empty($item_audio['coverart'])) {
-                                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item_audio['coverart']);
-                                    $item_response['coverart_url'] = $final_url;
-                                }
-                                $item_response['genre_id'] = $item_audio['genre_id'];
-                                $item_response['artistName'] = $item_audio['display_name'];
-                                $item_response['avatar_url'] = '';
-                                if (!empty($item_audio['image'])) {
-                                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item_audio['image']);
-                                    $item_response['avatar_url'] = $final_url;
-                                }
-                                $item_response['artist_url'] = $item_audio['url'];
-                                $item_response['title'] = $item_audio['title'];
-                                $data_response[] = $item_response;
+
+                            $item_response = $item;
+                            $item_response['coverart_url'] = '';
+                            if (!empty($item_audio['coverart'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item_audio['coverart']);
+                                $item_response['coverart_url'] = $final_url;
                             }
+                            $item_response['genre_id'] = $item_audio['genre_id'];
+                            $item_response['artistName'] = $item_audio['display_name'];
+                            $item_response['avatar_url'] = '';
+                            if (!empty($item_audio['image'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item_audio['image']);
+                                $item_response['avatar_url'] = $final_url;
+                            }
+                            $item_response['artist_url'] = $item_audio['url'];
+                            $item_response['title'] = $item_audio['title'];
+                            $data_response[] = $item_response;
                         }
                     } elseif ($type == 'kit') {
                         $item_audio = $this->Audio_model->fetch_audio_cart($user_id, $id);
@@ -598,7 +597,6 @@ class Payments extends RestController {
                                 $item_response['avatar_url'] = $final_url;
                             }
                             $item_response['artist_url'] = $item_audio['url'];
-                            $item_response['title'] = $item_audio['title'];
                             $data_response[] = $item_response;
                         }
                     }
