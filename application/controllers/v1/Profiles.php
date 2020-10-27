@@ -1660,13 +1660,13 @@ class Profiles extends RestController {
         //$session_id = session_id();
         $ip = $_SERVER['REMOTE_ADDR'];
         $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
-        $agent = (!empty($this->input->post('agent'))) ? $this->input->post('agent') : '';
-        $platform = (!empty($this->input->post('platform'))) ? $this->input->post('platform') : '';
+        $agent_string = (!empty($this->input->post('agent'))) ? $this->input->post('agent') : '';
+//        $platform = (!empty($this->input->post('platform'))) ? $this->input->post('platform') : '';
         //$agent_string = (!empty($this->input->post('agent_string'))) ? $this->input->post('agent_string') : '';
         $url = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         $utm_source = (!empty($this->input->post('utm_source'))) ? $this->input->post('utm_source') : '';
         $ref_id = (!empty($this->input->post('ref_id'))) ? $this->input->post('ref_id') : '';
-        if (empty($session_id) || empty($agent) || empty($platform) || empty($url)) {
+        if (empty($session_id) || empty($agent_string)) {
             $this->error = 'Provide Visitor Information.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
@@ -1679,8 +1679,8 @@ class Profiles extends RestController {
                 'user_id' => $register_user['id'],
                 'session_id' => $session_id,
                 'ip' => $ip,
-                'agent' => $agent,
-                'platform' => $platform,
+                'agent' => '',
+                'platform' => '',
                 'country' => $data_location['country'],
                 'countryCode' => $data_location['countryCode'],
                 'region' => $data_location['region'],
@@ -1693,7 +1693,7 @@ class Profiles extends RestController {
                 'url' => $url,
                 'utm_source' => $utm_source,
                 'ref_id' => $ref_id,
-                'agent_string' => ''
+                'agent_string' => $agent_string
             );
 //            echo '<pre>';
 //            print_r($data);

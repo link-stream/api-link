@@ -4592,7 +4592,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>user_id</li>
                     <li>session_id</li>
                     <li>agent (Example: Firefox 72.0 or Chrome 79.0.3945.117 or Safari 604.1)</li>
-                    <li>platform (Example: Mac OS X or iOS)</li>
+                    <!--<li>platform (Example: Mac OS X or iOS)</li>-->
                     <li>url (Example: https://linsktream.com/paolo_linkstream or https://dev-link-vue.link.stream/paolo_linkstream/beats/378)</li>
                     <li>utm_source</li>
                     <li>ref_id</li>
