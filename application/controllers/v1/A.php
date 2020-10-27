@@ -56,7 +56,8 @@ class A extends CI_Controller {
         if (!empty($this->input->get('ref_id'))) {
             $ref_id = $this->input->get('ref_id');
             //LOCATION
-            $ip = $_SERVER['REMOTE_ADDR'];
+//            $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
 //            $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
             $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
             $data_location = $this->general_library->ip_location($ip);
@@ -675,11 +676,11 @@ class A extends CI_Controller {
                 require_once APPPATH . 'third_party/vendor/autoload.php';
                 $data = [];
                 $mpdf = new \Mpdf\Mpdf();
-                
+
                 $mpdf->SetHTMLHeader('
            <div style="text-align: right; font-weight: bold;">
     My document
-</div>' );
+</div>');
 //                $mpdf->SetHTMLFooter('
 //<table width="100%">
 //    <tr>
