@@ -597,6 +597,7 @@ class Payments extends RestController {
                                 $item_response['avatar_url'] = $final_url;
                             }
                             $item_response['artist_url'] = $item_audio['url'];
+                            $item_response['title'] = $item_audio['title'];
                             $data_response[] = $item_response;
                         }
                     }
