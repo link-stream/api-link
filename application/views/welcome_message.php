@@ -4563,6 +4563,53 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
+                <hr>
+                <h3>Get Visitor IP:</h3>
+                <code>GET <?= base_url() ?>v1/profiles/visitor</code>
+                <h3>Parameters:</h3>
+                <!--                <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>-->
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "visitor_ip": "170.55.19.206"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Insert Visitor:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/visitor</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>session_id</li>
+                    <li>agent (Example: Firefox 72.0 or Chrome 79.0.3945.117 or Safari 604.1)</li>
+                    <li>platform (Example: Mac OS X or iOS)</li>
+                    <li>url (Example: https://linsktream.com/paolo_linkstream or https://dev-link-vue.link.stream/paolo_linkstream/beats/378)</li>
+                    <li>utm_source</li>
+                    <li>ref_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The visitor has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
                 <!-- EXAMPLE 
                 <hr>
                 <h3>Name:</h3>

@@ -1657,7 +1657,7 @@ class Profiles extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
         $session_id = (!empty($this->input->post('session_id'))) ? $this->input->post('session_id') : '';
-        $session_id = session_id();
+        //$session_id = session_id();
         $ip = $_SERVER['REMOTE_ADDR'];
         $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
         $agent = (!empty($this->input->post('agent'))) ? $this->input->post('agent') : '';
@@ -1666,6 +1666,10 @@ class Profiles extends RestController {
         $url = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         $utm_source = (!empty($this->input->post('utm_source'))) ? $this->input->post('utm_source') : '';
         $ref_id = (!empty($this->input->post('ref_id'))) ? $this->input->post('ref_id') : '';
+        if (empty($session_id) || empty($agent) || empty($platform) || empty($url)) {
+            $this->error = 'Provide Visitor Information.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
         $visitor = $this->Visitor_model->fetch_visitor_by_search(array('user_id' => $register_user['id'], 'session_id' => $session_id));
         if (empty($visitor)) {
             //GET LOCATION
@@ -1694,6 +1698,7 @@ class Profiles extends RestController {
 //            echo '<pre>';
 //            print_r($data);
 //            echo '</pre>';
+//            exit;
             //VISITOR
             $this->Visitor_model->insert_visitor($data);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The visitor has been created successfully.'), RestController::HTTP_OK);
