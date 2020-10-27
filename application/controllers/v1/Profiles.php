@@ -1702,6 +1702,8 @@ class Profiles extends RestController {
             //VISITOR
             $this->Visitor_model->insert_visitor($data);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The visitor has been created successfully.'), RestController::HTTP_OK);
+        } else {
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The visitor has been created successfully.'), RestController::HTTP_OK);
         }
     }
 
