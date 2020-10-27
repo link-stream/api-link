@@ -3977,6 +3977,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
+                <h3>Cart Details:</h3>
+                <code>POST <?= base_url() ?>v1/payments/cart_details</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>data (json_array)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
                 <h3>Get Recommendations:</h3>
                 <code>GET <?= base_url() ?>v1/profiles/recommendations/{user_id}</code>
                 <h3>Parameters:</h3>

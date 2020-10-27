@@ -332,4 +332,15 @@ class Album_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_audio_cart($user_id, $id_album) {
+        $sql = "SELECT a.id,a.coverart,a.title,a.genre_id,a.price, b.image,b.url ,b.display_name 
+            FROM st_album a
+            inner join st_user b on a.user_id = b.id
+            WHERE a.user_id = '" . $user_id . "' and a.id = '" . $id_album . "'";
+        $query = $this->db->query($sql);
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
 }

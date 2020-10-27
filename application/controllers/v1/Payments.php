@@ -37,7 +37,7 @@ class Payments extends RestController {
         $this->bucket = 'files.link.stream';
         $this->s3_coverart = 'coverart';
         $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
-        $this->s3_folder = 'coverart';
+        $this->s3_folder = 'profile';
         $this->temp_dir = $this->general_library->get_temp_dir();
         $this->server_url = 'https://s3.us-east-2.amazonaws.com/files.link.stream/';
         $this->linkstream_url = (ENV == 'live') ? 'https://www.linkstream.com/' : 'https://dev-link-vue.link.stream/';
@@ -496,6 +496,111 @@ class Payments extends RestController {
                 //RESPONSE TRUE
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => '', 'download' => $confirmation_url), RestController::HTTP_OK);
                 //
+            } else {
+                $this->error = 'Provide Correct Data Format';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Data.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function cart_details_post() {
+        $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
+        if (!empty($data)) {
+            $data_info = json_decode($data, TRUE);
+            if (is_array($data_info)) {
+                $data_response = [];
+                foreach ($data_info as $item) {
+                    $user_id = (!empty($item['user_id'])) ? $item['user_id'] : null;
+                    $id = (!empty($item['id'])) ? $item['id'] : null;
+                    $type = (!empty($item['type'])) ? $item['type'] : null;
+                    $license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
+                    $price = (!empty($item['price'])) ? $item['price'] : null;
+//                    coverart_url
+//                    title
+//                    type
+//                    price
+//                    id
+//                    license_id
+//                    genre_id
+//                    artistName
+//                    avar_url
+//                    user_id
+//                    artist_url
+                    if ($type == 'beat') {
+                        $item_audio = $this->Audio_model->fetch_audio_cart($id, $audio_id);
+                        if (!empty($item_audio)) {
+                            $item_response = $item;
+                            $item_response['coverart_url'] = '';
+                            if (!empty($item_audio['coverart'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item_audio['coverart']);
+                                $item_response['coverart_url'] = $final_url;
+                            }
+                            $item_response['genre_id'] = $item_audio['genre_id'];
+                            $item_response['artistName'] = $item_audio['display_name'];
+                            $item_response['avatar_url'] = '';
+                            if (!empty($item_audio['image'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item_audio['image']);
+                                $item_response['avatar_url'] = $final_url;
+                            }
+                            $item_response['artist_url'] = $item_audio['url'];
+                            $data_response[] = $item_response;
+                        }
+//                        echo '<pre>';
+//                        print_r($item_audio);
+//                        echo '</pre>';
+                    } elseif ($type == 'pack') {
+                        $item_album = $this->Album_model->fetch_album_by_id_user($id, $user_id);
+                        if (!empty($item_album)) {
+//                            echo '<pre>';
+//                            print_r($item_album);
+//                            echo '</pre>';
+                            if (!empty($item_audio)) {
+                                $item_response = $item;
+                                $item_response['coverart_url'] = '';
+                                if (!empty($item_audio['coverart'])) {
+                                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item_audio['coverart']);
+                                    $item_response['coverart_url'] = $final_url;
+                                }
+                                $item_response['genre_id'] = $item_audio['genre_id'];
+                                $item_response['artistName'] = $item_audio['display_name'];
+                                $item_response['avatar_url'] = '';
+                                if (!empty($item_audio['image'])) {
+                                    $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item_audio['image']);
+                                    $item_response['avatar_url'] = $final_url;
+                                }
+                                $item_response['artist_url'] = $item_audio['url'];
+                                $data_response[] = $item_response;
+                            }
+                        }
+                    } elseif ($type == 'kit') {
+                        $item_audio = $this->Audio_model->fetch_audio_cart($id, $audio_id);
+//                        echo '<pre>';
+//                        print_r($item_audio);
+//                        echo '</pre>';
+                        if (!empty($item_audio)) {
+                            $item_response = $item;
+                            $item_response['coverart_url'] = '';
+                            if (!empty($item_audio['coverart'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_coverart . '/' . $item_audio['coverart']);
+                                $item_response['coverart_url'] = $final_url;
+                            }
+                            $item_response['genre_id'] = $item_audio['genre_id'];
+                            $item_response['artistName'] = $item_audio['display_name'];
+                            $item_response['avatar_url'] = '';
+                            if (!empty($item_audio['image'])) {
+                                $final_url = $this->general_library->encode_image_url($user_id, $this->s3_path . $this->s3_folder . '/' . $item_audio['image']);
+                                $item_response['avatar_url'] = $final_url;
+                            }
+                            $item_response['artist_url'] = $item_audio['url'];
+                            $data_response[] = $item_response;
+                        }
+                    }
+                }
+                //RESPONSE TRUE
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Cart Info', 'cart_details' => $data_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'Provide Correct Data Format';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
