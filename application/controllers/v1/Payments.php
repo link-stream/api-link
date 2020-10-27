@@ -27,6 +27,7 @@ class Payments extends RestController {
         $this->load->model('Marketing_model');
         $this->load->model('License_model');
         $this->load->model('Album_model');
+        $this->load->model('Audio_model');
         //Libraries
         //$this->load->library(array('aws_s3', 'Aws_pinpoint'));
         $this->load->library('Stripe_library');
@@ -530,7 +531,7 @@ class Payments extends RestController {
 //                    user_id
 //                    artist_url
                     if ($type == 'beat') {
-                        $item_audio = $this->Audio_model->fetch_audio_cart($id, $audio_id);
+                        $item_audio = $this->Audio_model->fetch_audio_cart($user_id, $id);
                         if (!empty($item_audio)) {
                             $item_response = $item;
                             $item_response['coverart_url'] = '';
@@ -552,7 +553,7 @@ class Payments extends RestController {
 //                        print_r($item_audio);
 //                        echo '</pre>';
                     } elseif ($type == 'pack') {
-                        $item_album = $this->Album_model->fetch_album_by_id_user($id, $user_id);
+                        $item_album = $this->Album_model->fetch_album_by_id_user($user_id, $id);
                         if (!empty($item_album)) {
 //                            echo '<pre>';
 //                            print_r($item_album);
@@ -576,7 +577,7 @@ class Payments extends RestController {
                             }
                         }
                     } elseif ($type == 'kit') {
-                        $item_audio = $this->Audio_model->fetch_audio_cart($id, $audio_id);
+                        $item_audio = $this->Audio_model->fetch_audio_cart($user_id, $id);
 //                        echo '<pre>';
 //                        print_r($item_audio);
 //                        echo '</pre>';

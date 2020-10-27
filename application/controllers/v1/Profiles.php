@@ -1646,7 +1646,7 @@ class Profiles extends RestController {
     }
 
     public function visitor_post() {
-        $user_id = (!empty($this->input->post('id'))) ? $this->input->post('id') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         if (empty($user_id)) {
             $this->error = 'Provide User ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -1662,7 +1662,7 @@ class Profiles extends RestController {
         $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
         $agent = (!empty($this->input->post('agent'))) ? $this->input->post('agent') : '';
         $platform = (!empty($this->input->post('platform'))) ? $this->input->post('platform') : '';
-        $agent_string = (!empty($this->input->post('agent_string'))) ? $this->input->post('agent_string') : '';
+        //$agent_string = (!empty($this->input->post('agent_string'))) ? $this->input->post('agent_string') : '';
         $url = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
         $utm_source = (!empty($this->input->post('utm_source'))) ? $this->input->post('utm_source') : '';
         $ref_id = (!empty($this->input->post('ref_id'))) ? $this->input->post('ref_id') : '';
@@ -1689,15 +1689,22 @@ class Profiles extends RestController {
                 'url' => $url,
                 'utm_source' => $utm_source,
                 'ref_id' => $ref_id,
-                'agent_string' => $agent_string
+                'agent_string' => ''
             );
-            echo '<pre>';
-            print_r($data);
-            echo '</pre>';
+//            echo '<pre>';
+//            print_r($data);
+//            echo '</pre>';
             //VISITOR
-            //$this->Visitor_model->insert_visitor($data);
+            $this->Visitor_model->insert_visitor($data);
             $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The visitor has been created successfully.'), RestController::HTTP_OK);
         }
+    }
+
+    public function visitor_get() {
+        //$session_id = session_id();
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
+        $this->response(array('status' => 'success', 'env' => ENV, 'visitor_ip' => $ip), RestController::HTTP_OK);
     }
 
     private function analytics($register_user) {
