@@ -56,7 +56,8 @@ class A extends CI_Controller {
         if (!empty($this->input->get('ref_id'))) {
             $ref_id = $this->input->get('ref_id');
             //LOCATION
-            $ip = $_SERVER['REMOTE_ADDR'];
+//            $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
             $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
             $data_location = $this->general_library->ip_location($ip);
             $this->Marketing_model->update_open_action($ref_id, $ip, $data_location['country'], $data_location['countryCode']);
@@ -674,7 +675,20 @@ class A extends CI_Controller {
                 require_once APPPATH . 'third_party/vendor/autoload.php';
                 $data = [];
                 $mpdf = new \Mpdf\Mpdf();
-                $messagebody = $this->parser->parse('app/example/account', $data, true);
+                
+                $mpdf->SetHTMLHeader('
+           <div style="text-align: right; font-weight: bold;">
+    My document
+</div>' );
+//                $mpdf->SetHTMLFooter('
+//<table width="100%">
+//    <tr>
+//        <td width="33%">{DATE j-m-Y}</td>
+//        <td width="33%" align="center">{PAGENO}/{nbpg}</td>
+//        <td width="33%" style="text-align: right;">My document</td>
+//    </tr>
+//</table>');
+                $messagebody = $this->parser->parse('app/license_pdf', $data, true);
                 $mpdf->WriteHTML($messagebody);
                 $output = 'Linstream_License.pdf';
                 $mpdf->Output($output, 'I'); // save to file because we can 
