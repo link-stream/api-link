@@ -1658,8 +1658,8 @@ class Profiles extends RestController {
         }
         $session_id = (!empty($this->input->post('session_id'))) ? $this->input->post('session_id') : '';
         //$session_id = session_id();
-        //$ip = $_SERVER['REMOTE_ADDR'];
-        $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
+        $ip = $_SERVER['REMOTE_ADDR'];
+//        $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
         $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
         $agent_string = (!empty($this->input->post('agent'))) ? $this->input->post('agent') : '';
 //        $platform = (!empty($this->input->post('platform'))) ? $this->input->post('platform') : '';
@@ -1710,8 +1710,8 @@ class Profiles extends RestController {
 
     public function visitor_get() {
         //$session_id = session_id();
-//        $ip = $_SERVER['REMOTE_ADDR'];
-        $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
+        $ip = $_SERVER['REMOTE_ADDR'];
+//        $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
         $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
         $this->response(array('status' => 'success', 'env' => ENV, 'visitor_ip' => $ip), RestController::HTTP_OK);
     }

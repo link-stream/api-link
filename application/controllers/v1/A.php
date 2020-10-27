@@ -56,8 +56,8 @@ class A extends CI_Controller {
         if (!empty($this->input->get('ref_id'))) {
             $ref_id = $this->input->get('ref_id');
             //LOCATION
-//            $ip = $_SERVER['REMOTE_ADDR'];
-            $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
+            $ip = $_SERVER['REMOTE_ADDR'];
+//            $ip = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
             $ip = ($ip == '::1') ? '170.55.19.206' : $ip;
             $data_location = $this->general_library->ip_location($ip);
             $this->Marketing_model->update_open_action($ref_id, $ip, $data_location['country'], $data_location['countryCode']);
