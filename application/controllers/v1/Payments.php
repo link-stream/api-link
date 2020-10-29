@@ -47,28 +47,6 @@ class Payments extends RestController {
 
     public function cc_payment_post() {
 
-//        $array = [
-//            'user_id' => '35',
-//            'utm_source' => '35',
-//            'ref_id' => '35',
-//            'payment' => [
-//                'exp_month' => '10',
-//                'exp_year' => '2021',
-//                'number' => '4242424242424242',
-//                'cvc' => '314',
-//                'name' => 'John Doe',
-//                'address_zip' => '33312',
-//                'subtotal' => '180',
-//                'feeCC' => '10',
-//                'feeService' => '10',
-//                'total' => '200'
-//            ],
-//            'cart' => [
-//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
-//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
-//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
-//            ]
-//        ];
         $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
         if (!empty($data)) {
             $data_info = json_decode($data, TRUE);
@@ -184,12 +162,6 @@ class Payments extends RestController {
                         //UPDATE DETAILS
                         foreach ($cart as $item) {
                             $item['invoice_id'] = $invoice_id;
-                            //$item_id = (!empty($item['item_id'])) ? $item['item_id'] : null;
-                            //$item_title = (!empty($item['item_title'])) ? $item['item_title'] : null;
-                            //$item_amount =  (!empty($item['item_amount'])) ? $item['item_amount'] : 0;
-                            //$producer_id = (!empty($item['producer_id'])) ? $item['producer_id'] : null;
-                            //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
-                            //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
                             //NEW -LICENSE//
                             if ($item['item_track_type'] == 'pack') {
@@ -218,10 +190,7 @@ class Payments extends RestController {
                                 }
                             }
                             //END-LICENSE//
-
-
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
-
                             //
                             //COLLABORATOR
                             //
@@ -235,7 +204,6 @@ class Payments extends RestController {
                             if ($item['item_track_type'] == 'beat') {
                                 //GET COLLABORATORS
                                 $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
-                                //print_r($collaborators);
                                 foreach ($collaborators as $collaborator) {
                                     $collaborator_id = $collaborator['user_id'];
                                     $collaborator_profit = $collaborator['profit'];
@@ -280,13 +248,7 @@ class Payments extends RestController {
                             //END COLLABORATOR
                             //LOG Item License.
                             //
-                            //
-                            //
-                            //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                            //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
                             $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
-
-                            //
                             $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
                             $cart_email[] = $item;
                         }
@@ -380,26 +342,6 @@ class Payments extends RestController {
 
     public function paypal_payment_post() {
 
-//        $array = [
-//            'user_id' => '35',
-//            'utm_source' => 'email',
-//            'ref_id' => '54645',
-//            'country' => 'United States',
-//            'payment' => [
-//                'paymentID' => 'PAYID-L6I46DY94893457Y3361140Y',
-//                'paymentToken' => 'EC-9LX554202G293421G',
-//                'name' => 'John Doe',
-//                'subtotal' => '180',
-//                'feeCC' => '10',
-//                'feeService' => '10',
-//                'total' => '200'
-//            ],
-//            'cart' => [
-//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
-//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
-//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
-//            ]
-//        ];
         $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
         if (!empty($data)) {
             $data_info = json_decode($data, TRUE);
@@ -479,10 +421,6 @@ class Payments extends RestController {
                 $invoice['invoice_number'] = $invoice_number;
                 $invoice['status'] = 'COMPLETED';
                 $invoice['payment_charge_id'] = $paymentID;
-                //$invoice['billingZip'] = $address_zip;
-                //$invoice['billingCVV'] = $cvc;
-                //$invoice['billingCC6'] = substr($number, 6);
-                //$invoice['billingCC'] = substr($number, -4);
                 $invoice['billingName'] = $name;
                 $invoice['cc_type'] = 'PayPal';
                 $invoice['utm_source'] = $utm_source;
@@ -490,8 +428,6 @@ class Payments extends RestController {
                 $invoice['country'] = $country;
                 //UPDATE PURSHASE
                 $this->User_model->update_user_purchase($invoice_id, $invoice);
-                //$invoice_id = $this->User_model->insert_user_purchase($invoice);
-                //$invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
                 $transfer_group = $invoice_number;
                 $description = 'Linkstream - Invoice: ' . $invoice_number;
                 $user_data = $this->User_model->fetch_user_by_id($user_id);
@@ -501,12 +437,6 @@ class Payments extends RestController {
                 //UPDATE DETAILS
                 foreach ($cart as $item) {
                     $item['invoice_id'] = $invoice_id;
-                    //$item_id = (!empty($item['item_id'])) ? $item['item_id'] : null;
-                    //$item_title = (!empty($item['item_title'])) ? $item['item_title'] : null;
-                    //$item_amount =  (!empty($item['item_amount'])) ? $item['item_amount'] : 0;
-                    //$producer_id = (!empty($item['producer_id'])) ? $item['producer_id'] : null;
-                    //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
-                    //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                     $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
                     //NEW -LICENSE//
                     if ($item['item_track_type'] == 'pack') {
@@ -536,7 +466,6 @@ class Payments extends RestController {
                     }
                     //END-LICENSE//
                     $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
-
                     //
                     //COLLABORATOR
                     //
@@ -550,7 +479,6 @@ class Payments extends RestController {
                     if ($item['item_track_type'] == 'beat') {
                         //GET COLLABORATORS
                         $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
-                        //print_r($collaborators);
                         foreach ($collaborators as $collaborator) {
                             $collaborator_id = $collaborator['user_id'];
                             $collaborator_profit = $collaborator['profit'];
@@ -594,8 +522,6 @@ class Payments extends RestController {
                     //SI FEE CC ES DISTINTO DE 0 SE LO CALCULAMOS AL ITEM Y LO DESCONTAMOS
                     //END COLLABORATOR
                     //LOG Item License.
-                    //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
-                    //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
                     $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
                     //
                     $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
@@ -743,4 +669,25 @@ class Payments extends RestController {
       {"item_id":"381","item_title":"My Moon Kit Example","item_amount":150,"item_track_type":"kit","license_id":"","producer_id":"35","genre_id":"2"}]}
 
      */
+
+    //        $array = [
+//            'user_id' => '35',
+//            'utm_source' => 'email',
+//            'ref_id' => '54645',
+//            'country' => 'United States',
+//            'payment' => [
+//                'paymentID' => 'PAYID-L6I46DY94893457Y3361140Y',
+//                'paymentToken' => 'EC-9LX554202G293421G',
+//                'name' => 'John Doe',
+//                'subtotal' => '180',
+//                'feeCC' => '10',
+//                'feeService' => '10',
+//                'total' => '200'
+//            ],
+//            'cart' => [
+//                ['item_id' => '33', 'item_title' => 'Title 10', 'item_amount' => '45', 'item_track_type' => 'beat', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3'],
+//                ['item_id' => '381', 'item_title' => 'Title 25', 'item_amount' => '90', 'item_track_type' => 'kit', 'producer_id' => '35', 'license_id' => '', 'genre_id' => '3'],
+//                ['item_id' => '67', 'item_title' => 'Title 67', 'item_amount' => '45', 'item_track_type' => 'pack', 'producer_id' => '35', 'license_id' => '1', 'genre_id' => '3']
+//            ]
+//        ];
 }
