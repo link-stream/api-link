@@ -135,8 +135,8 @@ class Stripe_library {
 //                'email' => $email,
 //                'requested_capabilities' => $requested_capabilities,
 //                
-                'country' => $country,
-                'type' => 'express'
+                //'country' => $country,
+                'type' => 'express'//standard
             ]);
 //            echo '<pre>';
 //            print_r($object);
@@ -189,8 +189,8 @@ class Stripe_library {
         try {
             $object = $this->stripe->accountLinks->create([
                 'account' => $account,
-                'refresh_url' => 'http://localhost/api.link.stream',
-                'return_url' => 'http://localhost/api.link.stream/app/confirm_account',
+                'refresh_url' => 'https://dev-link-vue.link.stream/app/account/payments/stripe_cancel',
+                'return_url' => 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm',
                 'type' => 'account_onboarding',
             ]);
 //            echo '<pre>';

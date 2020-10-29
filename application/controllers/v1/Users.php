@@ -1002,6 +1002,7 @@ class Users extends RestController {
                 } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
                     $account_id = $temp_stripe_account['account_id'];
                 } else {
+                    //CREATE ACCOUNT
                     $stripe_response = $this->stripe_library->express_account($register_user['country'], $register_user['email']);
                     if ($stripe_response['status']) {
                         $account_id = $stripe_response['account_id'];
@@ -1012,6 +1013,7 @@ class Users extends RestController {
                         $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                     }
                 }
+                //CREATE LINK
                 if (!empty($account_id)) {
                     //Crear Link
                     $stripe_response = $this->stripe_library->account_link($account_id);
