@@ -39,7 +39,7 @@ class Config extends RestController {
 
         $data['fees'] = [
             ['name' => 'Convenience Fee', 'type' => 'Percent', 'value' => '3', 'var' => 'feeCC'],
-            ['name' => 'Service Fee', 'type' => 'Amount', 'value' => '4.99', 'var' => 'feeService'],
+            ['name' => 'Service Fee', 'type' => 'Amount', 'value' => '1.99', 'var' => 'feeService'],
         ];
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
     }
