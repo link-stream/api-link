@@ -205,6 +205,11 @@ class C_notification extends CI_Controller {
             echo '<pre>';
             print_r($stripe_account);
             echo '</pre>';
+            if (!empty($stripe_account)) {
+                
+            } else {
+                //CHECK PAYPAL
+            }
         }
     }
 
