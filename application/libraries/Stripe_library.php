@@ -186,7 +186,7 @@ class Stripe_library {
     public function account_link($account, $debug) {
         $response = [];
         $refresh_url = (!$debug) ? 'https://dev-link-vue.link.stream/app/account/payments/stripe_cancel' : 'http://localhost:8080/app/account/payments/stripe_cancel';
-        $return_url = (!$local) ? 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm' : 'http://localhost:8080/app/account/payments/stripe_confirm';
+        $return_url = (!$debug) ? 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm' : 'http://localhost:8080/app/account/payments/stripe_confirm';
         $this->stripe = new \Stripe\StripeClient($this->secret_key);
         try {
             $object = $this->stripe->accountLinks->create([
