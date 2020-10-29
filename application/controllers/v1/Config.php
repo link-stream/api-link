@@ -38,8 +38,8 @@ class Config extends RestController {
     public function fees_get() {
 
         $data['fees'] = [
-            ['name' => 'Convenience Fee', 'type' => 'Percent', 'value' => '3', 'var' => 'feeCC'],
-            ['name' => 'Service Fee', 'type' => 'Amount', 'value' => '1.99', 'var' => 'feeService'],
+            ['name' => 'Convenience Fee', 'type' => 'Percent', 'value' => '0', 'var' => 'feeCC'],
+            ['name' => 'Service Fee', 'type' => 'Amount', 'value' => '0', 'var' => 'feeService'],
         ];
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $data), RestController::HTTP_OK);
     }
