@@ -1060,8 +1060,6 @@ class Users extends RestController {
                     $stripe_login_url = $stripe_login['url'];
                      $this->User_model->update_connect_by_user_id($user_id, $account_id, ['login_url' => $stripe_login_url]);
                 }
-
-
                 $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'payouts_enabled' => $stripe_response['payouts_enabled'], 'login_links' => $stripe_login_url), RestController::HTTP_OK);
             } else {
                 $this->error = $stripe_response['error'];
@@ -1093,7 +1091,7 @@ class Users extends RestController {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $temp_stripe_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Stripe');
-            if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
+            if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'APPROVED') {
                 $account_id = $temp_stripe_account['account_id'];
                 //LLAMAR API PARA CONFIRMAR ACCOUNT.
                 $stripe_response = $this->stripe_library->retrieve_account($account_id);
