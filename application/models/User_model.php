@@ -357,4 +357,9 @@ where a.id =  '" . $item_id . "' ";
         return $result;
     }
 
+    public function insert_user_payout_details($data) {
+        $this->db->insert('st_user_invoice_detail_payout', $data);
+        return $this->db->insert_id();
+    }
+
 }

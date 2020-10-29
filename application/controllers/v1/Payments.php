@@ -189,9 +189,6 @@ class Payments extends RestController {
                             //license_id = (!empty($item['license_id'])) ? $item['license_id'] : null;
                             //$item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
                             $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
-
-
-
                             //NEW -LICENSE//
                             if ($item['item_track_type'] == 'pack') {
                                 $item_album = $this->Album_model->fetch_album_by_id($item['item_id']);
@@ -199,7 +196,6 @@ class Payments extends RestController {
                                     $item['license_id'] = $item_album['license_id'];
                                 }
                             }
-
                             if (!empty($item['license_id'])) {
                                 //LICENSE
                                 $license = $this->License_model->fetch_license_by_id($item['license_id']);
@@ -220,8 +216,65 @@ class Payments extends RestController {
                                 }
                             }
                             //END-LICENSE//
+
+
                             $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
+
+                            //
+                            //COLLABORATOR
+                            //
+                            $invoice_detail_payout = [];
+                            //$invoice_detail_payout['TEMP'] = '';
+                            $invoice_detail_payout['detail_id'] = $invoice_detail_id;
+                            $invoice_detail_payout['item_id'] = $item['item_id'];
+                            $invoice_detail_payout['status'] = 'PENDING';
+                            if ($item['item_track_type'] == 'beat') {
+                                //GET COLLABORATORS
+                                $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
+                                foreach ($collaborators as $collaborator) {
+                                    $collaborator_id = $collaborator['user_id'];
+                                    $collaborator_profit = $collaborator['profit'];
+                                    $item_amount_collaborator = ($item['item_amount'] * $collaborator_profit / 100);
+                                    $invoice_detail_payout['item_amount'] = $item_amount_collaborator;
+                                    if ($invoice['feeCC'] == 0) {
+                                        $detail_feeCC = ($invoice_detail_payout['item_amount'] * 3 / 100);
+                                        $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                        $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                        $invoice_detail_payout['item_payout'] = $payout;
+                                        $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                    } else {
+                                        $detail_feeCC = 0;
+                                        $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                        $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                        $invoice_detail_payout['item_payout'] = $payout;
+                                        $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                    }
+                                }
+                            } else {
+                                $invoice_detail_payout['item_amount'] = $item['item_amount'];
+                                if ($invoice['feeCC'] == 0) {
+                                    $detail_feeCC = ($invoice_detail_payout['item_amount'] * 3 / 100);
+                                    $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                    $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                    $invoice_detail_payout['item_payout'] = $payout;
+                                    $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                } else {
+                                    $detail_feeCC = 0;
+                                    $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                    $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                    $invoice_detail_payout['item_payout'] = $payout;
+                                    $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                }
+                            }
+                            //
+                            //1-CON EL ITEM OBTENER LOS COLLABORADORES SI ES BEAT.
+                            //2-SEGUN PORCENTAJE CALCULAR VALOR A PAGAR
+                            //SI FEE CC ES DISTINTO DE 0 SE LO CALCULAMOS AL ITEM Y LO DESCONTAMOS
+                            //END COLLABORATOR
                             //LOG Item License.
+                            //
+                            //
+                            //
                             //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
                             //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
                             $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
