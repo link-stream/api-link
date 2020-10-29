@@ -4613,7 +4613,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 
                 
                 <hr>
-                <h3>Connect Stripe Account<:</h3>
+                <h3>Connect Stripe Account:</h3>
                 <code>POST <?= base_url() ?>v1/users/connect_stripe_account</code>
                 <h3>Parameters:</h3>
                  <ul>
@@ -4635,7 +4635,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
                 
                  <hr>
-                <h3>Confirm Stripe Account<:</h3>
+                <h3>Confirm Stripe Account:</h3>
                 <code>POST <?= base_url() ?>v1/users/confirm_stripe_account</code>
                 <h3>Parameters:</h3>
                  <ul>
