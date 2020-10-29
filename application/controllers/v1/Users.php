@@ -989,6 +989,7 @@ class Users extends RestController {
 
     public function connect_stripe_account_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $debug = (!empty($this->input->post('debug'))) ? $this->input->post('debug') : FALSE;
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -999,7 +1000,7 @@ class Users extends RestController {
                 if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'ACTIVE') {
                     $this->error = 'Stripe Account Already Created and Activated';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING_TEST') {
                     $account_id = $temp_stripe_account['account_id'];
                 } else {
                     //CREATE ACCOUNT
@@ -1016,7 +1017,7 @@ class Users extends RestController {
                 //CREATE LINK
                 if (!empty($account_id)) {
                     //Crear Link
-                    $stripe_response = $this->stripe_library->account_link($account_id);
+                    $stripe_response = $this->stripe_library->account_link($account_id, $debug);
                     if ($stripe_response['status']) {
                         $account_url = $stripe_response['account_url'];
                         $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'account_url' => $account_url), RestController::HTTP_OK);
