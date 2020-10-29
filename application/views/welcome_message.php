@@ -4649,8 +4649,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 print_r('{
     "status": "success",
     "env": "dev",
-    "account_id": "acct_1HhLEwGSe26m44ZK",
-    "payouts_enabled": true
+    "account_id": "acct_1HhSdzFvTagLaUpi",
+    "payouts_enabled": true,
+    "login_links": "https://connect.stripe.com/express/Q25HctkLI2fp"
 }');
                 echo '</pre>';
                 ?>

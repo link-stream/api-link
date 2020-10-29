@@ -220,6 +220,28 @@ class Stripe_library {
 //            echo '</pre>';
             $response['status'] = true;
             $response['payouts_enabled'] = $object->payouts_enabled;
+            $response['login_links'] = $object->login_links['url'];
+        } catch (Exception $e) {
+            $this->api_error = $e->getMessage();
+            $response['status'] = false;
+            $response['error'] = $this->api_error;
+        }
+        return $response;
+    }
+    
+    public function retrieve_login($account) {
+        $response = [];
+        $this->stripe = new \Stripe\StripeClient($this->secret_key);
+        try {
+            $object = $this->stripe->accounts->createLoginLink(
+                    $account,
+                    []
+            );
+//            echo '<pre>';
+//            print_r($object);
+//            echo '</pre>';
+            $response['status'] = true;
+            $response['url'] = $object->url;
         } catch (Exception $e) {
             $this->api_error = $e->getMessage();
             $response['status'] = false;

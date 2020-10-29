@@ -1049,8 +1049,20 @@ class Users extends RestController {
                 if ($stripe_response['payouts_enabled']) {
                     //UPDATE Account ID
                     $this->User_model->update_connect_by_user_id($user_id, $account_id, ['payouts_enabled' => 1, 'status' => 'ACTIVE']);
+                } else {
+                    //UPDATE Account ID
+                    $this->User_model->update_connect_by_user_id($user_id, $account_id, ['payouts_enabled' => 1, 'status' => 'APPROVED']);
                 }
-                $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'payouts_enabled' => $stripe_response['payouts_enabled']), RestController::HTTP_OK);
+                //LOGIN LINK
+                //$login_links = $stripe_response['login_links'];
+                $stripe_login = $this->stripe_library->retrieve_login($account_id);
+                if ($stripe_login['status']) {
+                    $stripe_login_url = $stripe_login['url'];
+                     $this->User_model->update_connect_by_user_id($user_id, $account_id, ['login_url' => $stripe_login_url]);
+                }
+
+
+                $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'payouts_enabled' => $stripe_response['payouts_enabled'], 'login_links' => $stripe_login_url), RestController::HTTP_OK);
             } else {
                 $this->error = $stripe_response['error'];
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
