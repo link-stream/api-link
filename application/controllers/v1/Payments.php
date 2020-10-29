@@ -128,7 +128,7 @@ class Payments extends RestController {
                         'feeService' => $feeService,
                         'total' => $total,
                         'payment_customer_id' => $token_id,
-                        'payment_processor' => "STRIPE"
+                        'payment_processor' => "Stripe"
                     ];
                     $invoice_id = $this->User_model->insert_user_purchase($invoice);
                     $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
@@ -417,7 +417,7 @@ class Payments extends RestController {
                     'feeService' => $feeService,
                     'total' => $total,
                     'payment_customer_id' => $paymentToken,
-                    'payment_processor' => "PAYPAL"
+                    'payment_processor' => "PayPal"
                 ];
                 $invoice_id = $this->User_model->insert_user_purchase($invoice);
                 $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);

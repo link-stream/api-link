@@ -11,7 +11,7 @@ class C_notification extends CI_Controller {
         //Models
         // $this->load->model("User_model");
         //$this->load->model("Streamy_model");
-        $this->load->model(array('Marketing_model'));
+        $this->load->model(array('Marketing_model', 'User_model'));
         //Libraries
         $this->load->library(array('Aws_ses', 'Aws_pinpoint'));
         $this->temp_dir = $this->general_library->get_temp_dir();
@@ -65,6 +65,7 @@ class C_notification extends CI_Controller {
         touch($lockFile);
         $this->messages_pending();
         $this->messages_scheduled();
+        //END
         unlink($lockFile);
     }
 
@@ -171,6 +172,11 @@ class C_notification extends CI_Controller {
     //Messages End
 
     public function payouts_cron() {
+        @ini_set('zlib.output_compression', 0);
+        @ini_set('implicit_flush', 1);
+        @ob_end_clean();
+        set_time_limit(0);
+        ob_implicit_flush(1);
         $lockFile = $this->temp_dir . DIRECTORY_SEPARATOR . 'payouts_cron.lock';
         if (is_file($lockFile)) {
             if (((time() - filemtime($lockFile)) / 60) > 10) {
@@ -179,25 +185,42 @@ class C_notification extends CI_Controller {
             die('Payouts Cron is Running');
         }
         touch($lockFile);
-
+        $this->payout_stripe();
         //END
         unlink($lockFile);
     }
 
-    public function split_payments_cron() {
-        $lockFile = $this->temp_dir . DIRECTORY_SEPARATOR . 'split_payments_cron.lock';
-        if (is_file($lockFile)) {
-            if (((time() - filemtime($lockFile)) / 60) > 10) {
-                unlink($lockFile);
-            }
-            die('Split Payments Cron is Running');
+    private function payout_stripe() {
+        $limit = 10;
+        $payouts = $this->User_model->fetch_user_invoice_detail_payout(null, 'Stripe', 'PENDING', $limit);
+        echo '<pre>';
+        print_r($payouts);
+        echo '</pre>';
+        foreach ($payouts as $payout) {
+            $id = $payout['id'];
+            $invoice_number = $payout['invoice_number'];
+            $producer_id = $payout['producer_id'];
+            $item_payout = $payout['item_payout'];
+            $stripe_account = $this->User_model->fetch_stripe_account_by_user_id($producer_id, 'Stripe', 'ACTIVE');
+            echo '<pre>';
+            print_r($stripe_account);
+            echo '</pre>';
         }
-        touch($lockFile);
-
-        //END
-        unlink($lockFile);
     }
 
+//    public function split_payments_cron() {
+//        $lockFile = $this->temp_dir . DIRECTORY_SEPARATOR . 'split_payments_cron.lock';
+//        if (is_file($lockFile)) {
+//            if (((time() - filemtime($lockFile)) / 60) > 10) {
+//                unlink($lockFile);
+//            }
+//            die('Split Payments Cron is Running');
+//        }
+//        touch($lockFile);
+//
+//        //END
+//        unlink($lockFile);
+//    }
     //Testing
 
     public function testing_cron() {

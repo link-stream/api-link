@@ -1058,7 +1058,7 @@ class Users extends RestController {
                 $stripe_login = $this->stripe_library->retrieve_login($account_id);
                 if ($stripe_login['status']) {
                     $stripe_login_url = $stripe_login['url'];
-                     $this->User_model->update_connect_by_user_id($user_id, $account_id, ['login_url' => $stripe_login_url]);
+                    $this->User_model->update_connect_by_user_id($user_id, $account_id, ['login_url' => $stripe_login_url]);
                 }
                 $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'payouts_enabled' => $stripe_response['payouts_enabled'], 'login_links' => $stripe_login_url), RestController::HTTP_OK);
             } else {
@@ -1337,6 +1337,40 @@ class Users extends RestController {
         }
     }
 
+    //
+    //PAYPAL CONNECT//
+    public function confirm_paypal_account_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $paypal_user_id = (!empty($this->input->post('paypal_user_id'))) ? $this->input->post('paypal_user_id') : '';
+        $paypal_email = (!empty($this->input->post('paypal_email'))) ? $this->input->post('paypal_email') : '';
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_by_id($user_id);
+            if (!empty($register_user)) {
+                //Guardar Account ID **
+                $user_connect = [];
+                //$user_connect['TEMP'] = '';
+                $user_connect['user_id'] = $user_id;
+                $user_connect['status'] = 'ACTIVE';
+                $user_connect['processor'] = 'Paypal';
+                $user_connect['login_url'] = $paypal_user_id;
+                $user_connect['payouts_enabled'] = '1';
+                $user_connect['email'] = $paypal_email;
+                $this->User_model->insert_user_connect($user_connect);
+                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => '1'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    //END PAYPAL CONNECT//
     //
 //    public function connect_account_post() {
 //        $connect_account = [];

@@ -297,11 +297,14 @@ class User_model extends CI_Model {
         $this->db->update('st_user_connect', $data);
     }
 
-    public function fetch_stripe_account_by_user_id($user_id, $processor = 'Stripe') {
+    public function fetch_stripe_account_by_user_id($user_id, $processor = 'Stripe', $status = null) {
         $this->db->from('st_user_connect');
         $this->db->where('user_id', $user_id);
-        $this->db->where('status <> ', 'DECLINED');
         $this->db->where('processor', $processor);
+        $this->db->where('status <> ', 'DECLINED');
+        if (!empty($status)) {
+            $this->db->where('status', $status);
+        }
         $query = $this->db->get();
         $result = $query->row_array();
         $query->free_result();
@@ -360,6 +363,22 @@ where a.id =  '" . $item_id . "' ";
     public function insert_user_payout_details($data) {
         $this->db->insert('st_user_invoice_detail_payout', $data);
         return $this->db->insert_id();
+    }
+
+    public function fetch_user_invoice_detail_payout($producer_id = null, $processor = 'STRIPE', $status = 'PENDING', $limit = 0, $offset = 0) {
+        $this->db->from('st_user_invoice_detail_payout');
+        if (!empty($producer_id)) {
+            $this->db->where('producer_id', $producer_id);
+        }
+        $this->db->where('payment_processor', $processor);
+        $this->db->where('status', $status);
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
     }
 
 }

@@ -4609,55 +4609,73 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                
-                
+
+
+
                 <hr>
                 <h3>Connect Stripe Account:</h3>
                 <code>POST <?= base_url() ?>v1/users/connect_stripe_account</code>
                 <h3>Parameters:</h3>
-                 <ul>
+                <ul>
                     <li>user_id</li>
                     <!--<li></li>-->
                 </ul>
-                 <h3>Response Example:</h3>
+                <h3>Response Example:</h3>
                 <p>
-                <?php
-                echo '<pre>';
-                print_r('{
+                    <?php
+                    echo '<pre>';
+                    print_r('{
     "status": "success",
     "env": "dev",
     "account_id": "acct_1HhKuZFJzzyt8Xjh",
     "account_url": "https://connect.stripe.com/express/onboarding/8tf5IE8brQBl"
 }');
-                echo '</pre>';
-                ?>
+                    echo '</pre>';
+                    ?>
                 </p>
-                
-                 <hr>
+
+                <hr>
                 <h3>Confirm Stripe Account:</h3>
                 <code>POST <?= base_url() ?>v1/users/confirm_stripe_account</code>
                 <h3>Parameters:</h3>
-                 <ul>
+                <ul>
                     <li>user_id</li>
                     <li>account_id</li>
                 </ul>
-                 <h3>Response Example:</h3>
+                <h3>Response Example:</h3>
                 <p>
-                <?php
-                echo '<pre>';
-                print_r('{
+                    <?php
+                    echo '<pre>';
+                    print_r('{
     "status": "success",
     "env": "dev",
     "account_id": "acct_1HhSdzFvTagLaUpi",
     "payouts_enabled": true,
     "login_links": "https://connect.stripe.com/express/Q25HctkLI2fp"
 }');
-                echo '</pre>';
-                ?>
+                    echo '</pre>';
+                    ?>
                 </p>
-                
-                
+
+                <hr>
+                <h3>Confirm Paypal Account:</h3>
+                <code>POST <?= base_url() ?>v1/users/confirm_paypal_account</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>paypal_user_id</li>
+                    <li>paypal_email</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
 
                 <!-- EXAMPLE 
                 <hr>
