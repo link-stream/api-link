@@ -94,6 +94,7 @@ class Payments extends RestController {
                 $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
                 $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
                 $total = (!empty($payment['total'])) ? $payment['total'] : 0;
+                $country = (!empty($payment['country'])) ? $payment['country'] : '';
                 if (empty($exp_month) || empty($exp_year) || empty($number) || empty($cvc) || empty($name) || empty($address_zip) || empty($subtotal) || empty($total)) {
                     $this->error = 'Provide Complete Payment Info';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -175,6 +176,7 @@ class Payments extends RestController {
                         $invoice['cc_type'] = $cc_type;
                         $invoice['utm_source'] = $utm_source;
                         $invoice['ref_id'] = $ref_id;
+                        $invoice['country'] = $country;
                         //UPDATE PURSHASE
                         $this->User_model->update_user_purchase($invoice_id, $invoice);
                         $cart_email = [];
@@ -225,12 +227,15 @@ class Payments extends RestController {
                             //
                             $invoice_detail_payout = [];
                             //$invoice_detail_payout['TEMP'] = '';
+                            $invoice_detail_payout['invoice_id'] = $item['invoice_id'];
+                            $invoice_detail_payout['invoice_number'] = $invoice['invoice_number'];
                             $invoice_detail_payout['detail_id'] = $invoice_detail_id;
                             $invoice_detail_payout['item_id'] = $item['item_id'];
                             $invoice_detail_payout['status'] = 'PENDING';
                             if ($item['item_track_type'] == 'beat') {
                                 //GET COLLABORATORS
                                 $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
+                                //print_r($collaborators);
                                 foreach ($collaborators as $collaborator) {
                                     $collaborator_id = $collaborator['user_id'];
                                     $collaborator_profit = $collaborator['profit'];
@@ -241,14 +246,15 @@ class Payments extends RestController {
                                         $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
                                         $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
                                         $invoice_detail_payout['item_payout'] = $payout;
-                                        $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                        $invoice_detail_payout['producer_id'] = $collaborator_id;
                                     } else {
                                         $detail_feeCC = 0;
                                         $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
                                         $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
                                         $invoice_detail_payout['item_payout'] = $payout;
-                                        $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                                        $invoice_detail_payout['producer_id'] = $collaborator_id;
                                     }
+                                    $this->User_model->insert_user_payout_details($invoice_detail_payout);
                                 }
                             } else {
                                 $invoice_detail_payout['item_amount'] = $item['item_amount'];
@@ -265,6 +271,7 @@ class Payments extends RestController {
                                     $invoice_detail_payout['item_payout'] = $payout;
                                     $invoice_detail_payout['producer_id'] = $item['producer_id'];
                                 }
+                                $this->User_model->insert_user_payout_details($invoice_detail_payout);
                             }
                             //
                             //1-CON EL ITEM OBTENER LOS COLLABORADORES SI ES BEAT.
@@ -416,7 +423,7 @@ class Payments extends RestController {
                 $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
                 $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
                 $total = (!empty($payment['total'])) ? $payment['total'] : 0;
-
+                $country = (!empty($payment['country'])) ? $payment['country'] : '';
                 if (empty($paymentID) || empty($paymentToken) || empty($subtotal) || empty($total)) {
                     $this->error = 'Provide Complete Payment Info';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -480,6 +487,7 @@ class Payments extends RestController {
                 $invoice['cc_type'] = 'PayPal';
                 $invoice['utm_source'] = $utm_source;
                 $invoice['ref_id'] = $ref_id;
+                $invoice['country'] = $country;
                 //UPDATE PURSHASE
                 $this->User_model->update_user_purchase($invoice_id, $invoice);
                 //$invoice_id = $this->User_model->insert_user_purchase($invoice);
@@ -528,6 +536,63 @@ class Payments extends RestController {
                     }
                     //END-LICENSE//
                     $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
+
+                    //
+                    //COLLABORATOR
+                    //
+                    $invoice_detail_payout = [];
+                    //$invoice_detail_payout['TEMP'] = '';
+                    $invoice_detail_payout['invoice_id'] = $item['invoice_id'];
+                    $invoice_detail_payout['invoice_number'] = $invoice['invoice_number'];
+                    $invoice_detail_payout['detail_id'] = $invoice_detail_id;
+                    $invoice_detail_payout['item_id'] = $item['item_id'];
+                    $invoice_detail_payout['status'] = 'PENDING';
+                    if ($item['item_track_type'] == 'beat') {
+                        //GET COLLABORATORS
+                        $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
+                        //print_r($collaborators);
+                        foreach ($collaborators as $collaborator) {
+                            $collaborator_id = $collaborator['user_id'];
+                            $collaborator_profit = $collaborator['profit'];
+                            $item_amount_collaborator = ($item['item_amount'] * $collaborator_profit / 100);
+                            $invoice_detail_payout['item_amount'] = $item_amount_collaborator;
+                            if ($invoice['feeCC'] == 0) {
+                                $detail_feeCC = ($invoice_detail_payout['item_amount'] * 3 / 100);
+                                $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                $invoice_detail_payout['item_payout'] = $payout;
+                                $invoice_detail_payout['producer_id'] = $collaborator_id;
+                            } else {
+                                $detail_feeCC = 0;
+                                $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                $invoice_detail_payout['item_payout'] = $payout;
+                                $invoice_detail_payout['producer_id'] = $collaborator_id;
+                            }
+                            $this->User_model->insert_user_payout_details($invoice_detail_payout);
+                        }
+                    } else {
+                        $invoice_detail_payout['item_amount'] = $item['item_amount'];
+                        if ($invoice['feeCC'] == 0) {
+                            $detail_feeCC = ($invoice_detail_payout['item_amount'] * 3 / 100);
+                            $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                            $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                            $invoice_detail_payout['item_payout'] = $payout;
+                            $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                        } else {
+                            $detail_feeCC = 0;
+                            $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                            $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                            $invoice_detail_payout['item_payout'] = $payout;
+                            $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                        }
+                        $this->User_model->insert_user_payout_details($invoice_detail_payout);
+                    }
+                    //
+                    //1-CON EL ITEM OBTENER LOS COLLABORADORES SI ES BEAT.
+                    //2-SEGUN PORCENTAJE CALCULAR VALOR A PAGAR
+                    //SI FEE CC ES DISTINTO DE 0 SE LO CALCULAMOS AL ITEM Y LO DESCONTAMOS
+                    //END COLLABORATOR
                     //LOG Item License.
                     //$log_license = $this->log_item_license($invoice, $invoice_detail_id, $item);
                     //$confirmation_url[$item['item_id']] = $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id);
@@ -668,4 +733,14 @@ class Payments extends RestController {
     }
 
     //NOTE: 
+
+    /*
+      {"user_id":"35","utm_source":"","ref_id":"",
+      "payment":{"exp_month":"01","exp_year":2021,"number":"4111 1111 1111 1111","cvc":"123","name":"Paolo Payout","country":"United States","address_zip":"33326","subtotal":530,"feeCC":"15.96","feeService":"1.99","total":"547.95"},
+      "cart":[
+      {"item_id":"390","item_title":"Stranger","item_amount":30,"item_track_type":"beat","license_id":"1","producer_id":"35","genre_id":"3"},
+      {"item_id":"34","item_title":"The Cat - Pack","item_amount":350,"item_track_type":"pack","license_id":"","producer_id":"35","genre_id":"3"},
+      {"item_id":"381","item_title":"My Moon Kit Example","item_amount":150,"item_track_type":"kit","license_id":"","producer_id":"35","genre_id":"2"}]}
+
+     */
 }
