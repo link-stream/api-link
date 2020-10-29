@@ -1377,9 +1377,9 @@ class Users extends RestController {
             }
             $temp_paypal_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Paypal');
             if (empty($temp_paypal_account)) {
-                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
+                $this->response(array('status' => 'false', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
             } elseif ($temp_paypal_account['status'] != 'ACTIVE') {
-                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
+                $this->response(array('status' => 'false', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
             } else {
                 $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['email']), RestController::HTTP_OK);
             }
