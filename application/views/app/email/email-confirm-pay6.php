@@ -667,7 +667,7 @@
                                                 <span class="summary-details-price" style="text-align: right"><?= (!empty($invoice['sub_total'])) ? number_format($invoice['sub_total'], 2) : '80.00' ?></span>
                                             </div>
                                         </div>    
-                                        <?php if (!empty($invoice['feeService'])) { ?>
+                                        <?php if (!empty($invoice['feeService']) && $invoice['feeService'] > 0) { ?>
                                             <div class="row" style="margin-top: 3px;">
                                                 <div class="col" style="width: 130px;">
                                                     <span class="card-summary-details">Service Fee</span>
@@ -678,7 +678,7 @@
                                                 </div>
                                             </div>
                                         <?php } ?>
-                                        <?php if (!empty($invoice['feeCC'])) { ?>
+                                        <?php if (!empty($invoice['feeCC']) && $invoice['feeCC'] > 0) { ?>
                                             <div class="row" style="margin-top: 3px;">
                                                 <div class="col" style="width: 130px;">
                                                     <span class="card-summary-details">Credit Card Fee</span>
