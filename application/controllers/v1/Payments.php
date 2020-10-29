@@ -128,6 +128,7 @@ class Payments extends RestController {
                         'feeService' => $feeService,
                         'total' => $total,
                         'payment_customer_id' => $token_id,
+                        'payment_processor' => "STRIPE"
                     ];
                     $invoice_id = $this->User_model->insert_user_purchase($invoice);
                     $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
@@ -201,6 +202,7 @@ class Payments extends RestController {
                             $invoice_detail_payout['detail_id'] = $invoice_detail_id;
                             $invoice_detail_payout['item_id'] = $item['item_id'];
                             $invoice_detail_payout['status'] = 'PENDING';
+                            $invoice_detail_payout['payment_processor'] = $invoice['payment_processor'];
                             if ($item['item_track_type'] == 'beat') {
                                 //GET COLLABORATORS
                                 $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
@@ -415,6 +417,7 @@ class Payments extends RestController {
                     'feeService' => $feeService,
                     'total' => $total,
                     'payment_customer_id' => $paymentToken,
+                    'payment_processor' => "PAYPAL"
                 ];
                 $invoice_id = $this->User_model->insert_user_purchase($invoice);
                 $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
@@ -476,6 +479,7 @@ class Payments extends RestController {
                     $invoice_detail_payout['detail_id'] = $invoice_detail_id;
                     $invoice_detail_payout['item_id'] = $item['item_id'];
                     $invoice_detail_payout['status'] = 'PENDING';
+                    $invoice_detail_payout['payment_processor'] = $invoice['payment_processor'];
                     if ($item['item_track_type'] == 'beat') {
                         //GET COLLABORATORS
                         $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
