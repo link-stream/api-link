@@ -1370,6 +1370,25 @@ class Users extends RestController {
         }
     }
 
+    public function paypal_account_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $temp_paypal_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Paypal');
+            if (empty($temp_paypal_account)) {
+                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
+            } elseif ($temp_paypal_account['status'] != 'ACTIVE') {
+                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
+            } else {
+                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['email']), RestController::HTTP_OK);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     //END PAYPAL CONNECT//
     //
 //    public function connect_account_post() {
