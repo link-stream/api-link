@@ -1359,6 +1359,7 @@ class Users extends RestController {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $paypal_user_id = (!empty($this->input->post('paypal_user_id'))) ? $this->input->post('paypal_user_id') : '';
         $paypal_email = (!empty($this->input->post('paypal_email'))) ? $this->input->post('paypal_email') : '';
+        $account_type = (!empty($this->input->post('account_type'))) ? $this->input->post('account_type') : 'payout';
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
                 //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -1366,16 +1367,32 @@ class Users extends RestController {
             $register_user = $this->User_model->fetch_user_by_id($user_id);
             if (!empty($register_user)) {
                 //Guardar Account ID **
-                $user_connect = [];
-                //$user_connect['TEMP'] = '';
-                $user_connect['user_id'] = $user_id;
-                $user_connect['status'] = 'ACTIVE';
-                $user_connect['processor'] = 'Paypal';
-                $user_connect['login_url'] = $paypal_user_id;
-                $user_connect['payouts_enabled'] = '1';
-                $user_connect['email'] = $paypal_email;
-                $this->User_model->insert_user_connect($user_connect);
-                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => '1'), RestController::HTTP_OK);
+                if ($account_type == 'payout') {
+                    $user_connect = [];
+                    //$user_connect['TEMP'] = '';
+                    $user_connect['user_id'] = $user_id;
+                    $user_connect['status'] = 'ACTIVE';
+                    $user_connect['processor'] = 'Paypal';
+                    $user_connect['login_url'] = $paypal_user_id;
+                    $user_connect['payouts_enabled'] = '1';
+                    $user_connect['email'] = $paypal_email;
+                    $this->User_model->insert_user_connect($user_connect);
+                } else {
+                    $payment_method = [];
+                    $payment_method['user_id'] = $user_id;
+                    $payment_method['status'] = 'ACTIVE';
+                    $payment_method['payment_processor'] = 'Paypal';
+                    //$payment_method['first_name'] = $first_name;
+                    //$payment_method['last_name'] = $last_name;
+                    //$payment_method['first_cc_number'] = substr($cc_number, 0, 6);
+                    //$payment_method['last_cc_number'] = substr($cc_number, -4);
+                    //$payment_method['expiration_date'] = $expiration_date;
+                    //$payment_method['cvv'] = $cvv;
+                    $payment_method['paypal_email'] = $paypal_email;
+                    $payment_method['paypal_user_id'] = $paypal_user_id;
+                    $this->User_model->insert_payment_method($payment_method);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'paypal_enabled' => TRUE), RestController::HTTP_OK);
             } else {
                 $this->error = 'User Not Found.';
                 $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -1386,18 +1403,27 @@ class Users extends RestController {
         }
     }
 
-    public function paypal_account_get($user_id = null) {
+    public function paypal_account_get($user_id = null, $account_type = 'payout') {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
                 //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
-            $temp_paypal_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Paypal');
-            if (empty($temp_paypal_account)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
-            } elseif ($temp_paypal_account['status'] != 'ACTIVE') {
-                $this->response(array('status' => 'false', 'env' => ENV, 'payouts_enabled' => FALSE), RestController::HTTP_OK);
+            if ($account_type == 'payout') {
+                $temp_paypal_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Paypal');
+                if (empty($temp_paypal_account)) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'paypal_enabled' => FALSE), RestController::HTTP_OK);
+                } elseif ($temp_paypal_account['status'] != 'ACTIVE') {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'paypal_enabled' => FALSE), RestController::HTTP_OK);
+                } else {
+                    $this->response(array('status' => 'success', 'env' => ENV, 'paypal_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['email']), RestController::HTTP_OK);
+                }
             } else {
-                $this->response(array('status' => 'success', 'env' => ENV, 'payouts_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['email']), RestController::HTTP_OK);
+                $temp_paypal_account = $this->User_model->fetch_payment_method_by_user_id($user_id, 'Paypal');
+                if (empty($temp_paypal_account)) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'paypal_enabled' => FALSE), RestController::HTTP_OK);
+                } else {
+                    $this->response(array('status' => 'success', 'env' => ENV, 'paypal_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['paypal_email']), RestController::HTTP_OK);
+                }
             }
         } else {
             $this->error = 'Provide User ID.';
@@ -1405,12 +1431,19 @@ class Users extends RestController {
         }
     }
 
-    public function paypal_account_delete($user_id = null) {
+    public function paypal_account_delete($user_id = null, $account_type = 'payout') {
 //        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
 //        $account_id = (!empty($this->input->post('account_id'))) ? $this->input->post('account_id') : '';
         if (!empty($user_id)) {
             //UPDATE Account ID
-            $this->User_model->update_connect_by_user_id_pp($user_id, ['status' => 'DELETED']);
+            if ($account_type == 'payout') {
+                $this->User_model->update_connect_by_user_id_pp($user_id, ['status' => 'DELETED']);
+            } else {
+                $temp_paypal_account = $this->User_model->fetch_payment_method_by_user_id($user_id, 'Paypal');
+                if (empty($temp_paypal_account)) {
+                    $this->User_model->update_payment_method($temp_paypal_account['id'], ['status' => 'INACTIVE']);
+                }
+            }
             $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID';

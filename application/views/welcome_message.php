@@ -4656,8 +4656,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                 <hr>
+
+                <hr>
                 <h3>Declined Stripe Account:</h3>
                 <code>POST <?= base_url() ?>v1/users/decline_stripe_account</code>
                 <h3>Parameters:</h3>
@@ -4676,7 +4676,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
+
                 <hr>
                 <h3>Delete Stripe Account:</h3>
                 <code>DELETE <?= base_url() ?>v1/users/decline_stripe_account/{user_id}/{account_id}</code>
@@ -4718,13 +4718,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
-<!--                <hr>
-                <h3>Get Paypal Account:</h3>
-                <code>GET <?= base_url() ?>v1/users/paypal_account/{user_id}</code>
+                <hr>
+                <h3>Confirm Paypal Account:</h3>
+                <code>POST <?= base_url() ?>v1/users/confirm_paypal_account</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <li></li>
+                    <li>paypal_user_id</li>
+                    <li>paypal_email</li>
+                    <li>account_type (payout or payment)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -4733,21 +4735,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "payouts_enabled": true,
-    "paypal_email": "sb-mmzz31809258@business.example.com"
+    "paypal_enabled": true
 }');
                     echo '</pre>';
                     ?>
-                </p>-->
+                </p>
 
-               
+
                 <hr>
                 <h3>Get Paypal Account:</h3>
-                <code>GET <?= base_url() ?>v1/users/paypal_account/{user_id}</code>
+                <code>GET <?= base_url() ?>v1/users/paypal_account/{user_id}/{account_type}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <!--<li></li>-->
+                    <li>account_type (payout or payment)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -4756,20 +4757,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     print_r('{
     "status": "success",
     "env": "dev",
-    "payouts_enabled": true,
+    "paypal_enabled": true,
     "paypal_email": "sb-mmzz31809258@business.example.com"
 }');
                     echo '</pre>';
                     ?>
                 </p>
-                
-                  <hr>
+
+                <hr>
                 <h3>Delete Paypal Account:</h3>
-                <code>DELETE <?= base_url() ?>v1/users/paypal_account/{user_id}</code>
+                <code>DELETE <?= base_url() ?>v1/users/paypal_account/{user_id}/{account_type}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <!--<li>account_id</li>-->
+                    <li>account_type (payout or payment)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

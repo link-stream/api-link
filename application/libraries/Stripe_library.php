@@ -185,10 +185,15 @@ class Stripe_library {
 
     public function account_link($account, $debug) {
         $response = [];
+        if (ENV == 'live') {
+            $refresh_url = 'https://linkstream.com/app/account/payments/stripe_cancel';
+            $return_url = 'https://linkstream.com/app/account/payments/stripe_confirm';
+        } else {
+            $refresh_url = 'https://dev-link-vue.link.stream/app/account/payments/stripe_cancel';
+            $return_url = 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm';
+        }
         //$refresh_url = ($debug == false) ? 'https://dev-link-vue.link.stream/app/account/payments/stripe_cancel' : 'http://localhost:8080/app/account/payments/stripe_cancel';
         //$return_url = ($debug == false) ? 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm' : 'http://localhost:8080/app/account/payments/stripe_confirm';
-        $refresh_url = 'https://dev-link-vue.link.stream/app/account/payments/stripe_cancel';
-        $return_url = 'https://dev-link-vue.link.stream/app/account/payments/stripe_confirm';
         $this->stripe = new \Stripe\StripeClient($this->secret_key);
         try {
             $object = $this->stripe->accountLinks->create([

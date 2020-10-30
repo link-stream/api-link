@@ -226,10 +226,11 @@ class User_model extends CI_Model {
         return $result;
     }
 
-    public function fetch_payment_method_by_user_id($user_id) {
+    public function fetch_payment_method_by_user_id($user_id, $processor = 'Stripe') {
         $this->db->from('st_user_payment_method');
         $this->db->where('user_id', $user_id);
         $this->db->where('status', 'ACTIVE');
+        $this->db->where('payment_processor', $processor);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
@@ -296,12 +297,11 @@ class User_model extends CI_Model {
         $this->db->where(array('user_id' => $user_id, 'account_id' => $account_id));
         $this->db->update('st_user_connect', $data);
     }
-    
+
     public function update_connect_by_user_id_pp($user_id, $data) {
         $this->db->where(array('user_id' => $user_id, 'processor' => 'Paypal'));
         $this->db->update('st_user_connect', $data);
     }
-    
 
     public function fetch_stripe_account_by_user_id($user_id, $processor = 'Stripe', $status = null) {
         $this->db->from('st_user_connect');
