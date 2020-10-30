@@ -1405,6 +1405,19 @@ class Users extends RestController {
         }
     }
 
+    public function paypal_account_delete($user_id = null) {
+//        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+//        $account_id = (!empty($this->input->post('account_id'))) ? $this->input->post('account_id') : '';
+        if (!empty($user_id)) {
+            //UPDATE Account ID
+            $this->User_model->update_connect_by_user_id_pp($user_id, ['status' => 'DELETED']);
+            $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     //END PAYPAL CONNECT//
     //
 //    public function connect_account_post() {
