@@ -4722,7 +4722,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
                 
                 <hr>
-                <h3>Declined Stripe Account:</h3>
+                <h3>Delete Stripe Account:</h3>
                 <code>DELETE <?= base_url() ?>v1/users/decline_stripe_account/{user_id}/{account_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
