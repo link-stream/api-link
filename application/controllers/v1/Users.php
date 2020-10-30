@@ -1088,7 +1088,7 @@ class Users extends RestController {
     public function stripe_account_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $temp_stripe_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Stripe');
             if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'APPROVED') {
