@@ -302,6 +302,7 @@ class User_model extends CI_Model {
         $this->db->where('user_id', $user_id);
         $this->db->where('processor', $processor);
         $this->db->where('status <> ', 'DECLINED');
+        $this->db->where('status <> ', 'DELETED');
         if (!empty($status)) {
             $this->db->where('status', $status);
         }
