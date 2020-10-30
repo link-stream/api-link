@@ -4656,7 +4656,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
-                
+
                 <hr>
                 <h3>Get Stripe Account:</h3>
                 <code>GET <?= base_url() ?>v1/users/stripe_account/{user_id}</code>
@@ -4680,22 +4680,68 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
                 <hr>
-                <h3>Confirm Paypal Account:</h3>
-                <code>POST <?= base_url() ?>v1/users/confirm_paypal_account</code>
+                <h3>Get Stripe Account:</h3>
+                <code>GET <?= base_url() ?>v1/users/stripe_account/{user_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <li>paypal_user_id</li>
-                    <li>paypal_email</li>
+                    <!--<li></li>-->
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
                     <?php
                     echo '<pre>';
-                    print_r('');
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "payouts_enabled": true,
+    "paypal_email": "sb-mmzz31809258@business.example.com"
+}');
                     echo '</pre>';
                     ?>
                 </p>
+
+                <hr>
+                <h3>Declined Stripe Account:</h3>
+                <code>POST <?= base_url() ?>v1/users/decline_stripe_account</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>account_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+                
+                <hr>
+                <h3>Declined Stripe Account:</h3>
+                <code>DELETE <?= base_url() ?>v1/users/decline_stripe_account/{user_id}/{account_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>account_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+                
+                
 
                 <hr>
                 <h3>Get Paypal Account:</h3>

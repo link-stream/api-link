@@ -1000,7 +1000,10 @@ class Users extends RestController {
                 if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'ACTIVE') {
                     $this->error = 'Stripe Account Already Created and Activated';
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING_TEST') {
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'APPROVED') {
+                    $this->error = 'Stripe Account Already Created and Approved, no Active';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
                     $account_id = $temp_stripe_account['account_id'];
                 } else {
                     //CREATE ACCOUNT
@@ -1078,6 +1081,19 @@ class Users extends RestController {
 
             //UPDATE Account ID
             $this->User_model->update_connect_by_user_id($user_id, $account_id, ['status' => 'DECLINED']);
+            $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID and/or Account ID';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function decline_stripe_account_delete($user_id = null, $account_id = null) {
+//        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+//        $account_id = (!empty($this->input->post('account_id'))) ? $this->input->post('account_id') : '';
+        if (!empty($user_id) || !empty($account_id)) {
+            //UPDATE Account ID
+            $this->User_model->update_connect_by_user_id($user_id, $account_id, ['status' => 'DELETED']);
             $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide User ID and/or Account ID';
