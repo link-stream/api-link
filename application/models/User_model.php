@@ -207,10 +207,10 @@ class User_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function update_payment_method($id, $data) {
-        $this->db->where('id', $id);
-        $this->db->update('st_user_payment_method', $data);
-    }
+//    public function update_payment_method($id, $data) {
+//        $this->db->where('id', $id);
+//        $this->db->update('st_user_payment_method', $data);
+//    }
 
     public function update_payment_method_by_user_id($user_id, $data) {
         $this->db->where('user_id', $user_id);
@@ -233,6 +233,17 @@ class User_model extends CI_Model {
         $this->db->where('payment_processor', $processor);
         $query = $this->db->get();
         $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+    
+    public function fetch_paypal_method_by_user_id($user_id) {
+        $this->db->from('st_user_payment_method');
+        $this->db->where('user_id', $user_id);
+        $this->db->where('status', 'ACTIVE');
+        $this->db->where('payment_processor', 'Paypal');
+        $query = $this->db->get();
+        $result = $query->row_array();
         $query->free_result();
         return $result;
     }
@@ -386,6 +397,11 @@ where a.id =  '" . $item_id . "' ";
         $result = $query->result_array();
         $query->free_result();
         return $result;
+    }
+    
+    public function update_payment_method($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_payment_method', $data);
     }
 
 }
