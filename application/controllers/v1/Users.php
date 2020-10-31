@@ -1418,7 +1418,7 @@ class Users extends RestController {
                     $this->response(array('status' => 'success', 'env' => ENV, 'paypal_enabled' => TRUE, 'paypal_email' => $temp_paypal_account['email']), RestController::HTTP_OK);
                 }
             } else {
-                $temp_paypal_account = $this->User_model->fetch_paypal_method_by_user_id($user_id );
+                $temp_paypal_account = $this->User_model->fetch_paypal_method_by_user_id($user_id);
                 if (empty($temp_paypal_account)) {
                     $this->response(array('status' => 'false', 'env' => ENV, 'paypal_enabled' => FALSE), RestController::HTTP_OK);
                 } else {
@@ -1440,7 +1440,7 @@ class Users extends RestController {
             if ($account_type == 'payout') {
                 $this->User_model->update_connect_by_user_id_pp($user_id, ['status' => 'DELETED']);
             } else {
-                $temp_paypal_account = $this->User_model->fetch_payment_method_by_user_id($user_id, 'Paypal');
+                $temp_paypal_account = $this->User_model->fetch_paypal_method_by_user_id($user_id);
                 if (empty($temp_paypal_account)) {
                     $this->User_model->update_payment_method($temp_paypal_account['id'], ['status' => 'INACTIVE']);
                 }
