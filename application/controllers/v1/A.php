@@ -677,10 +677,10 @@ class A extends CI_Controller {
                 $data = [];
                 $mpdf = new \Mpdf\Mpdf();
 
-                $mpdf->SetHTMLHeader('
-           <div style="text-align: right; font-weight: bold;">
-    My document
-</div>');
+//                $mpdf->SetHTMLHeader('
+//           <div style="text-align: right; font-weight: bold;">
+//    My document
+//</div>');
 //                $mpdf->SetHTMLFooter('
 //<table width="100%">
 //    <tr>
