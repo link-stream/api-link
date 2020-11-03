@@ -242,21 +242,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-<!--                <hr>
-                <h3>Instagram Login/Register:</h3>
-                <code>POST <?= base_url() ?>v1/users/instagram</code>
-                <h3>Parameters:</h3>
-                <ul>
-                                        <li>user_id (Instagram ID - Example: 17841400070704000)</li>
-                                        <li>instagram_username</li>
-                    <li>code (Instagram Code)</li>
-                    <li>redirect_url</li>
-                </ul>
-                <h3>Response Example:</h3>
-                <p>
-                    <?php
-                    echo '<pre>';
-                    print_r('{
+                <!--                <hr>
+                                <h3>Instagram Login/Register:</h3>
+                                <code>POST <?= base_url() ?>v1/users/instagram</code>
+                                <h3>Parameters:</h3>
+                                <ul>
+                                                        <li>user_id (Instagram ID - Example: 17841400070704000)</li>
+                                                        <li>instagram_username</li>
+                                    <li>code (Instagram Code)</li>
+                                    <li>redirect_url</li>
+                                </ul>
+                                <h3>Response Example:</h3>
+                                <p>
+                <?php
+                echo '<pre>';
+                print_r('{
     "status": "success",
     "env": "dev",
     "data": {
@@ -270,9 +270,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "id": 43
     }
 }');
-                    echo '</pre>';
-                    ?>
-                </p>-->
+                echo '</pre>';
+                ?>
+                                </p>-->
 
                 <hr>
                 <h3>Google Login/Register:</h3>
@@ -4787,6 +4787,184 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     echo '</pre>';
                     ?>
                 </p>
+
+
+                <hr>
+                <h3>GET Landing Page List:</h3>
+                <code>GET <?= base_url() ?>v1/marketing/landing_page/{user_id}/{landing_page_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>landing_page_id (optional)</li>
+                    <li>?page={page}&page_size={page_size}</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "id": "1",
+            "user_id": "35",
+            "type": "Landing_Page",
+            "status": "Draft",
+            "created_at": "2020-11-03 17:48:41",
+            "campaing_name": "NAME",
+            "url": "testing_url",
+            "headline": "Head",
+            "body": "body",
+            "content": "content",
+            "promote_id": "381",
+            "template_type": "promote",
+            "publish_at": null,
+            "logo": "a.jpg",
+            "artwork": "b.jpg",
+            "button_color": "FFF",
+            "background_color": "AAA",
+            "background_image": "c.jpg",
+            "open": "0",
+            "click": "0",
+            "revenue": "0.00"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Insert Landing Page:</h3>
+                <code>POST <?= base_url() ?>v1/marketing/landing_page</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>status (Draft, Active)</li>
+                    <li>campaing_name</li>
+                    <li>url</li>
+                    <li>headline</li>
+                    <li>body</li> 
+                    <li>content</li>
+                    <li>promote_id</li>
+                    <li>template_type</li>
+                    <li>logo</li>
+                    <li>artwork</li>
+                    <li>button_color</li> 
+                    <li>background_color</li> 
+                    <li>background_image</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The landing page has been created successfully.",
+    "id": 1,
+    "data": {
+        "user_id": "35",
+        "type": "Landing_Page",
+        "status": "Draft",
+        "campaing_name": "NAME",
+        "url": "testing_url",
+        "headline": "Head",
+        "body": "body",
+        "content": "content",
+        "promote_id": "381",
+        "template_type": "promote",
+        "logo": "a.jpg",
+        "artwork": "b.jpg",
+        "button_color": "FFF",
+        "background_color": "AAA",
+        "background_image": "c.jpg",
+        "id": 1
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Update Landing Page:</h3>
+                <code>PUT <?= base_url() ?>v1/marketing/landing_page/{landing_page_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>status (Draft, Active)</li>
+                    <li>campaing_name</li>
+                    <li>url</li>
+                    <li>headline</li>
+                    <li>body</li> 
+                    <li>content</li>
+                    <li>promote_id</li>
+                    <li>template_type</li>
+                    <li>logo</li>
+                    <li>artwork</li>
+                    <li>button_color</li> 
+                    <li>background_color</li> 
+                    <li>background_image</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The landing page info has been updated successfully.",
+    "data": {
+        "id": "1",
+        "user_id": "35",
+        "type": "Landing_Page",
+        "status": "Draft",
+        "created_at": "2020-11-03 22:48:41",
+        "campaing_name": "NAME",
+        "url": "testing_url",
+        "headline": "Head",
+        "body": "body",
+        "content": "content",
+        "promote_id": "381",
+        "template_type": "promote",
+        "publish_at": null,
+        "logo": "a.jpg",
+        "artwork": "b.jpg",
+        "button_color": "FFF",
+        "background_color": "AAA",
+        "background_image": "cc.jpg",
+        "open": "0",
+        "click": "0",
+        "revenue": "0.00"
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Delete Landing Page:</h3>
+                <code>DELETE <?= base_url() ?>v1/marketing/landing_page/{landing_page_id}</code>
+                <!--                <h3>Parameters:</h3>
+                                 <ul>
+                                    <li></li>
+                                    <li></li>
+                                </ul>-->
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The landing page has been deleted successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
 
 

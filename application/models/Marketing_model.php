@@ -536,4 +536,43 @@ WHERE message_id = '" . $message_id . "' and open = '1'";
         $this->db->update('st_marketing_messages');
     }
 
+    //Landing page
+    public function fetch_landing_page_by_user_id($user_id, $messages_id, $deleted = false, $limit = 0, $offset = 0) {
+        $this->db->from('st_marketing_landing_pages');
+        $this->db->where('user_id', $user_id);
+        if (!$deleted) {
+            $this->db->where('status <> ', 'Deleted');
+        }
+        if (!empty($messages_id)) {
+            $this->db->where('id', $messages_id);
+        }
+        $this->db->order_by('id', 'DESC');
+        if (!empty($limit)) {
+            $this->db->limit($limit, $offset);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function insert_landing_page($data) {
+        $this->db->insert('st_marketing_landing_pages', $data);
+        return $this->db->insert_id();
+    }
+
+    public function fetch_landing_page_by_id($id) {
+        $this->db->from('st_marketing_landing_pages');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function update_landing_page($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_marketing_landing_pages', $data);
+    }
+
 }

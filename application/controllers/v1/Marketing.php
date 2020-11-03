@@ -869,6 +869,151 @@ class Marketing extends RestController {
         }
     }
 
+    public function landing_page_get($id = null, $message_id = null) {
+        if (!empty($id)) {
+            if (!$this->general_library->header_token($id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            //ACTIONS
+            $page = (!empty($this->input->get('page'))) ? intval($this->input->get('page')) : 0;
+            $page_size = (!empty($this->input->get('page_size'))) ? intval($this->input->get('page_size')) : 0;
+            if (!is_int($page) || !is_int($page_size)) {
+                $this->error = 'Parameters page and page_size can only have integer values';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+            $offset = ($page > 0) ? (($page - 1) * $page_size) : 0;
+            $limit = $page_size;
+            $messages = $this->Marketing_model->fetch_landing_page_by_user_id($id, $message_id, false, $limit, $offset);
+            $messages_reponse = [];
+            foreach ($messages as $message) {
+                //$message_cleaned = $this->message_clean($message);
+                $message['created_at'] = $this->general_library->gmt_to_est($message['created_at']);
+                $messages_reponse[] = $message;
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $messages_reponse), RestController::HTTP_OK);
+            //END ACTIONS
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_post() {
+        $message = array();
+        $message['user_id'] = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $message['type'] = 'Landing_Page';
+        if ((!empty($message['user_id']) && !empty($message['type']))) {
+            if (!$this->general_library->header_token($message['user_id'])) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+//            if ($message['type'] != 'Email' && $message['type'] != 'SMS') {
+//                $this->error = 'Provide a Valid Type';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_UNAUTHORIZED);
+//            }
+            $message['status'] = (!empty($this->input->post('status'))) ? $this->input->post('status') : $message['status']; //Active or Draft
+            $message['campaing_name'] = (!empty($this->input->post('campaing_name'))) ? $this->input->post('campaing_name') : '';
+            $message['url'] = (!empty($this->input->post('url'))) ? $this->input->post('url') : '';
+            $message['headline'] = (!empty($this->input->post('headline'))) ? $this->input->post('headline') : '';
+            $message['body'] = (!empty($this->input->post('body'))) ? $this->input->post('body') : '';
+            $message['content'] = (!empty($this->input->post('content'))) ? $this->input->post('content') : '';
+            $message['promote_id'] = (!empty($this->input->post('promote_id'))) ? $this->input->post('promote_id') : '';
+            $message['template_type'] = (!empty($this->input->post('template_type'))) ? $this->input->post('template_type') : '';
+            $message['logo'] = (!empty($this->input->post('logo'))) ? $this->input->post('logo') : '';
+            $message['artwork'] = (!empty($this->input->post('artwork'))) ? $this->input->post('artwork') : '';
+            $message['button_color'] = (!empty($this->input->post('button_color'))) ? $this->input->post('button_color') : '';
+            $message['background_color'] = (!empty($this->input->post('background_color'))) ? $this->input->post('background_color') : '';
+            $message['background_image'] = (!empty($this->input->post('background_image'))) ? $this->input->post('background_image') : '';
+            //CREATE
+            $message['id'] = $this->Marketing_model->insert_landing_page($message);
+            //$message_cleaned = $this->message_clean($message);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The landing page has been created successfully.', 'id' => $message['id'], 'data' => $message), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide complete landing page info to add';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_put($id = null) {
+        if (!empty($id)) {
+            $message = $this->Marketing_model->fetch_landing_page_by_id($id);
+            if (!empty($message)) {
+                if (!$this->general_library->header_token($message['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+
+                if (!empty($this->put('status'))) {
+                    $message['status'] = $this->put('status');
+                }
+                if (!empty($this->put('campaing_name'))) {
+                    $message['campaing_name'] = $this->put('campaing_name');
+                }
+                if (!empty($this->put('url'))) {
+                    $message['url'] = $this->put('url');
+                }
+                if (!empty($this->put('headline'))) {
+                    $message['headline'] = $this->put('headline');
+                }
+                if (!empty($this->put('body'))) {
+                    $message['body'] = $this->put('body');
+                }
+                if (!empty($this->put('content'))) {
+                    $message['content'] = $this->put('content');
+                }
+                if (!empty($this->put('promote_id'))) {
+                    $message['promote_id'] = $this->put('promote_id');
+                }
+                if (!empty($this->put('template_type'))) {
+                    $message['template_type'] = $this->put('template_type');
+                }
+                if (!empty($this->put('logo'))) {
+                    $message['logo'] = $this->put('logo');
+                }
+                if (!empty($this->put('artwork'))) {
+                    $message['artwork'] = $this->put('artwork');
+                }
+                if (!empty($this->put('button_color'))) {
+                    $message['button_color'] = $this->put('button_color');
+                }
+                if (!empty($this->put('background_color'))) {
+                    $message['background_color'] = $this->put('background_color');
+                }
+                if (!empty($this->put('background_image'))) {
+                    $message['background_image'] = $this->put('background_image');
+                }
+                //UPDATE
+                $this->Marketing_model->update_landing_page($id, $message);
+                //$message_cleaned = $this->message_clean($message);
+                //REPONSE
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The landing page info has been updated successfully.', 'data' => $message), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Landing Page Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Landing Page ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_delete($id = null) {
+        if (!empty($id)) {
+            $message = $this->Marketing_model->fetch_landing_page_by_id($id);
+            if (!empty($message)) {
+                if (!$this->general_library->header_token($message['user_id'])) {
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $this->Marketing_model->update_landing_page($id, ['status' => 'Deleted']);
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The landing page has been deleted successfully.'), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Landing Page Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Landing Page ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     //
     //
     //
