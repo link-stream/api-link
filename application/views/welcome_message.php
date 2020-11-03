@@ -146,7 +146,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>email</li>
                     <li>password</li>
                     <li>user_name</li>
-                    <li>type (optional)</li>
+                    <li>type (producer or listener)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -221,6 +221,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "display_name": "Paolo_LinkStream",
         "email": "paul@link.stream",
         "plan_id": "2",
+        "type": "producer",
         "created_at": "2020-02-17 22:34:38",
         "url": "paolo_linkstream",
         "phone": null,
@@ -241,13 +242,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </p>
 
 
-                <hr>
+<!--                <hr>
                 <h3>Instagram Login/Register:</h3>
                 <code>POST <?= base_url() ?>v1/users/instagram</code>
                 <h3>Parameters:</h3>
                 <ul>
-                    <!--                    <li>user_id (Instagram ID - Example: 17841400070704000)</li>
-                                        <li>instagram_username</li>-->
+                                        <li>user_id (Instagram ID - Example: 17841400070704000)</li>
+                                        <li>instagram_username</li>
                     <li>code (Instagram Code)</li>
                     <li>redirect_url</li>
                 </ul>
@@ -271,7 +272,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 }');
                     echo '</pre>';
                     ?>
-                </p>
+                </p>-->
 
                 <hr>
                 <h3>Google Login/Register:</h3>
@@ -279,6 +280,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <h3>Parameters:</h3>
                 <ul>
                     <li>platform_token (Google Token ID - Example: eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZWZlYTFmNjZlODdiYjM2YzJlYTA5ZDgzNzMzOGJkZDgxMDM1M2IiLCJ0eXAiOiJKV1QifQ)</li>
+                    <li>type (producer or listener)</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -293,6 +295,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "user_name": "paolo_streamy45",
         "email": "",
         "plan_id": "1",
+        "type": "producer",
         "image": "1582081532.png",
         "status_id": "3",
         "id": 43

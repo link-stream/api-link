@@ -328,7 +328,7 @@ class Users extends RestController {
         $email = strip_tags($this->input->post('email'));
         $password = $this->input->post('password');
         $user_name = !empty($this->input->post('user_name')) ? strip_tags($this->input->post('user_name')) : null;
-        $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : null;
+        $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : 'producer';
         if (!empty($email) && !empty($user_name) && !empty($password)) {
             //Check Email And User
             $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
@@ -338,8 +338,9 @@ class Users extends RestController {
                 $user['user_name'] = $user['display_name'] = $user['url'] = strtolower(str_replace(' ', '', $user_name));
                 $user['email'] = $email;
                 $user['password'] = $this->general_library->encrypt_txt($password);
-                $user['plan_id'] = ($type == 'listener') ? '10' : '1';
+                $user['plan_id'] = '1';
                 $user['status_id'] = '3';
+                $user['type'] = $type;
                 $user['platform'] = 'LinkStream';
                 $user['id'] = $this->User_model->insert_user($user);
                 $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
@@ -493,6 +494,7 @@ class Users extends RestController {
     public function google_post() {
         //$this->output->set_content_type('application/json');
         $token = $this->input->post('platform_token');
+        $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : 'producer';
         if (empty($token)) {
             $this->error = 'Missing token';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
@@ -519,6 +521,7 @@ class Users extends RestController {
                 $user['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
                 $user['email'] = (!empty($token_info->email)) ? $token_info->email : '';
                 $user['plan_id'] = '1';
+                $user['type'] = $type;
                 $user['platform'] = 'Google';
                 $user['platform_id'] = $token_info->sub;
                 $user['platform_token'] = $token;
