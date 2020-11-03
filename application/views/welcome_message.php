@@ -321,6 +321,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>password</li>
                     <li>status_id</li>
                     <li>plan_id</li>
+                    <li>type</li>
                     <li>url</li>
                     <li>phone</li>
                     <li>image(base64_encode)</li>

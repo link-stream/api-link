@@ -172,6 +172,9 @@ class Users extends RestController {
                 if (!empty($this->put('plan_id'))) {
                     $register_user['plan_id'] = $this->put('plan_id');
                 }
+                if (!empty($this->put('type'))) {
+                    $register_user['type'] = $this->put('type');
+                }
                 if (!empty($this->put('url'))) {
                     $register_user['url'] = $this->put('url');
                 }
