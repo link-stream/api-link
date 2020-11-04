@@ -108,6 +108,16 @@ class Users extends RestController {
         return $user;
     }
 
+    private function user_account_clean($user) {
+        unset($user['password']);
+        unset($user['email_confirmed']);
+        unset($user['status_id']);
+        unset($user['platform']);
+        unset($user['platform_id']);
+        unset($user['platform_token']);
+        return $user;
+    }
+
     public function index_get($id = null) {
         if (!$this->general_library->header_token($id)) {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -296,6 +306,41 @@ class Users extends RestController {
         }
     }
 
+//    
+//    
+    //MULTI STORE
+    public function login_new_post() {
+        // Get the post data
+        $email = $this->input->post('email');
+        $password = $this->input->post('password');
+        // Validate the post data
+        if (!empty($email) && !empty($password)) {
+            // Check if any user exists with the given credentials
+            $password_e = $this->general_library->encrypt_txt($password);
+            //Check Email And User
+            $register_user = $this->User_model->fetch_user_by_search_store(array('email' => $email, 'password' => $password_e));
+            if (!empty($register_user)) {
+                if ($register_user['status_id'] == 1) {
+                    $register_user['store'] = $this->User_model->fetch_store_by_id($register_user['id']);
+                    $register_user['token'] = $this->User_model->create_token($register_user['store'][0]['id']);
+                    
+                    $user_response = $this->user_account_clean($register_user);
+                    $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+                } else {
+                    $this->error = 'User in PENDING Status, please confirm your email';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->error = 'Email or Password Incorrect';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            // Set the response and exit
+            $this->error = 'Provide email and password.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function logout_post() {
         if ($this->general_library->unset_token()) {
             $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
@@ -361,6 +406,41 @@ class Users extends RestController {
         }
     }
 
+//    public function registration_new_post() {
+//        // Get the post data
+//        $email = strip_tags($this->input->post('email'));
+//        $password = $this->input->post('password');
+//        $user_name = !empty($this->input->post('user_name')) ? strip_tags($this->input->post('user_name')) : null;
+//        $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : 'producer';
+//        if (!empty($email) && !empty($user_name) && !empty($password)) {
+//            //Check Email And User
+//            $register_user = $this->User_model->fetch_user_by_search_store(array('email' => $email));
+//            if (empty($register_user)) {
+//                $user_name = $this->generate_username($user_name);
+//                $user = array();
+//                $user['user_name'] = $user['display_name'] = $user['url'] = strtolower(str_replace(' ', '', $user_name));
+//                $user['email'] = $email;
+//                $user['password'] = $this->general_library->encrypt_txt($password);
+//                $user['plan_id'] = '1';
+//                $user['status_id'] = '3';
+//                $user['type'] = $type;
+//                $user['platform'] = 'LinkStream';
+//                $user['id'] = $this->User_model->insert_user($user);
+//                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+//                $this->register_email($user);
+//                $user['token'] = $this->User_model->create_token($user['id']);
+//                $user_response = $this->user_clean($user);
+//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+//            } else {
+//                $this->error = 'The given email already exists.';
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//            }
+//        } else {
+//            $this->error = 'Provide complete user info to add';
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        }
+//    }
+
     private function register_email($user) {
         $email_e = $this->general_library->urlsafe_b64encode($user['email']);
         $id_e = $this->general_library->urlsafe_b64encode($user['id']);
@@ -417,61 +497,60 @@ class Users extends RestController {
         }
     }
 
-    public function instagram_post() {
-        $code = $this->input->post('code');
-        $redirect_url = $this->input->post('redirect_url');
-        $auth_response = $this->instagram_api->authorize_2($code, $redirect_url);
-        if (!empty($auth_response->error_type)) {
-            $this->error = $auth_response->code . ':' . $auth_response->error_message;
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
-        } else {
-            $access_token = $auth_response->access_token;
-            $user_id = $auth_response->user_id;
-            $instagram_user = $this->instagram_api->getUserInfo($user_id, 'id,username,account_type,media_count', $access_token);
-            //Check User
-            $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
-            if (empty($register_user)) {
-                //Create Account
-                $user = array();
-                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($instagram_user->username)) ? $this->generate_username($instagram_user->username) : $this->generate_username();
-                $user['email'] = '';
-                $user['plan_id'] = '1';
-                $user['platform'] = 'IG';
-                $user['platform_id'] = $user_id;
-                $user['platform_token'] = $access_token;
-                $instagram_avatar = (!empty($instagram_user->username)) ? $this->instagram_get_photo($instagram_user->username) : '';
-                $user['image'] = '';
-                if (!empty($instagram_avatar)) {
-                    $content = file_get_contents($instagram_avatar);
-                    $image_name = md5(uniqid(rand(), true)) . '.png';
-                    //upload cropped image to server 
-                    file_put_contents($this->temp_dir . '/' . $image_name, $content);
-                    //SAVE S3
-                    $this->s3_push($image_name);
-                    $user['image'] = $image_name;
-                }
-                $user['status_id'] = '1';
-                $user['id'] = $this->User_model->insert_user($user);
-                $user['token'] = $this->User_model->create_token($user['id']);
-                $user_response = $this->user_clean($user);
-                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
-            } else {
-                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
-                $register_user['token'] = $this->User_model->create_token($register_user['id']);
-                $user_response = $this->user_clean($register_user);
-                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
-            }
-        }
-    }
-
-    private function instagram_get_photo($user_name) {
-        $getValues = file_get_contents('https://www.instagram.com/' . $user_name . '/?__a=1');
-        $jsonObj = json_decode($getValues, TRUE);
-        $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
-        return $photoURL;
-    }
-
+//    public function instagram_post() {
+//        $code = $this->input->post('code');
+//        $redirect_url = $this->input->post('redirect_url');
+//        $auth_response = $this->instagram_api->authorize_2($code, $redirect_url);
+//        if (!empty($auth_response->error_type)) {
+//            $this->error = $auth_response->code . ':' . $auth_response->error_message;
+//            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+//        } else {
+//            $access_token = $auth_response->access_token;
+//            $user_id = $auth_response->user_id;
+//            $instagram_user = $this->instagram_api->getUserInfo($user_id, 'id,username,account_type,media_count', $access_token);
+//            //Check User
+//            $register_user = $this->User_model->fetch_user_by_search(array('platform' => 'IG', 'platform_id' => $user_id));
+//            if (empty($register_user)) {
+//                //Create Account
+//                $user = array();
+//                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($instagram_user->username)) ? $this->generate_username($instagram_user->username) : $this->generate_username();
+//                $user['email'] = '';
+//                $user['plan_id'] = '1';
+//                $user['platform'] = 'IG';
+//                $user['platform_id'] = $user_id;
+//                $user['platform_token'] = $access_token;
+//                $instagram_avatar = (!empty($instagram_user->username)) ? $this->instagram_get_photo($instagram_user->username) : '';
+//                $user['image'] = '';
+//                if (!empty($instagram_avatar)) {
+//                    $content = file_get_contents($instagram_avatar);
+//                    $image_name = md5(uniqid(rand(), true)) . '.png';
+//                    //upload cropped image to server 
+//                    file_put_contents($this->temp_dir . '/' . $image_name, $content);
+//                    //SAVE S3
+//                    $this->s3_push($image_name);
+//                    $user['image'] = $image_name;
+//                }
+//                $user['status_id'] = '1';
+//                $user['id'] = $this->User_model->insert_user($user);
+//                $user['token'] = $this->User_model->create_token($user['id']);
+//                $user_response = $this->user_clean($user);
+//                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+//            } else {
+//                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
+//                $register_user['token'] = $this->User_model->create_token($register_user['id']);
+//                $user_response = $this->user_clean($register_user);
+//                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+//            }
+//        }
+//    }
+//
+//    private function instagram_get_photo($user_name) {
+//        $getValues = file_get_contents('https://www.instagram.com/' . $user_name . '/?__a=1');
+//        $jsonObj = json_decode($getValues, TRUE);
+//        $photoURL = $jsonObj["graphql"]["user"]["profile_pic_url_hd"];
+//        return $photoURL;
+//    }
 //    public function instagram_get_photo_get($user_name) {
 //        echo $user_name;
 //        echo '<br>';

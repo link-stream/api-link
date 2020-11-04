@@ -64,6 +64,43 @@ class User_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_user_by_search_store($search) {
+        $this->db->from('st_user_account');
+        if (!empty($search['id'])) {
+            $this->db->where('id', $search['id']); //By Id
+        }
+        if (!empty($search['email'])) {
+            $this->db->where('email', $search['email']); //By Email
+        }
+        if (!empty($search['password'])) {
+            $this->db->where('password', $search['password']); //By Password
+        }
+        if (!empty($search['user_name'])) {
+            $this->db->where('user_name', $search['user_name']); //By Password
+        }
+        if (!empty($search['platform_id'])) {
+            $this->db->where('platform_id', $search['platform_id']); //By Password
+        }
+//        if (!empty($search['url'])) {
+//            $this->db->where('url', $search['url']); //By Password
+//        }
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_store_by_id($user_id) {
+        $this->db->from('st_user');
+        $this->db->where(array('user_account_id' => $user_id, 'status_id' => '1'));
+        //$this->db->order_by("id", "DESC");
+        //$this->db->limit(1);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function insert_user_log($data) {
         $this->db->insert('st_user_log', $data);
         //return $this->db->insert_id();
@@ -236,7 +273,7 @@ class User_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function fetch_paypal_method_by_user_id($user_id) {
         $this->db->from('st_user_payment_method');
         $this->db->where('user_id', $user_id);
@@ -398,7 +435,7 @@ where a.id =  '" . $item_id . "' ";
         $query->free_result();
         return $result;
     }
-    
+
     public function update_payment_method($id, $data) {
         $this->db->where('id', $id);
         $this->db->update('st_user_payment_method', $data);
