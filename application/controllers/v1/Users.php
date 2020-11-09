@@ -328,8 +328,8 @@ class Users extends RestController {
                         $register_user['store'][] = $store;
                     }
 
-//                    $register_user['store'] = $this->User_model->fetch_store_by_id($register_user['id']);
-                    $register_user['token'] = $this->User_model->create_token($register_user['store'][0]['id']);
+                    $register_user['store'] = $this->User_model->fetch_store_by_id($register_user['id']);
+                    //$register_user['token'] = $this->User_model->create_token($register_user['store'][0]['id']);
 
                     $user_response = $this->user_account_clean($register_user);
                     $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
