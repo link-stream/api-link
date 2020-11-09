@@ -352,28 +352,28 @@ class Users extends RestController {
 
     public function stores_get($user_id) {
         if (!empty($user_id)) {
-            if (!$this->general_library->header_token($user_id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
-            }
+//            if (!$this->general_library->header_token($user_id)) {
+//                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+//            }
             $stores = $this->User_model->fetch_store_by_id($user_id);
             $response = [];
             $path = $this->s3_path . $this->s3_coverart;
             foreach ($stores as $store) {
                 //Avatar & Banner
                 $path = $this->s3_path . $this->s3_folder;
-                $user['data_image'] = '';
-                $user['data_banner'] = '';
-                if (!empty($user['image'])) {
+                $store['data_image'] = '';
+                $store['data_banner'] = '';
+                if (!empty($store['image'])) {
                     $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
-                    $user['data_image'] = $final_url;
+                    $store['data_image'] = $final_url;
                 } else {
                     $store['image'] = 'LS_avatar.png';
                     $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
-                    $user['data_image'] = $final_url;
+                    $store['data_image'] = $final_url;
                 }
-                if (!empty($user['banner'])) {
+                if (!empty($store['banner'])) {
                     $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
-                    $user['data_banner'] = $final_url;
+                    $store['data_banner'] = $final_url;
                 }
                 $response[] = $store;
             }
