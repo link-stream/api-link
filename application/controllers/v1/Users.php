@@ -697,6 +697,131 @@ class Users extends RestController {
         }
     }
 
+    public function google_new_post() {
+        //$this->output->set_content_type('application/json');
+        $token = $this->input->post('platform_token');
+        $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : 'producer';
+        if (empty($token)) {
+            $this->error = 'Missing token';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/tokeninfo?id_token=' . $token);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $token_info_json = curl_exec($ch);
+            curl_close($ch);
+            $token_info = json_decode($token_info_json);
+        } catch (Exception $e) {
+            $this->error = $e;
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+        if (isset($token_info->email, $token_info->aud) && $token_info->aud == GOOGLE_LOGIN_CLIENT_ID) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_by_search_store(array('platform' => 'Google', 'platform_id' => $token_info->sub));
+            //$register_user = $this->User_model->fetch_user_by_search_store(array('email' => $email, 'password' => $password_e));
+            if (empty($register_user)) {
+                //Create Account
+                $user = [];
+                $user_account = [];
+                $user_account['user_name'] = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                $user_account['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
+                $user_account['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
+                $user_account['email'] = (!empty($token_info->email)) ? $token_info->email : '';
+                $user_account['email_confirmed'] = '1';
+                $user_account['status_id'] = '1';
+                $user_account['plan_id'] = '1';
+                $user_account['type'] = $type;
+                $user_account['platform'] = 'Google';
+                $user_account['platform_id'] = $token_info->sub;
+                $user_account['platform_token'] = $token;
+
+                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                $user['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
+                $user['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
+                $user['email'] = (!empty($token_info->email)) ? $token_info->email : '';
+                $user['plan_id'] = '1';
+                $user['type'] = $type;
+                $user['platform'] = 'Google';
+                $user['platform_id'] = $token_info->sub;
+                $user['platform_token'] = $token;
+                $user['image'] = '';
+                if (!empty($token_info->picture)) {
+                    $content = file_get_contents($token_info->picture);
+                    $image_name = md5(uniqid(rand(), true)) . '.png';
+                    //upload cropped image to server 
+                    file_put_contents($this->temp_dir . '/' . $image_name, $content);
+                    //SAVE S3
+                    $this->s3_push($image_name);
+                    $user['image'] = $image_name;
+                }
+                $user['status_id'] = '1';
+                $user['email_confirmed'] = '1';
+
+                $user['user_account_id'] = $this->User_model->insert_user($user_account);
+
+                $user['id'] = $this->User_model->insert_user($user);
+                $user['token'] = $this->User_model->create_token($user['id']);
+                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
+                $user['store'] = [];
+                $stores = $this->User_model->fetch_store_by_id($user['id']);
+                $path = $this->s3_path . $this->s3_folder;
+                foreach ($stores as $store) {
+                    $store['token'] = $this->User_model->create_token($store['id']);
+                    //Avatar & Banner            
+                    $store['data_image'] = '';
+                    $store['data_banner'] = '';
+                    if (!empty($store['image'])) {
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                        $store['data_image'] = $final_url;
+                    } else {
+                        $store['image'] = 'LS_avatar.png';
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                        $store['data_image'] = $final_url;
+                    }
+                    if (!empty($store['banner'])) {
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
+                        $store['data_banner'] = $final_url;
+                    }
+                    $user['store'][] = $store;
+                }
+                $user_response = $this->user_clean($user);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+            } else {
+                $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
+                $register_user['token'] = $this->User_model->create_token($register_user['id']);
+                $register_user['store'] = [];
+                $stores = $this->User_model->fetch_store_by_id($register_user['id']);
+                $path = $this->s3_path . $this->s3_folder;
+                foreach ($stores as $store) {
+                    $store['token'] = $this->User_model->create_token($store['id']);
+                    //Avatar & Banner            
+                    $store['data_image'] = '';
+                    $store['data_banner'] = '';
+                    if (!empty($store['image'])) {
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                        $store['data_image'] = $final_url;
+                    } else {
+                        $store['image'] = 'LS_avatar.png';
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                        $store['data_image'] = $final_url;
+                    }
+                    if (!empty($store['banner'])) {
+                        $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
+                        $store['data_banner'] = $final_url;
+                    }
+                    $register_user['store'][] = $store;
+                }
+                $user_response = $this->user_clean($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+            }
+            return $this->output->set_output(json_encode(['success' => true]));
+        } else {
+            $this->error = 'Invalid token';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function status_get() {
         $status = $this->User_model->fetch_user_status();
         $this->response(array('status' => 'success', 'env' => ENV, 'data' => $status), RestController::HTTP_OK);
