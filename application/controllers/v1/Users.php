@@ -724,7 +724,9 @@ class Users extends RestController {
                 //Create Account
                 $user = [];
                 $user_account = [];
-                $user_account['user_name'] = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                $random_name = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                
+                $user_account['user_name'] = $random_name;
                 $user_account['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
                 $user_account['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
                 $user_account['email'] = (!empty($token_info->email)) ? $token_info->email : '';
@@ -736,7 +738,7 @@ class Users extends RestController {
                 $user_account['platform_id'] = $token_info->sub;
                 $user_account['platform_token'] = $token;
 
-                $user['user_name'] = $user['display_name'] = $user['url'] = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
+                $user['user_name'] = $user['display_name'] = $user['url'] = $random_name;
                 $user['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
                 $user['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
                 $user['email'] = (!empty($token_info->email)) ? $token_info->email : '';
@@ -758,7 +760,7 @@ class Users extends RestController {
                 $user['status_id'] = '1';
                 $user['email_confirmed'] = '1';
 
-                $user['user_account_id'] = $this->User_model->insert_user($user_account);
+                $user['user_account_id'] = $this->User_model->insert_user_account($user_account);
 
                 $user['id'] = $this->User_model->insert_user($user);
                 $user['token'] = $this->User_model->create_token($user['id']);
