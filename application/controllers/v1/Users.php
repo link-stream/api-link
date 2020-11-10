@@ -323,8 +323,24 @@ class Users extends RestController {
                 if ($register_user['status_id'] == 1) {
                     $register_user['store'] = [];
                     $stores = $this->User_model->fetch_store_by_id($register_user['id']);
+                    $path = $this->s3_path . $this->s3_folder;
                     foreach ($stores as $store) {
                         $store['token'] = $this->User_model->create_token($store['id']);
+                        //Avatar & Banner            
+                        $store['data_image'] = '';
+                        $store['data_banner'] = '';
+                        if (!empty($store['image'])) {
+                            $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                            $store['data_image'] = $final_url;
+                        } else {
+                            $store['image'] = 'LS_avatar.png';
+                            $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['image']);
+                            $store['data_image'] = $final_url;
+                        }
+                        if (!empty($store['banner'])) {
+                            $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
+                            $store['data_banner'] = $final_url;
+                        }
                         $register_user['store'][] = $store;
                     }
 
@@ -357,10 +373,10 @@ class Users extends RestController {
             }
             $stores = $this->User_model->fetch_store_by_id($user_id);
             $response = [];
-            $path = $this->s3_path . $this->s3_coverart;
+//            $path = $this->s3_path . $this->s3_coverart;
+            $path = $this->s3_path . $this->s3_folder;
             foreach ($stores as $store) {
-                //Avatar & Banner
-                $path = $this->s3_path . $this->s3_folder;
+                //Avatar & Banner            
                 $store['data_image'] = '';
                 $store['data_banner'] = '';
                 if (!empty($store['image'])) {
