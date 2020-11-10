@@ -376,6 +376,7 @@ class Users extends RestController {
 //            $path = $this->s3_path . $this->s3_coverart;
             $path = $this->s3_path . $this->s3_folder;
             foreach ($stores as $store) {
+                $store['token'] = $this->User_model->create_token($store['id']);
                 //Avatar & Banner            
                 $store['data_image'] = '';
                 $store['data_banner'] = '';
