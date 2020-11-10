@@ -4854,6 +4854,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>button_color</li> 
                     <li>background_color</li> 
                     <li>background_image</li>
+
+                    <li>price</li>
+                    <li>instagram</li>
+                    <li>facebook</li>
+                    <li>twitter</li>
+                    <li>spotify</li>
+                    <li>soundcloud</li>
+                    <li>website</li>
+                    <li>email</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
@@ -4906,6 +4915,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <li>button_color</li> 
                     <li>background_color</li> 
                     <li>background_image</li>
+
+                    <li>price</li>
+                    <li>instagram</li>
+                    <li>facebook</li>
+                    <li>twitter</li>
+                    <li>spotify</li>
+                    <li>soundcloud</li>
+                    <li>website</li>
+                    <li>email</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>

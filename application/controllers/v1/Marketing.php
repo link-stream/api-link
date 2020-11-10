@@ -923,6 +923,15 @@ class Marketing extends RestController {
             $message['button_color'] = (!empty($this->input->post('button_color'))) ? $this->input->post('button_color') : '';
             $message['background_color'] = (!empty($this->input->post('background_color'))) ? $this->input->post('background_color') : '';
             $message['background_image'] = (!empty($this->input->post('background_image'))) ? $this->input->post('background_image') : '';
+
+            $message['price'] = (!empty($this->input->post('price'))) ? $this->input->post('price') : '';
+            $message['instagram'] = (!empty($this->input->post('instagram'))) ? $this->input->post('instagram') : '';
+            $message['facebook'] = (!empty($this->input->post('facebook'))) ? $this->input->post('facebook') : '';
+            $message['twitter'] = (!empty($this->input->post('twitter'))) ? $this->input->post('twitter') : '';
+            $message['spotify'] = (!empty($this->input->post('spotify'))) ? $this->input->post('spotify') : '';
+            $message['soundcloud'] = (!empty($this->input->post('soundcloud'))) ? $this->input->post('soundcloud') : '';
+            $message['website'] = (!empty($this->input->post('website'))) ? $this->input->post('website') : '';
+            $message['email'] = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
             //CREATE
             $message['id'] = $this->Marketing_model->insert_landing_page($message);
             //$message_cleaned = $this->message_clean($message);
@@ -979,6 +988,31 @@ class Marketing extends RestController {
                 }
                 if (!empty($this->put('background_image'))) {
                     $message['background_image'] = $this->put('background_image');
+                }
+                
+                if (!empty($this->put('price'))) {
+                    $message['price'] = $this->put('price');
+                }
+                if (!empty($this->put('instagram'))) {
+                    $message['instagram'] = $this->put('instagram');
+                }
+                if (!empty($this->put('facebook'))) {
+                    $message['facebook'] = $this->put('facebook');
+                }
+                if (!empty($this->put('twitter'))) {
+                    $message['twitter'] = $this->put('twitter');
+                }
+                if (!empty($this->put('spotify'))) {
+                    $message['spotify'] = $this->put('spotify');
+                }
+                if (!empty($this->put('soundcloud'))) {
+                    $message['soundcloud'] = $this->put('soundcloud');
+                }
+                if (!empty($this->put('website'))) {
+                    $message['website'] = $this->put('website');
+                }
+                if (!empty($this->put('email'))) {
+                    $message['email'] = $this->put('email');
                 }
                 //UPDATE
                 $this->Marketing_model->update_landing_page($id, $message);
