@@ -1902,7 +1902,7 @@ class Users extends RestController {
                 $user_store['data_banner'] = '';
                 $user_store['banner'] = '';
                 $user_store['image'] = 'LS_avatar.png';
-                $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $user_store['image']);
+                $final_url = $this->general_library->encode_image_url($user_store['id'], $this->s3_path . $this->s3_folder . '/' . $user_store['image']);
                 $user_store['data_image'] = $final_url;
                 $this->User_model->insert_user_log(array('user_id' => $user_id, 'event' => 'New Store: ' . $store_name));
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_store), RestController::HTTP_OK);
