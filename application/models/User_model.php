@@ -110,6 +110,15 @@ class User_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->update('st_user_account', $data);
     }
+    
+    public function fetch_user_store_by_id($id) {
+        $this->db->from('st_user_account');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
 
     public function insert_user_log($data) {
         $this->db->insert('st_user_log', $data);

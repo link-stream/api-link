@@ -796,7 +796,7 @@ class Users extends RestController {
             if (empty($register_user)) {
                 //Create Account
                 $user_account = [];
-                $user_store = [];               
+                $user_store = [];
                 $user_name = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
                 //ACCOUNT
                 $user_account['user_name'] = $user_name;
@@ -832,7 +832,7 @@ class Users extends RestController {
                 }
                 $user_store['status_id'] = '1';
                 $user_store['email_confirmed'] = '1';
-                
+
                 $user_account_id = $this->User_model->insert_user_account($user_account);
                 $user_account['id'] = $user_account_id;
 
@@ -1873,4 +1873,39 @@ class Users extends RestController {
 //        $response = $this->stripe_library->express_account_complex($country, $email, $external_account, $business_type, $business_profile, $individual, $tos_acceptance);
 //        return $response;
 //    }
+    //STORE
+    public function add_store_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $store_name = (!empty($this->input->post('store_name'))) ? $this->input->post('store_name') : '';
+        $store_url = (!empty($this->input->post('store_url'))) ? $this->input->post('store_url') : '';
+        if (!empty($user_id) && !empty($store_name) && !empty($store_url)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_store_by_id($user_id);
+            if (!empty($register_user)) {
+                $user_store = [];
+                //STORE
+                $user_store['user_account_id'] = $user_id;
+                $user_store['user_name'] = $user_store['display_name'] = $store_name;
+                $user_store['url'] = $store_url;
+                $user_store['email'] = $register_user['email'];
+                $user_store['password'] = $register_user['password'];
+                $user_store['plan_id'] = $register_user['plan_id'];
+                $user_store['status_id'] = $register_user['status_id'];
+                $user_store['type'] = $register_user['type'];
+                $user_store['platform'] = $register_user['platform'];
+                $user_store['id'] = $this->User_model->insert_user($user_store);
+                $this->User_model->insert_user_log(array('user_id' => $user_id, 'event' => 'New Store: ' . $store_name));
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_store), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Store Info';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
