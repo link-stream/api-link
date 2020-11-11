@@ -795,10 +795,10 @@ class Users extends RestController {
             //$register_user = $this->User_model->fetch_user_by_search_store(array('email' => $email, 'password' => $password_e));
             if (empty($register_user)) {
                 //Create Account
-                $user = [];
                 $user_account = [];
+                $user_store = [];               
                 $user_name = (!empty($token_info->name)) ? $this->generate_username($token_info->name) : $this->generate_username();
-
+                //ACCOUNT
                 $user_account['user_name'] = $user_name;
                 $user_account['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
                 $user_account['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
@@ -810,17 +810,17 @@ class Users extends RestController {
                 $user_account['platform'] = 'Google';
                 $user_account['platform_id'] = $token_info->sub;
                 $user_account['platform_token'] = $token;
-
-                $user['user_name'] = $user['display_name'] = $user['url'] = $user_name;
-                $user['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
-                $user['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
-                $user['email'] = (!empty($token_info->email)) ? $token_info->email : '';
-                $user['plan_id'] = '1';
-                $user['type'] = $type;
-                $user['platform'] = 'Google';
-                $user['platform_id'] = $token_info->sub;
-                $user['platform_token'] = $token;
-                $user['image'] = '';
+                //STORE
+                $user_store['user_name'] = $user_store['display_name'] = $user_store['url'] = $user_name;
+                $user_store['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
+                $user_store['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
+                $user_store['email'] = (!empty($token_info->email)) ? $token_info->email : '';
+                $user_store['plan_id'] = '1';
+                $user_store['type'] = $type;
+                $user_store['platform'] = 'Google';
+                $user_store['platform_id'] = $token_info->sub;
+                $user_store['platform_token'] = $token;
+                $user_store['image'] = '';
                 if (!empty($token_info->picture)) {
                     $content = file_get_contents($token_info->picture);
                     $image_name = md5(uniqid(rand(), true)) . '.png';
@@ -828,18 +828,21 @@ class Users extends RestController {
                     file_put_contents($this->temp_dir . '/' . $image_name, $content);
                     //SAVE S3
                     $this->s3_push($image_name);
-                    $user['image'] = $image_name;
+                    $user_store['image'] = $image_name;
                 }
-                $user['status_id'] = '1';
-                $user['email_confirmed'] = '1';
+                $user_store['status_id'] = '1';
+                $user_store['email_confirmed'] = '1';
+                
+                $user_account_id = $this->User_model->insert_user_account($user_account);
+                $user_account['id'] = $user_account_id;
 
-                $user['user_account_id'] = $this->User_model->insert_user_account($user_account);
+                $user_store['user_account_id'] = $user_account_id;
 
-                $user['id'] = $this->User_model->insert_user($user);
-                $user['token'] = $this->User_model->create_token($user['id']);
-                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
-                $user['store'] = [];
-                $stores = $this->User_model->fetch_store_by_id($user['user_account_id']);
+                $user_store['id'] = $this->User_model->insert_user($user_store);
+                $user_account['token'] = $this->User_model->create_token($user_account['id']);
+                $this->User_model->insert_user_log(array('user_id' => $user_account['id'], 'event' => 'Registered'));
+                $user_account['store'] = [];
+                $stores = $this->User_model->fetch_store_by_id($user_account['id']);
                 $path = $this->s3_path . $this->s3_folder;
                 foreach ($stores as $store) {
                     $store['token'] = $this->User_model->create_token($store['id']);
@@ -858,9 +861,9 @@ class Users extends RestController {
                         $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
                         $store['data_banner'] = $final_url;
                     }
-                    $user['store'][] = $store;
+                    $user_account['store'][] = $store;
                 }
-                $user_response = $this->user_clean($user);
+                $user_response = $this->user_clean($user_account);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
             } else {
                 $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Logged in'));
