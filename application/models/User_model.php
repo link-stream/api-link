@@ -100,10 +100,15 @@ class User_model extends CI_Model {
         $query->free_result();
         return $result;
     }
-    
+
     public function insert_user_account($data) {
         $this->db->insert('st_user_account', $data);
         return $this->db->insert_id();
+    }
+
+    public function update_user_account($id, $data) {
+        $this->db->where('id', $id);
+        $this->db->update('st_user_account', $data);
     }
 
     public function insert_user_log($data) {

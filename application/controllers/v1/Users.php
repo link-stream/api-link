@@ -474,38 +474,38 @@ class Users extends RestController {
         $type = !empty($this->input->post('type')) ? strip_tags($this->input->post('type')) : 'producer';
         if (!empty($email) && !empty($user_name) && !empty($password)) {
             //Check Email And User
-            $register_user = $this->User_model->fetch_user_by_search(array('email' => $email));
+            $register_user = $this->User_model->fetch_user_by_search_store(array('email' => $email));
             if (empty($register_user)) {
 
-                $user = [];
                 $user_account = [];
+                $user_store = [];
                 $user_name = $this->generate_username($user_name);
-
+                $encrypt_pass = $this->general_library->encrypt_txt($password);
+                //ACCOUNT
                 $user_account['user_name'] = strtolower(str_replace(' ', '', $user_name));
                 $user_account['email'] = $email;
-                $user_account['password'] = $this->general_library->encrypt_txt($password);
+                $user_account['password'] = $encrypt_pass;
                 $user_account['plan_id'] = '1';
-                $user_account['status_id'] = '3';
+                $user_account['status_id'] = '1';
                 $user_account['type'] = $type;
                 $user_account['platform'] = 'LinkStream';
-                //$user_account['first_name'] = (!empty($token_info->given_name)) ? $token_info->given_name : '';
-                //$user_account['last_name'] = (!empty($token_info->family_name)) ? $token_info->family_name : '';
-                //$user_account['email_confirmed'] = '1';
-                $user['user_account_id'] = $this->User_model->insert_user_account($user_account);
-
-                $user['user_name'] = $user['display_name'] = $user['url'] = strtolower(str_replace(' ', '', $user_name));
-                $user['email'] = $email;
-                $user['password'] = $this->general_library->encrypt_txt($password);
-                $user['plan_id'] = '1';
-                $user['status_id'] = '3';
-                $user['type'] = $type;
-                $user['platform'] = 'LinkStream';
-                $user['id'] = $this->User_model->insert_user($user);
-                $this->User_model->insert_user_log(array('user_id' => $user['id'], 'event' => 'Registered'));
-                $this->register_email($user);
-                $user['token'] = $this->User_model->create_token($user['id']);
-                $user['store'] = [];
-                $stores = $this->User_model->fetch_store_by_id($user['user_account_id']);
+                $user_account_id = $this->User_model->insert_user_account($user_account);
+                $user_account['id'] = $user_account_id;
+                //STORE
+                $user_store['user_account_id'] = $user_account_id;
+                $user_store['user_name'] = $user_store['display_name'] = $user_store['url'] = strtolower(str_replace(' ', '', $user_name));
+                $user_store['email'] = $email;
+                $user_store['password'] = $encrypt_pass;
+                $user_store['plan_id'] = '1';
+                $user_store['status_id'] = '1';
+                $user_store['type'] = $type;
+                $user_store['platform'] = 'LinkStream';
+                $user_store['id'] = $this->User_model->insert_user($user_store);
+                $this->User_model->insert_user_log(array('user_id' => $user_account['id'], 'event' => 'Registered'));
+                $this->register_email($user_store);
+                $user_account['token'] = $this->User_model->create_token($user_account['id']);
+                $user_account['store'] = [];
+                $stores = $this->User_model->fetch_store_by_id($user_account['id']);
                 $path = $this->s3_path . $this->s3_folder;
                 foreach ($stores as $store) {
                     $store['token'] = $this->User_model->create_token($store['id']);
@@ -524,9 +524,9 @@ class Users extends RestController {
                         $final_url = $this->general_library->encode_image_url($store['id'], $this->s3_path . $this->s3_folder . '/' . $store['banner']);
                         $store['data_banner'] = $final_url;
                     }
-                    $user['store'][] = $store;
+                    $user_account['store'][] = $store;
                 }
-                $user_response = $this->user_clean($user);
+                $user_response = $this->user_clean($user_account);
                 $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
             } else {
                 $this->error = 'The given email already exists.';
@@ -576,7 +576,7 @@ class Users extends RestController {
     private function register_email($user) {
         $email_e = $this->general_library->urlsafe_b64encode($user['email']);
         $id_e = $this->general_library->urlsafe_b64encode($user['id']);
-        $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://link.stream';
+        $base = (ENV == 'dev' || ENV == 'staging') ? 'https://dev-link-vue.link.stream' : 'https://linkstream.com';
         $url = $base . '/email-confirm/' . $email_e . '/' . $id_e;
         $body = $this->load->view('app/email/email-confirm', array('user' => $user['user_name'], 'email' => $user['email'], 'url' => $url), true);
         $this->general_library->send_ses($user['email'], $user['email'], 'LinkStream', 'noreply@linkstream.com', "Register on LinkStream", $body);
@@ -598,6 +598,7 @@ class Users extends RestController {
                     $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
                 } else {
                     $this->User_model->update_user($register_user['id'], array('email_confirmed' => '1', 'status_id' => '1'));
+                    $this->User_model->update_user_account($register_user['user_account_id'], array('email_confirmed' => '1', 'status_id' => '1'));
                     $this->User_model->insert_user_log(array('user_id' => $register_user['id'], 'event' => 'Confirmed Email'));
                     $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
                 }
