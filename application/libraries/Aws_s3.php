@@ -362,6 +362,8 @@ class Aws_s3 {
 
         $request = $this->s3->createPresignedRequest($cmd, '+180 minutes');
 
+
+
         // Get the actual presigned-url
         $presignedUrl = (string) $request->getUri();
 
