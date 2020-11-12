@@ -359,7 +359,9 @@ class Users extends RestController {
                     $register_user['soundcloud'] = $this->put('soundcloud');
                 }
                 $this->User_model->update_user_account($id, $register_user);
-                $this->User_model->update_user_by_account($id, $register_user);
+                $user = $register_user;
+                unset($user['id']);
+                $this->User_model->update_user_by_account($id, $user);
                 $user_response = $this->user_clean($register_user);
                 $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The user info has been updated successfully.', 'data' => $user_response), RestController::HTTP_OK);
             } else {
