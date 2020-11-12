@@ -145,6 +145,25 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+    
+    public function user_account_get($id = null) {
+        if (!$this->general_library->header_token($id)) {
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+        }
+        if (!empty($id)) {
+            $register_user = $this->User_model->fetch_user_store_by_id($id);
+            if (!empty($register_user)) {
+                $user_response = $this->user_clean($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $user_response), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
 
     public function index_post() {
         die('Nothing here');
