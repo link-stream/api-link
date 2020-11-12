@@ -86,7 +86,7 @@ class Users extends RestController {
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
                 }
-                $final_url = $this->server_url  . $this->s3_path  . $this->s3_folder . '/' . $user['image'];
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 $user['image_url'] = $final_url;
             } else {
                 $user['image'] = 'LS_avatar.png';
@@ -98,7 +98,7 @@ class Users extends RestController {
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
                 }
-                $final_url = $this->server_url .  $this->s3_path .  $this->s3_folder . '/' . $user['image'];
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 $user['image_url'] = $final_url;
             }
             if (!empty($user['banner'])) {
@@ -110,7 +110,7 @@ class Users extends RestController {
                     $user['data_banner'] = $src;
                     unlink($this->temp_dir . '/' . $user['banner']);
                 }
-                $final_url = $this->server_url .  $this->s3_path  . $this->s3_folder . '/' . $user['banner'];
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['banner'];
                 $user['banner_url'] = $final_url;
             }
         }
@@ -983,6 +983,39 @@ class Users extends RestController {
             }
             $search = (!empty($this->input->get('search'))) ? $this->input->get('search') : '';
             $collaborators = $this->User_model->fetch_collaborator($search);
+            $collaborators_reponse = [];
+            $path = $this->s3_path . $this->s3_folder;
+            foreach ($collaborators as $collaborator) {
+                if ($user_id == $collaborator['id']) {
+                    continue;
+                }
+                $collaborator['data_image'] = '';
+                if (!empty($collaborator['image'])) {
+                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
+                    if (!empty($data_image)) {
+                        $img_file = $collaborator['image'];
+                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
+                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+                        $collaborator['data_image'] = $src;
+                        unlink($this->temp_dir . '/' . $collaborator['image']);
+                    }
+                }
+                $collaborators_reponse[] = $collaborator;
+            }
+            $this->response(array('status' => 'success', 'env' => ENV, 'data' => $collaborators_reponse), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function collaborator_new_get($user_id = null) {
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $search = (!empty($this->input->get('search'))) ? $this->input->get('search') : '';
+            $collaborators = $this->User_model->fetch_collaborator_new($search);
             $collaborators_reponse = [];
             $path = $this->s3_path . $this->s3_folder;
             foreach ($collaborators as $collaborator) {

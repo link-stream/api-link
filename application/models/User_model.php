@@ -110,7 +110,7 @@ class User_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->update('st_user_account', $data);
     }
-    
+
     public function fetch_user_store_by_id($id) {
         $this->db->from('st_user_account');
         $this->db->where('id', $id);
@@ -200,6 +200,22 @@ class User_model extends CI_Model {
             $this->db->or_like('email', $search);
         }
         $this->db->limit(25);
+        $query = $this->db->get();
+        $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_collaborator_new($search, $limit = 25) {
+        $this->db->select('a.id, a.user_name, a.email, b.image');
+        $this->db->from('st_user_account a');
+        $this->db->join('st_user b', 'a.id = b.user_account_id');
+        $this->db->where('a.status_id <> ', '2');
+        if (!empty($search)) {
+            $this->db->like('a.user_name', $search);
+            $this->db->or_like('a.email', $search);
+        }
+        $this->db->limit($limit);
         $query = $this->db->get();
         $result = $query->result_array();
         $query->free_result();
