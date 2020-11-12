@@ -71,8 +71,11 @@ class Users extends RestController {
         unset($user['payment_processor_key']);
         //Avatar & Banner
         $path = $this->s3_path . $this->s3_folder;
+        $user['image_url'] = '';
+        $user['banner_url'] = '';
         $user['data_image'] = '';
         $user['data_banner'] = '';
+
         if ($images) {
             if (!empty($user['image'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
@@ -83,6 +86,8 @@ class Users extends RestController {
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
                 }
+                $final_url = $this->general_library->encode_image_url($user['id'], $this->s3_path . $this->s3_folder . '/' . $user['image']);
+                $user['image_url'] = $final_url;
             } else {
                 $user['image'] = 'LS_avatar.png';
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
@@ -93,6 +98,8 @@ class Users extends RestController {
                     $user['data_image'] = $src;
                     unlink($this->temp_dir . '/' . $user['image']);
                 }
+                $final_url = $this->general_library->encode_image_url($user['id'], $this->s3_path . $this->s3_folder . '/' . $user['image']);
+                $user['image_url'] = $final_url;
             }
             if (!empty($user['banner'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['banner']);
@@ -103,6 +110,8 @@ class Users extends RestController {
                     $user['data_banner'] = $src;
                     unlink($this->temp_dir . '/' . $user['banner']);
                 }
+                $final_url = $this->general_library->encode_image_url($user['id'], $this->s3_path . $this->s3_folder . '/' . $user['banner']);
+                $user['banner_url'] = $final_url;
             }
         }
         return $user;
@@ -120,7 +129,7 @@ class Users extends RestController {
 
     public function index_get($id = null) {
         if (!$this->general_library->header_token($id)) {
-            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
         }
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
