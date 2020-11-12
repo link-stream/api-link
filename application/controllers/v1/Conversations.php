@@ -32,7 +32,7 @@ class Conversations extends RestController {
         $this->error = '';
         $this->bucket = 'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
-        $this->s3_folder = 'media';
+        $this->s3_folder = 'profile';
         $this->s3_coverart = 'coverart';
         $this->s3_audio = 'audio';
         $this->temp_dir = $this->general_library->get_temp_dir();
