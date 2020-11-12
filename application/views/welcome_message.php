@@ -4983,6 +4983,115 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Get User Conversations:</h3>
+                <code>GET <?= base_url() ?>v1/conversations/{user_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <!--<li></li>-->
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "data": [
+        {
+            "conversation_id": "2",
+            "user_id": "1",
+            "viewed": "0",
+            "ref_user_id": "12",
+            "last_update": "2020-11-11 07:30:00",
+            "user_name": "anneris",
+            "message": "Hello, Can you update beats?",
+            "image": "LS_avatar.png",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/dev/media/LS_avatar.png?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXBDC73PHUL3JUCGP%2F20201112%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20201112T020253Z&X-Amz-SignedHeaders=host&X-Amz-Expires=10800&X-Amz-Signature=faa085ce718b30947dbba6f858024ac11d93ac767c8a0cb3c87d33392bccf3bf"
+        },
+        {
+            "conversation_id": "1",
+            "user_id": "1",
+            "viewed": "1",
+            "ref_user_id": "11",
+            "last_update": "2020-11-11 07:00:00",
+            "user_name": "yamiletcabezas",
+            "message": "Hello, I am good. How are you?",
+            "image": "LS_avatar.png",
+            "data_image": "https://s3.us-east-2.amazonaws.com/files.link.stream/dev/media/LS_avatar.png?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAXBDC73PHUL3JUCGP%2F20201112%2Fus-east-2%2Fs3%2Faws4_request&X-Amz-Date=20201112T020253Z&X-Amz-SignedHeaders=host&X-Amz-Expires=10800&X-Amz-Signature=faa085ce718b30947dbba6f858024ac11d93ac767c8a0cb3c87d33392bccf3bf"
+        }
+    ]
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Insert Conversation:</h3>
+                <code>POST <?= base_url() ?>v1/conversations</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>from_user_id</li>
+                    <li>to_user_id</li>
+                    <li>message</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "Message has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+
+                <hr>
+                <h3>Update Conversation:</h3>
+                <code>PUT <?= base_url() ?>v1/conversations</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>conversation_id</li>
+                    <li>user_id</li>
+                    <li>message</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "Message has been updated successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Update Conversation View:</h3>
+                <code>PUT <?= base_url() ?>v1/conversations/message_viewed</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>conversation_id</li>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "Message has been updated successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
 
 
 
