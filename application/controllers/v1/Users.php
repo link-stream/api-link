@@ -145,7 +145,7 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
+
     public function user_account_get($id = null) {
         if (!$this->general_library->header_token($id)) {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
@@ -761,7 +761,7 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
+
     public function resend_email_confirm_new_post() {
         $id = $this->input->post('user_id');
         if (!empty($id)) {
@@ -1327,6 +1327,59 @@ class Users extends RestController {
         }
     }
 
+    public function payment_method_new_post() {
+        $payment_method = [];
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $first_name = (!empty($this->input->post('first_name'))) ? $this->input->post('first_name') : '';
+            $last_name = (!empty($this->input->post('last_name'))) ? $this->input->post('last_name') : '';
+            $cc_number = (!empty($this->input->post('cc_number'))) ? $this->input->post('cc_number') : '';
+            $expiration_date = (!empty($this->input->post('expiration_date'))) ? $this->input->post('expiration_date') : '';
+            $cvv = (!empty($this->input->post('cvv'))) ? $this->input->post('cvv') : '';
+            $exp_month = substr($expiration_date, 0, 2);
+            $exp_year = substr($expiration_date, 3);
+            //Create_payment_method
+            $type = 'card';
+            $card = [
+                'number' => $cc_number,
+                'exp_month' => $exp_month,
+                'exp_year' => $exp_year,
+                'cvc' => $cvv,
+            ];
+            $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+            if (empty($payment_methods)) {
+                $payment_method['is_default'] = 1;
+            }
+            $response = $this->stripe_library->create_payment_method($type, $card);
+            if ($response['status']) {
+                //response true Save in DB
+                $payment_method['user_id'] = $user_id;
+                $payment_method['status'] = 'ACTIVE';
+                $payment_method['first_name'] = $first_name;
+                $payment_method['last_name'] = $last_name;
+                $payment_method['first_cc_number'] = substr($cc_number, 0, 6);
+                $payment_method['last_cc_number'] = substr($cc_number, -4);
+                $payment_method['expiration_date'] = $expiration_date;
+                $payment_method['cvv'] = $cvv;
+                $payment_method['payment_method_key'] = $response['payment_method_id'];
+                $this->User_model->insert_payment_method($payment_method);
+                //STRIPE CUSTOMER
+                $customer_response = $this->create_stripe_customer_new($user_id);
+                //
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The payment method has been created successfully.', 'customer' => $customer_response), RestController::HTTP_OK);
+            } else {
+                $this->error = $response['error'];
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
     public function payment_method_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
@@ -1515,6 +1568,43 @@ class Users extends RestController {
         return $response;
     }
 
+    private function create_stripe_customer_new($user_id) {
+        $response = [];
+        $register_user = $this->User_model->fetch_user_store_by_id($user_id);
+        $email = $register_user['email'];
+        $name = $register_user['first_name'] . ' ' . $register_user['last_name'];
+        $phone = '';
+        $description = 'LinkStream Customer ' . $user_id;
+        $address = [];
+        $shipping = [];
+        $metadata = ['linkstream_user_id' => $user_id];
+        $payment_method_key = '';
+        $payment_methods = $this->User_model->fetch_payment_method_by_user_id($user_id);
+        if (!empty($payment_methods)) {
+            foreach ($payment_methods as $cc) {
+                if ($cc['is_default']) {
+                    $payment_method_key = $cc['payment_method_key'];
+                }
+            }
+            $subscription_account = $this->User_model->fetch_user_subscriptions_by_user_id($user_id, 'Stripe');
+            if (empty($subscription_account)) {
+                $customer = $this->stripe_library->create_customer($name, $email, $phone, $address, $shipping, $payment_method_key, $description, $metadata);
+                if ($customer['status']) {
+                    $response = ['status' => true, 'customer_id' => $customer['customer_id']];
+                    $this->User_model->insert_user_subscriptions(['customer_id' => $customer['customer_id'], 'user_id' => $user_id, 'processor' => 'Stripe', 'status' => 'ACTIVE']);
+                    //$this->User_model->update_subscriptions_by_user_id($user_id, ['customer_id' => $customer['customer_id']]);
+                } else {
+                    $response = ['status' => false, 'msg' => $customer['error']];
+                }
+            } else {
+                $response = ['status' => false, 'msg' => 'Exist Subscription Account'];
+            }
+        } else {
+            $response = ['status' => false, 'msg' => 'No Payment Method'];
+        }
+        return $response;
+    }
+
     //STRIPE CONNECT//
     //
 
@@ -1572,7 +1662,7 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
+
     public function connect_stripe_account_new_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $debug = (!empty($this->input->post('debug'))) ? $this->input->post('debug') : FALSE;
@@ -1988,7 +2078,7 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
-    
+
     public function confirm_paypal_account_new_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
         $paypal_user_id = (!empty($this->input->post('paypal_user_id'))) ? $this->input->post('paypal_user_id') : '';
