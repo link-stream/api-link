@@ -4985,11 +4985,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
                 <hr>
                 <h3>Get User Conversations:</h3>
-                <code>GET <?= base_url() ?>v1/conversations/{user_id}</code>
+                <code>GET <?= base_url() ?>v1/conversations/{user_id}/{conversation_id}</code>
                 <h3>Parameters:</h3>
                 <ul>
                     <li>user_id</li>
-                    <!--<li></li>-->
+                    <li>conversation_id</li>
                 </ul>
                 <h3>Response Example:</h3>
                 <p>
