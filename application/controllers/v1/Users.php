@@ -761,6 +761,24 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+    
+    public function resend_email_confirm_new_post() {
+        $id = $this->input->post('user_id');
+        if (!empty($id)) {
+            //Check User
+            $register_user = $this->User_model->fetch_user_store_by_id($id);
+            if (!empty($register_user)) {
+                $this->register_email($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
 
 //    public function instagram_post() {
 //        $code = $this->input->post('code');
@@ -1554,6 +1572,61 @@ class Users extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+    
+    public function connect_stripe_account_new_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $debug = (!empty($this->input->post('debug'))) ? $this->input->post('debug') : FALSE;
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_store_by_id($user_id);
+            if (!empty($register_user)) {
+                $temp_stripe_account = $this->User_model->fetch_stripe_account_by_user_id($user_id, 'Stripe');
+                if (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'ACTIVE') {
+                    $this->error = 'Stripe Account Already Created and Activated';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'APPROVED') {
+                    $this->error = 'Stripe Account Already Created and Approved, no Active';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                } elseif (!empty($temp_stripe_account) && $temp_stripe_account['status'] == 'PENDING') {
+                    $account_id = $temp_stripe_account['account_id'];
+                } else {
+                    //CREATE ACCOUNT
+                    $stripe_response = $this->stripe_library->express_account($register_user['country'], $register_user['email']);
+                    if ($stripe_response['status']) {
+                        $account_id = $stripe_response['account_id'];
+                        //Guardar Account ID **
+                        $this->User_model->insert_user_connect(['user_id' => $user_id, 'processor' => 'Stripe', 'account_id' => $account_id]);
+                    } else {
+                        $this->error = $stripe_response['error'];
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                }
+                //CREATE LINK
+                if (!empty($account_id)) {
+                    //Crear Link
+                    $stripe_response = $this->stripe_library->account_link($account_id, $debug);
+                    if ($stripe_response['status']) {
+                        $account_url = $stripe_response['account_url'];
+                        $this->response(array('status' => 'success', 'env' => ENV, 'account_id' => $account_id, 'account_url' => $account_url), RestController::HTTP_OK);
+                    } else {
+                        $this->error = $stripe_response['error'];
+                        $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                    }
+                } else {
+                    $this->error = 'Stripe Error - Account Not Found.';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
 
     public function confirm_stripe_account_post() {
         $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
@@ -1878,6 +1951,54 @@ class Users extends RestController {
                 //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $register_user = $this->User_model->fetch_user_by_id($user_id);
+            if (!empty($register_user)) {
+                //Guardar Account ID **
+                if ($account_type == 'payout') {
+                    $user_connect = [];
+                    //$user_connect['TEMP'] = '';
+                    $user_connect['user_id'] = $user_id;
+                    $user_connect['status'] = 'ACTIVE';
+                    $user_connect['processor'] = 'Paypal';
+                    $user_connect['login_url'] = $paypal_user_id;
+                    $user_connect['payouts_enabled'] = '1';
+                    $user_connect['email'] = $paypal_email;
+                    $this->User_model->insert_user_connect($user_connect);
+                } else {
+                    $payment_method = [];
+                    $payment_method['user_id'] = $user_id;
+                    $payment_method['status'] = 'ACTIVE';
+                    $payment_method['payment_processor'] = 'Paypal';
+                    //$payment_method['first_name'] = $first_name;
+                    //$payment_method['last_name'] = $last_name;
+                    //$payment_method['first_cc_number'] = substr($cc_number, 0, 6);
+                    //$payment_method['last_cc_number'] = substr($cc_number, -4);
+                    //$payment_method['expiration_date'] = $expiration_date;
+                    //$payment_method['cvv'] = $cvv;
+                    $payment_method['paypal_email'] = $paypal_email;
+                    $payment_method['paypal_user_id'] = $paypal_user_id;
+                    $this->User_model->insert_payment_method($payment_method);
+                }
+                $this->response(array('status' => 'success', 'env' => ENV, 'paypal_enabled' => TRUE), RestController::HTTP_OK);
+            } else {
+                $this->error = 'User Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide User ID.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+    
+    public function confirm_paypal_account_new_post() {
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $paypal_user_id = (!empty($this->input->post('paypal_user_id'))) ? $this->input->post('paypal_user_id') : '';
+        $paypal_email = (!empty($this->input->post('paypal_email'))) ? $this->input->post('paypal_email') : '';
+        $account_type = (!empty($this->input->post('account_type'))) ? $this->input->post('account_type') : 'payout';
+        if (!empty($user_id)) {
+            if (!$this->general_library->header_token($user_id)) {
+                //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            }
+            $register_user = $this->User_model->fetch_user_store_by_id($user_id);
             if (!empty($register_user)) {
                 //Guardar Account ID **
                 if ($account_type == 'payout') {
