@@ -129,7 +129,7 @@ class Users extends RestController {
 
     public function index_get($id = null) {
         if (!$this->general_library->header_token($id)) {
-            //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
         }
         if (!empty($id)) {
             $register_user = $this->User_model->fetch_user_by_id($id);
