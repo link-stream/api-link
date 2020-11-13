@@ -22,7 +22,7 @@ class Profiles extends RestController {
     public function __construct() {
         parent::__construct();
         //Models
-        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Video_model', 'Link_model', 'License_model', 'Visitor_model'));
+        $this->load->model(array('User_model', 'Audio_model', 'Album_model', 'Video_model', 'Link_model', 'License_model', 'Visitor_model', 'Marketing_model'));
         //Libraries
         $this->load->library(array('Instagram_api', 'aws_s3', 'Aws_pinpoint'));
         $this->load->library('user_agent');
@@ -1769,6 +1769,22 @@ class Profiles extends RestController {
             echo '</pre>';
             //VISITOR
             //$this->Visitor_model->insert_visitor($data);
+        }
+    }
+    
+    public function landing_page_get($url = null) {
+        if (!empty($url)) {
+            $register_user = $this->Marketing_model->fetch_landing_page_by_url($url);
+            if (!empty($register_user)) {
+                //$user_response = $this->user_clean_2($register_user);
+                $this->response(array('status' => 'success', 'env' => ENV, 'data' => $register_user), RestController::HTTP_OK);
+            } else {
+                $this->error = 'Landing Page Not Found.';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Landing Page URL.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
 

@@ -574,5 +574,14 @@ WHERE message_id = '" . $message_id . "' and open = '1'";
         $this->db->where('id', $id);
         $this->db->update('st_marketing_landing_pages', $data);
     }
+    
+    public function fetch_landing_page_by_url($url) {
+        $this->db->from('st_marketing_landing_pages');
+        $this->db->where('url', $url);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
 
 }
