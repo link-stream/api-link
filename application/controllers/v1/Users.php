@@ -1982,7 +1982,8 @@ class Users extends RestController {
                 $response['created_at'] = '';
                 $response['cc_type'] = '';
                 foreach ($orders as $order) {
-                    $response['invoice_number'] = $order['invoice_number'] .= '-' . $user_id;
+                    //$response['invoice_number'] = $order['invoice_number'] .= '-' . $user_id;
+                    $response['invoice_number'] = $order['invoice_number'];
                     $response['created_at'] = $this->general_library->gmt_to_est($order['created_at']);
                     $response['customer'] = $order['first_name'] . ' ' . $order['last_name'];
                     $response['email'] = $order['email'];
