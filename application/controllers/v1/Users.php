@@ -1968,7 +1968,7 @@ class Users extends RestController {
             if (empty($invoice_id)) {
                 $orders = $this->User_model->fetch_user_orders($user_id);
                 foreach ($orders as $order) {
-                    $order['invoice_number'] .= '-' . $user_id;
+                    //$order['invoice_number'] .= '-' . $user_id;
                     $order['created_at'] = $this->general_library->gmt_to_est($order['created_at']);
                     $response[] = $order;
                 }
