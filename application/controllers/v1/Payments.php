@@ -909,6 +909,219 @@ class Payments extends RestController {
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }
+    
+    public function paypal_payment_new_post() {
+
+        $data = (!empty($this->input->post('data'))) ? $this->input->post('data') : '';
+        if (!empty($data)) {
+            $data_info = json_decode($data, TRUE);
+            if (is_array($data_info)) {
+                $user_id = (!empty($data_info['user_id'])) ? $data_info['user_id'] : null;
+                $utm_source = (!empty($data_info['utm_source'])) ? $data_info['utm_source'] : '';
+                $ref_id = (!empty($data_info['ref_id'])) ? $data_info['ref_id'] : '';
+                if (!$this->general_library->header_token($user_id)) {
+                    //////$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                }
+                $payment = (!empty($data_info['payment'])) ? $data_info['payment'] : null;
+                if (empty($payment)) {
+                    $this->error = 'Provide Payment Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+
+                $paymentID = (!empty($payment['paymentID'])) ? $payment['paymentID'] : null;
+                $paymentToken = (!empty($payment['paymentToken'])) ? $payment['paymentToken'] : null;
+                $name = (!empty($payment['name'])) ? $payment['name'] : null;
+                $subtotal = (!empty($payment['subtotal'])) ? $payment['subtotal'] : 0;
+                $feeService = (!empty($payment['feeService'])) ? $payment['feeService'] : 0;
+                $feeCC = (!empty($payment['feeCC'])) ? $payment['feeCC'] : 0;
+                $total = (!empty($payment['total'])) ? $payment['total'] : 0;
+                $country = (!empty($payment['country'])) ? $payment['country'] : '';
+                if (empty($paymentID) || empty($paymentToken) || empty($subtotal) || empty($total)) {
+                    $this->error = 'Provide Complete Payment Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                $cart = (!empty($data_info['cart'])) ? $data_info['cart'] : null;
+                if (empty($cart)) {
+                    $this->error = 'Provide Cart Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                $subtotal_cart = 0;
+                $cart_success = true;
+                foreach ($cart as $item) {
+                    $subtotal_cart += (!empty($item['item_amount'])) ? $item['item_amount'] : 0;
+                    $item_id = (!empty($item['item_id'])) ? $item['item_id'] : null;
+                    $item_title = (!empty($item['item_title'])) ? $item['item_title'] : null;
+                    $item_track_type = (!empty($item['item_track_type'])) ? $item['item_track_type'] : null;
+                    $producer_id = (!empty($item['producer_id'])) ? $item['producer_id'] : null;
+                    if (empty($item_id) || empty($item_title) || empty($item_track_type) || empty($producer_id)) {
+                        $cart_success = false;
+                        break;
+                    }
+                }
+                if (!$cart_success) {
+                    $this->error = 'Provide Complete Cart Info';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                if ($subtotal_cart != $subtotal) {
+                    $this->error = 'The sum of the amount of the items is not equal to the subtotal amount';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+
+                $subtotal_fees = $subtotal + $feeService + $feeCC;
+                $a = (string) $subtotal_fees;
+                $b = $total;
+                if ($a != $b) {
+                    $this->error = 'The total amount is not equal to the sum of other amounts';
+                    $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+                }
+                //Validation OK
+                //PAYMENT
+                //
+                $invoice = [
+                    'user_id' => $user_id,
+                    'status' => 'COMPLETED',
+                    'sub_total' => $subtotal,
+                    'feeCC' => $feeCC,
+                    'feeService' => $feeService,
+                    'total' => $total,
+                    'payment_customer_id' => $paymentToken,
+                    'payment_processor' => "PayPal"
+                ];
+                $invoice_id = $this->User_model->insert_user_purchase($invoice);
+                $invoice_number = 'LS' . str_pad($invoice_id, 7, "0", STR_PAD_LEFT);
+                $invoice['invoice_number'] = $invoice_number;
+                $invoice['status'] = 'COMPLETED';
+                $invoice['payment_charge_id'] = $paymentID;
+                $invoice['billingName'] = $name;
+                $invoice['cc_type'] = 'PayPal';
+                $invoice['utm_source'] = $utm_source;
+                $invoice['ref_id'] = $ref_id;
+                $invoice['country'] = $country;
+                //UPDATE PURSHASE
+                $this->User_model->update_user_purchase($invoice_id, $invoice);
+                $transfer_group = $invoice_number;
+                $description = 'Linkstream - Invoice: ' . $invoice_number;
+                $user_data = $this->User_model->fetch_user_store_by_id($user_id);
+                $receipt_email = $user_data['email'];
+                $cart_email = [];
+                $confirmation_url = [];
+                //UPDATE DETAILS
+                foreach ($cart as $item) {
+                    $item['invoice_id'] = $invoice_id;
+                    $item['item_table'] = ($item['item_track_type'] == 'pack') ? 'st_album' : 'st_audio';
+                    //NEW -LICENSE//
+                    if ($item['item_track_type'] == 'pack') {
+                        $item_album = $this->Album_model->fetch_album_by_id($item_id);
+                        if (!empty($item_album)) {
+                            $item['license_id'] = $item_album['license_id'];
+                        }
+                    }
+                    if (!empty($item['license_id'])) {
+                        //LICENSE
+                        $license = $this->License_model->fetch_license_by_id($item['license_id']);
+                        if (!empty($license)) {
+                            $item['license_title'] = $license['title'];
+                            $item['mp3'] = $license['mp3'];
+                            $item['wav'] = $license['wav'];
+                            $item['trackout_stems'] = $license['trackout_stems'];
+                            $item['distribution_copies'] = $license['distribution_copies'];
+                            $item['free_download'] = $license['free_download'];
+                            $item['audio_streams'] = $license['audio_streams'];
+                            $item['music_videos'] = $license['music_videos'];
+                            $item['video_streams'] = $license['video_streams'];
+                            $item['broadcasting_rights'] = $license['broadcasting_rights'];
+                            $item['radio_station'] = $license['radio_station'];
+                            $item['paid_performances'] = $license['paid_performances'];
+                            $item['non_profit_performances'] = $license['non_profit_performances'];
+                        }
+                    }
+                    //END-LICENSE//
+                    $invoice_detail_id = $this->User_model->insert_user_purchase_details($item);
+                    //
+                    //COLLABORATOR
+                    //
+                    $invoice_detail_payout = [];
+                    //$invoice_detail_payout['TEMP'] = '';
+                    $invoice_detail_payout['invoice_id'] = $item['invoice_id'];
+                    $invoice_detail_payout['invoice_number'] = $invoice['invoice_number'];
+                    $invoice_detail_payout['detail_id'] = $invoice_detail_id;
+                    $invoice_detail_payout['item_id'] = $item['item_id'];
+                    $invoice_detail_payout['status'] = 'PENDING';
+                    $invoice_detail_payout['payment_processor'] = $invoice['payment_processor'];
+                    if ($item['item_track_type'] == 'beat') {
+                        //GET COLLABORATORS
+                        $collaborators = $this->Audio_model->fetch_audio_collaborator_by_id($item['item_id']);
+                        foreach ($collaborators as $collaborator) {
+                            $collaborator_id = $collaborator['user_id'];
+                            $collaborator_profit = $collaborator['profit'];
+                            $item_amount_collaborator = ($item['item_amount'] * $collaborator_profit / 100);
+                            $invoice_detail_payout['item_amount'] = $item_amount_collaborator;
+                            if ($invoice['feeCC'] == 0) {
+                                $detail_feeCC = ($invoice_detail_payout['item_amount'] * 2.9 / 100) + 0.30;
+                                $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                $invoice_detail_payout['item_payout'] = $payout;
+                                $invoice_detail_payout['producer_id'] = $collaborator_id;
+                            } else {
+                                $detail_feeCC = 0;
+                                $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                                $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                                $invoice_detail_payout['item_payout'] = $payout;
+                                $invoice_detail_payout['producer_id'] = $collaborator_id;
+                            }
+                            $this->User_model->insert_user_payout_details($invoice_detail_payout);
+                        }
+                    } else {
+                        $invoice_detail_payout['item_amount'] = $item['item_amount'];
+                        if ($invoice['feeCC'] == 0) {
+                            $detail_feeCC = ($invoice_detail_payout['item_amount'] * 2.9 / 100) + 0.30;
+                            $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                            $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                            $invoice_detail_payout['item_payout'] = $payout;
+                            $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                        } else {
+                            $detail_feeCC = 0;
+                            $invoice_detail_payout['item_feeCC'] = $detail_feeCC;
+                            $payout = $invoice_detail_payout['item_amount'] - $invoice_detail_payout['item_feeCC'];
+                            $invoice_detail_payout['item_payout'] = $payout;
+                            $invoice_detail_payout['producer_id'] = $item['producer_id'];
+                        }
+                        $this->User_model->insert_user_payout_details($invoice_detail_payout);
+                    }
+                    //
+                    //1-CON EL ITEM OBTENER LOS COLLABORADORES SI ES BEAT.
+                    //2-SEGUN PORCENTAJE CALCULAR VALOR A PAGAR
+                    //SI FEE CC ES DISTINTO DE 0 SE LO CALCULAMOS AL ITEM Y LO DESCONTAMOS
+                    //END COLLABORATOR
+                    //LOG Item License.
+                    $confirmation_url[] = ['item_id' => $item['item_id'], 'item_track_type' => $item['item_track_type'], 'url' => $this->general_library->encode_download_url($item['invoice_id'], $invoice['user_id'], $item['item_id'], $item['producer_id'], $invoice_detail_id)];
+                    //
+                    $item['extra_info'] = $this->producer_item_info($item['item_id'], $item['item_track_type']);
+                    $cart_email[] = $item;
+                }
+                //
+                //SEND CONFIRMATION EMAIL
+                $linkstream = $this->linkstream_url;
+                $cc_type = 'PayPal';
+                $cc = $linkstream . 'static/img/paypal.svg';
+                $data = ['invoice' => $invoice, 'cart' => $cart_email, 'linkstream' => $linkstream, 'email' => $receipt_email, 'cc' => $cc];
+                $body = $this->load->view('app/email/email-confirm-pay6', $data, true);
+                $this->general_library->send_ses($name, $receipt_email, 'LinkStream', 'noreply@linkstream.com', "LinkStream Order Confirmation", $body);
+                if (!empty($invoice['ref_id'])) {
+                    $this->Marketing_model->update_revenue_message_log($invoice['ref_id'], $invoice['total']);
+                }
+                //RESPONSE TRUE
+                $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The order was created succefully', 'id' => $invoice_number, 'email' => $receipt_email, 'cc_type' => $cc_type, 'billingCC' => '', 'download' => $confirmation_url), RestController::HTTP_OK);
+                //
+            } else {
+                $this->error = 'Provide Correct Data Format';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->error = 'Provide Data.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
 
     //NOTE: 
 
