@@ -2166,7 +2166,7 @@ class Users extends RestController {
                 $this->User_model->update_connect_by_user_id_pp($user_id, ['status' => 'DELETED']);
             } else {
                 $temp_paypal_account = $this->User_model->fetch_paypal_method_by_user_id($user_id);
-                if (empty($temp_paypal_account)) {
+                if (!empty($temp_paypal_account)) {
                     $this->User_model->update_payment_method($temp_paypal_account['id'], ['status' => 'INACTIVE']);
                 }
             }
