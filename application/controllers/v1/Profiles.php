@@ -1110,6 +1110,8 @@ class Profiles extends RestController {
         //Avatar & Banner
         $path = $this->s3_path . $this->s3_folder;
         $user['avatar_url'] = '';
+        $user['image_url'] = '';
+        $user['banner_url'] = '';
         $user['data_image'] = '';
         $user['data_banner'] = '';
         if ($images) {
@@ -1123,6 +1125,8 @@ class Profiles extends RestController {
                     unlink($this->temp_dir . '/' . $user['image']);
                     $user['avatar_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 }
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
+                $user['image_url'] = $final_url;
             } else {
                 $user['image'] = 'LS_avatar.png';
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['image']);
@@ -1134,6 +1138,8 @@ class Profiles extends RestController {
                     unlink($this->temp_dir . '/' . $user['image']);
                     $user['avatar_url'] = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
                 }
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['image'];
+                $user['image_url'] = $final_url;
             }
             if (!empty($user['banner'])) {
                 $data_image = $this->aws_s3->s3_read($this->bucket, $path, $user['banner']);
@@ -1144,6 +1150,8 @@ class Profiles extends RestController {
                     $user['data_banner'] = $src;
                     unlink($this->temp_dir . '/' . $user['banner']);
                 }
+                $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $user['banner'];
+                $user['banner_url'] = $final_url;
             }
         }
         return $user;
