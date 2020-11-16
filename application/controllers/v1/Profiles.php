@@ -1771,7 +1771,7 @@ class Profiles extends RestController {
             //$this->Visitor_model->insert_visitor($data);
         }
     }
-    
+
     public function landing_page_get($url = null) {
         if (!empty($url)) {
             $register_user = $this->Marketing_model->fetch_landing_page_by_url($url);
@@ -1784,6 +1784,41 @@ class Profiles extends RestController {
             }
         } else {
             $this->error = 'Provide Landing Page URL.';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_subscriber_post() {
+        $landing_page_id = (!empty($this->input->post('landing_page_id'))) ? $this->input->post('landing_page_id') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $email = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
+        $name = (!empty($this->input->post('name'))) ? $this->input->post('name') : '';
+        if (!empty($landing_page_id) && !empty($user_id) && !empty($email)) {
+            $data = [
+                'user_id' => $user_id,
+                'created_in' => 'Landing Page',
+                'ref_id' => $landing_page_id,
+                'email' => $email,
+                'name' => $name,
+                'email_status' => 'subscribed'
+            ];
+            $this->Marketing_model->insert_subscriber($data);
+            $this->Marketing_model->update_landing_page_click_action($landing_page_id);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The subscriber has been created successfully.'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide Landing Page ID and User ID and Email';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_visitor_post() {
+        $landing_page_id = (!empty($this->input->post('landing_page_id'))) ? $this->input->post('landing_page_id') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        if (!empty($landing_page_id) && !empty($user_id)) {
+            $this->Marketing_model->update_landing_page_open_action($landing_page_id);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The action has been updated successfully.'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide Landing Page ID and User ID';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
         }
     }

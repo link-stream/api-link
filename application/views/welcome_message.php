@@ -5117,7 +5117,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "url": "test-collect-page-update",
         "headline": "Cellect Test",
         "body": "Test collect description.",
-        "content": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"> <meta name=\"format-detection\" content=\"telephone=no\"/> <script src=\"https://kit.fontawesome.com/74b77a9efd.js\" crossorigin=\"anonymous\"></script> <title>Test Collect Page Update</title> <style>body{font-family: \"Montserrat\", Helvetica, Arial, sans-serif;}.landing-preview-email{width: 100%; height: 100%; min-height: 100vh; background-repeat: no-repeat; background-position: center; background-size: cover; overflow: auto;}.landing-preview-email .landing-container{height: calc(100vh - 100px); max-width: 940px; margin: 0 auto;}.landing-header{position: relative; min-height: 200px; background: linear-gradient(135deg, #39C8D6 0%, #D59C75 62.93%, #39C8D6 100%); overflow: hidden;}.landing-header > img{width: 100%; vertical-align: middle;}.landing-header .landing-logo{position: absolute; top: 50%; left: 55px; width: 160px; height: 40px; max-height: 50px; max-width: 160px; margin: auto;}.landing-header .landing-logo img{width: 100%;}.landing-body{height: auto; background-color: white; overflow: hidden; margin: 60px auto;}.landing-body .left-col{width: 50%; float: left;}.landing-body .left-col img{width: 100%;}.landing-body .right-col{width: 50%; float: left; background-color: white;}.landing-body .right-col .text-content{padding: 30px;}.landing-body .title{font-size: 30px; line-height: 30px; margin-bottom: 15px;}.landing-body .subtitle{font-size: 24px; line-height: 30px; margin-bottom: 17px;}.landing-body .description{font-size: 14px; line-height: 24px; margin-bottom: 25px;}.btn-signup{margin-top: 30px; background-color: #80DC2E; border: 0; font-size: 13px; line-height: 55px; color: white; text-transform: uppercase; padding: 17px 55px; border-radius: 55px; text-decoration: none; letter-spacing: 2px; font-weight: bold;}.landing-footer{margin: 60px 0px 30px; border-top: 2px solid black; padding-top: 30px; text-align: center;}.landing-footer .social-share-links a{font-size: 34px; color:black; margin: 0 3px; text-decoration: none;}.landing-footer .social-share-links a i{vertical-align: middle;}.landing-footer .social-share-links a .custom-icon{font-size: 18px; background: black; color: white; padding: 6px 6px; border-radius: 3px;}@media (max-width: 767.98px){.landing-body{width: 90%;}.landing-header{min-height: 75px;}.landing-header .landing-logo{transform: translateY(-50%);}.landing-body .left-col, .landing-body .right-col{width: 100%;}}</style> </head> <body leftmargin=\"0\" marginwidth=\"0\" topmargin=\"0\" marginheight=\"0\" offset=\"0\"> <div class=\"landing-preview-email\"> <div class=\"landing-container\"> <div class=\"landing-header\"> <img src=\"https://s3.us-east-2.amazonaws.com/files.link.stream/dev/profile/e0e4d7775313a3ad70d5af18631a3fe0.jpeg\"/> <div class=\"landing-logo\"> <img src=\"https://s3.us-east-2.amazonaws.com/files.link.stream/dev/media/139_da4d56af71eb53dc92d4d86aae0ba0a2.png\" alt=\"Logo\"/> </div></div><div class=\"landing-body\"> <div class=\"left-col\"> <img src=\"https://s3.us-east-2.amazonaws.com/files.link.stream/dev/media/139_204c333c3e4076465c01f9c285f88b9e.jpeg\" alt=\"artwork\"/> </div><div class=\"right-col\"> <div class=\"text-content\"> <h1 class=\"title\"> Cellect Test </h1> <div class=\"subtitle\"> $101.10 </div><div class=\"description\"> Test collect description. </div><a class=\"btn-signup\" href=\"https://dev-link-vue.link.stream/listar1/beats/319\" target=\"_blank\">BUY NOW</a> </div></div></div><div class=\"landing-footer\"> <div class=\"social-share-links\">  <a href=\"https://facebook.com\" target=\"_blank\" title=\"Facebook\"><i class=\"fab fa-facebook-square\"></i></a> <a href=\"https://twitter.com\" target=\"_blank\" title=\"Twitter\"><i class=\"fab fa-twitter-square\"></i></a>    <a href=\"mailto:listar0117@gmail.com\" title=\"Email\"><i class=\"fas fa-envelope-square\"></i></a> </div></div></div></div></body></html>",
+        "content": "",
         "promote_id": "https://dev-link-vue.link.stream/listar1/beats/319",
         "template_type": "collect",
         "publish_at": null,
@@ -5138,6 +5138,70 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         "click": "0",
         "revenue": "0.00"
     }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Landing Page - Add Subscriber:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/landing_page_subscriber</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>landing_page_id</li>
+                    <li>user_id</li>
+                    <li>email</li>
+                    <li>name(optional)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The subscriber has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Landing Page - Add Visitor:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/landing_page_visitor</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>landing_page_id</li>
+                    <li>user_id</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The subscriber has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
+                <hr>
+                <h3>Landing Page - Availability:</h3>
+                <code>GET <?= base_url() ?>v1/marketing/landing_page_availability/{url}/{landing_page_id}</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>url</li>
+                    <li>landing_page_id(optional)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev"
 }');
                     echo '</pre>';
                     ?>

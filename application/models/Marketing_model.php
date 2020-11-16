@@ -574,14 +574,53 @@ WHERE message_id = '" . $message_id . "' and open = '1'";
         $this->db->where('id', $id);
         $this->db->update('st_marketing_landing_pages', $data);
     }
-    
-    public function fetch_landing_page_by_url($url) {
+
+    public function fetch_landing_page_by_url($url, $id = null) {
         $this->db->from('st_marketing_landing_pages');
         $this->db->where('url', $url);
+        if (!empty($id)) {
+            $this->db->where('id <> ', $id);
+        }
         $query = $this->db->get();
         $result = $query->row_array();
         $query->free_result();
         return $result;
+    }
+
+    public function update_landing_page_open_action($ref_id) {
+
+        $this->db->set('open', 'open + 1', FALSE);
+        $this->db->where('id', $ref_id);
+        $this->db->update('st_marketing_landing_pages');
+    }
+
+    public function update_landing_page_click_action($ref_id) {
+
+        $this->db->set('click', 'click + 1', FALSE);
+        $this->db->where('id', $ref_id);
+        $this->db->update('st_marketing_landing_pages');
+
+//        
+//        //STEP 1
+//        $this->db->select('message_id, click');
+//        $this->db->where('ref_id', $ref_id);
+//        $query = $this->db->get('st_marketing_landing_pages');
+//        $result = $query->row_array();
+//        //STEP 2
+//        if ($result['click'] != '1') {
+//            $this->db->set('click', '1');
+//            $this->db->set('click_at', date('Y-m-d H:i:s'));
+////            $this->db->set('open_ip', $ip);
+////            $this->db->set('open_country', $country);
+//            //$this->db->set('open', '1', FALSE);
+//            //$this->db->set('open_at', date('Y-m-d H:i:s'), FALSE);
+//            $this->db->where('ref_id', $ref_id);
+//            $this->db->update('st_marketing_messages_log');
+//            //STEP 3
+//            $this->db->set('click', 'click + 1', FALSE);
+//            $this->db->where('id', $result['message_id']);
+//            $this->db->update('st_marketing_messages');
+//        }
     }
 
 }

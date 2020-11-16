@@ -989,7 +989,7 @@ class Marketing extends RestController {
                 if (!empty($this->put('background_image'))) {
                     $message['background_image'] = $this->put('background_image');
                 }
-                
+
                 if (!empty($this->put('price'))) {
                     $message['price'] = $this->put('price');
                 }
@@ -1045,6 +1045,21 @@ class Marketing extends RestController {
         } else {
             $this->error = 'Provide Landing Page ID.';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function landing_page_availability_get($url = null, $id = null) {
+        if (empty($url)) {
+            $this->error = 'Url is Required';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        } else {
+            $register_user = $this->Marketing_model->fetch_landing_page_by_url($url, $id);
+            if (empty($register_user)) {
+                $this->response(array('status' => 'success', 'env' => ENV), RestController::HTTP_OK);
+            } else {
+                $this->error = 'URL: ' . $value . ' is not available';
+                $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+            }
         }
     }
 
