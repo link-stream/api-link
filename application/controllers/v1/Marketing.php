@@ -853,6 +853,10 @@ class Marketing extends RestController {
                         } else {
                             $audio['type'] = ($audio['track_type'] == '3') ? 'kit' : $audio['type'];
                             unset($audio['track_type']);
+                            if ($audio['type'] == 'beat') {
+                                $license_price = $this->Audio_model->fetch_audio_license_price_by_id($audio['id']);
+                                $audio['price'] = (!empty($license_price)) ? $license_price['price'] : $audio['price'];
+                            }
                         }
                         $audio['data_image'] = (!empty($audio['coverart'])) ? $this->server_url . $this->s3_path . $this->s3_coverart . '/' . $audio['coverart'] : '';
                         $promote[] = $audio;

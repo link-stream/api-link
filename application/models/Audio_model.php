@@ -340,6 +340,17 @@ class Audio_model extends CI_Model {
         return $result;
     }
 
+    public function fetch_audio_license_price_by_id($id) {
+        $this->db->from('st_audio_license');
+        $this->db->where('audio_id', $id);
+        $this->db->order_by("price");
+        $this->db->limit(1);
+        $query = $this->db->get();
+        $result = $query->row_array();
+        $query->free_result();
+        return $result;
+    }
+
     public function fetch_audio_license_by_id_license($id, $license_id) {
         $this->db->select('a.license_id, a.price, a.status_id, b.mp3, b.wav, b.trackout_stems');
         $this->db->from('st_audio_license a');
@@ -585,7 +596,7 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
     public function fetch_promote_audio_by_user_id($user_id, $beat_type, $type, $sort = 'default', $limit = 0, $offset = 0) {
         //
         $query_beat = "SELECT ";
-        $query_beat .= "id, title, coverart, genre_id, track_type , 'beat' as type , sort ";
+        $query_beat .= "id, title, coverart, genre_id, track_type , 'beat' as type , sort, price  ";
         $query_beat .= "FROM st_audio ";
         $query_beat .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1'  AND (track_type='3' or track_type='2') ";
         $current_date = date('Y-m-d H:i:s');
@@ -594,7 +605,7 @@ SELECT b.id, b.genre FROM st_album a inner join st_genre b on a.genre_id = b.id 
         //
         //
         $query_pack = "SELECT ";
-        $query_pack .= "id, title, coverart, genre_id, track_type, 'pack' as type, sort ";
+        $query_pack .= "id, title, coverart, genre_id, track_type, 'pack' as type, sort, price ";
         $query_pack .= "FROM st_album ";
         $query_pack .= "WHERE user_id = '" . $user_id . "' AND status_id <> '3' AND public = '1'  ";
         $current_date = date('Y-m-d H:i:s');
