@@ -79,7 +79,7 @@ $query_builder = TRUE;
 //print_r($chk[0]);echo '<br>';
 if (ENV == "dev") {
     if (!defined('DB_HOST')) {
-        define('DB_HOST', 'db01.link.stream');
+        define('DB_HOST', 'db01.prodby.com');
     }
     if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
@@ -95,7 +95,7 @@ if (ENV == "dev") {
     }
 } elseif (ENV == "staging") {
     if (!defined('DB_HOST')) {
-        define('DB_HOST', 'db01.link.stream');
+        define('DB_HOST', 'db01.prodby.com');
     }
     if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
@@ -111,7 +111,7 @@ if (ENV == "dev") {
     }
 } else {
     if (!defined('DB_HOST')) {
-        define('DB_HOST', 'db01.link.stream');
+        define('DB_HOST', 'db01.prodby.com');
     }
     if (!defined('DB_USER')) {
         define('DB_USER', 'streamy_admin');
