@@ -1163,6 +1163,7 @@ class Users extends RestController {
                 if ($user_id == $collaborator['id']) {
                     continue;
                 }
+                $collaborator['image_url'] = '';
                 $collaborator['data_image'] = '';
                 if (!empty($collaborator['image'])) {
                     $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
