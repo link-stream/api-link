@@ -29,7 +29,7 @@ class Audios extends RestController {
         //$this->load->helper('email');
         //VARS
         $this->error = '';
-        $this->bucket = 'files.link.stream';
+        $this->bucket = 'files.prodby.com';
         $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
         $this->s3_coverart = 'coverart';
         $this->s3_audio = 'audio';
