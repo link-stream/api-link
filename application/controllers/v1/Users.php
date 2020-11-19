@@ -1153,7 +1153,7 @@ class Users extends RestController {
     public function collaborator_new_get($user_id = null) {
         if (!empty($user_id)) {
             if (!$this->general_library->header_token($user_id)) {
-                $this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
+                //$this->response(array('status' => 'false', 'env' => ENV, 'error' => 'Unauthorized Access!'), RestController::HTTP_UNAUTHORIZED);
             }
             $search = (!empty($this->input->get('search'))) ? $this->input->get('search') : '';
             $collaborators = $this->User_model->fetch_collaborator_new($search);
@@ -1164,17 +1164,22 @@ class Users extends RestController {
                     continue;
                 }
                 $collaborator['image_url'] = '';
-                $collaborator['data_image'] = '';
-                if (!empty($collaborator['image'])) {
-                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
-                    if (!empty($data_image)) {
-                        $img_file = $collaborator['image'];
-                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
-                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
-                        $collaborator['data_image'] = $src;
-                        unlink($this->temp_dir . '/' . $collaborator['image']);
-                    }
-                    $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
+                //$collaborator['data_image'] = '';
+//                if (!empty($collaborator['image'])) {
+//                    $data_image = $this->aws_s3->s3_read($this->bucket, $path, $collaborator['image']);
+//                    if (!empty($data_image)) {
+//                        $img_file = $collaborator['image'];
+//                        file_put_contents($this->temp_dir . '/' . $collaborator['image'], $data_image);
+//                        $src = 'data: ' . mime_content_type($this->temp_dir . '/' . $collaborator['image']) . ';base64,' . base64_encode($data_image);
+//                        $collaborator['data_image'] = $src;
+//                        unlink($this->temp_dir . '/' . $collaborator['image']);
+//                    }
+//                    $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
+//                    $collaborator['image_url'] = $final_url;
+//                }
+                $store = $this->User_model->fetch_image_by_user_id($collaborator['id']);
+                if (!empty($store)) {
+                    $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $store['image'];
                     $collaborator['image_url'] = $final_url;
                 }
                 $collaborators_reponse[] = $collaborator;

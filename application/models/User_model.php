@@ -28,7 +28,7 @@ class User_model extends CI_Model {
         $this->db->where('id', $id);
         $this->db->update('st_user', $data);
     }
-    
+
     public function update_user_by_account($id, $data) {
         $this->db->where('user_account_id', $id);
         $this->db->update('st_user', $data);
@@ -212,9 +212,9 @@ class User_model extends CI_Model {
     }
 
     public function fetch_collaborator_new($search, $limit = 25) {
-        $this->db->select('a.id, a.user_name, a.email, b.image');
+        $this->db->select('a.id, a.user_name, a.email');
         $this->db->from('st_user_account a');
-        $this->db->join('st_user b', 'a.id = b.user_account_id');
+        //$this->db->join('st_user b', 'a.id = b.user_account_id');
         $this->db->where('a.status_id <> ', '2');
         if (!empty($search)) {
             $this->db->like('a.user_name', $search);
@@ -223,6 +223,18 @@ class User_model extends CI_Model {
         $this->db->limit($limit);
         $query = $this->db->get();
         $result = $query->result_array();
+        $query->free_result();
+        return $result;
+    }
+
+    public function fetch_image_by_user_id($user_id) {
+        $this->db->from('st_user');
+        $this->db->where(array('user_account_id' => $user_id, 'status_id' => '1', 'image <> ' => ''));
+        $this->db->where("image is not null", null, false);
+        //$this->db->order_by("id", "DESC");
+        $this->db->limit(1);
+        $query = $this->db->get();
+        $result = $query->row_array();
         $query->free_result();
         return $result;
     }
