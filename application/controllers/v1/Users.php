@@ -1173,6 +1173,8 @@ class Users extends RestController {
                         $collaborator['data_image'] = $src;
                         unlink($this->temp_dir . '/' . $collaborator['image']);
                     }
+                    $final_url = $this->server_url . $this->s3_path . $this->s3_folder . '/' . $collaborator['image'];
+                    $collaborator['image_url'] = $final_url;
                 }
                 $collaborators_reponse[] = $collaborator;
             }
