@@ -27,7 +27,7 @@ class General_library {
     //put your code here
     public function __construct() {
         $this->api_url = (ENV == 'live') ? 'https://api.link.stream/v1/' : ((ENV == 'staging') ? 'https://api-dev.link.stream/v1/' : 'http://localhost/api.link.stream/v1/');
-        $this->bucket = 'files.link.stream';
+        $this->bucket = 'files.prodby.com'; //'files.link.stream';
         $this->s3_path = (ENV == 'live') ? 'prod/' : 'dev/';
         $this->s3_coverart = 'coverart';
         $this->s3_audio = 'audio';
@@ -395,7 +395,7 @@ class General_library {
 //        $encode_data = $this->encode_data($data);
 //        $url = $this->api_url . 'a/image/' . $user_id . '/' . $encode_data;
 
-        
+
         $url = $this->ci->aws_s3->pre_signed_url($this->bucket, $file_name);
         return $url;
     }
