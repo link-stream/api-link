@@ -104,7 +104,7 @@ class Conversations extends RestController {
             //
             $this->Conversation_model->insert_conversation_msg(['conversation_id' => $conversation_id, 'message' => $message, 'user_id' => $from_user_id]);
             //$this->Conversation_model->update_conversation($conversation_id, ['last_update' => date('Y-m-d H:i:s')]);
-            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Message has been created successfully.'), RestController::HTTP_OK);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'Message has been created successfully.', 'id' => $conversation_id), RestController::HTTP_OK);
         } else {
             $this->error = 'Provide complete conversation to add';
             $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
