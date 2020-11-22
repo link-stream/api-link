@@ -5207,6 +5207,161 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>GEt Plans Info:</h3>
+                <code>GET <?= base_url() ?>v1/config/plans</code>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "plans": [
+        {
+            "Name": "PRO",
+            "Monthly Price": "$19",
+            "Ways To Sell": {
+                "Online Stores": "1",
+                "Custom Store URL": "Yes",
+                "Custom Domain Name": "Yes",
+                "Social selling (Instagram, Facebook)": "Yes",
+                "Fast, secure checkout": "Yes"
+            },
+            "Store Management": {
+                "Tracks": "100",
+                "Sound Kits": "25",
+                "Beat Packs": "10",
+                "Links": "Unlimited",
+                "Videos": "Unlimited",
+                "Pro Licensing Agreements": "Yes",
+                "Performance Analytics": "Yes",
+                "Financial Reports": "Yes"
+            },
+            "Marketing": {
+                "Subscribers": "5,000",
+                "Marketing Emails": "25,000/mo",
+                "SMS Promotions": "25,000/mo",
+                "Landing Pages": "Unlimited",
+                "Discounts": "Unlimited",
+                "Store Optimization (SEO)": "Yes",
+                "YouTube Uploader": "Yes"
+            },
+            "ProdBy Payments": {
+                "Accept All Major Credit Cards": "Yes",
+                "Accept PayPal Express Checkout": "Yes",
+                "Collaborator Revenue Splits": "Yes"
+            }
+        },
+        {
+            "Name": "PLATINUM",
+            "Monthly Price": "$99",
+            "Ways To Sell": {
+                "Online Stores": "1",
+                "Custom Store URL": "Yes",
+                "Custom Domain Name": "Yes",
+                "Social selling (Instagram, Facebook)": "Yes",
+                "Fast, secure checkout": "Yes"
+            },
+            "Store Management": {
+                "Tracks": "Unlimited",
+                "Sound Kits": "Unlimited",
+                "Beat Packs": "Unlimited",
+                "Links": "Unlimited",
+                "Videos": "Unlimited",
+                "Pro Licensing Agreements": "Yes",
+                "Performance Analytics": "Yes",
+                "Financial Reports": "Yes"
+            },
+            "Marketing": {
+                "Subscribers": "20,000",
+                "Marketing Emails": "100,000/mo",
+                "SMS Promotions": "100,000/mo",
+                "Landing Pages": "Unlimited",
+                "Discounts": "Unlimited",
+                "Store Optimization (SEO)": "Yes",
+                "YouTube Uploader": "Yes"
+            },
+            "ProdBy Payments": {
+                "Accept All Major Credit Cards": "Yes",
+                "Accept PayPal Express Checkout": "Yes",
+                "Collaborator Revenue Splits": "Yes"
+            }
+        },
+        {
+            "Name": "PLATINUM",
+            "Monthly Price": "$99",
+            "Ways To Sell": {
+                "Online Stores": "1",
+                "Custom Store URL": "Yes",
+                "Custom Domain Name": "Yes",
+                "Social selling (Instagram, Facebook)": "Yes",
+                "Fast, secure checkout": "Yes"
+            },
+            "Store Management": {
+                "Tracks": "Unlimited",
+                "Sound Kits": "Unlimited",
+                "Beat Packs": "Unlimited",
+                "Links": "Unlimited",
+                "Videos": "Unlimited",
+                "Pro Licensing Agreements": "Yes",
+                "Performance Analytics": "Yes",
+                "Financial Reports": "Yes"
+            },
+            "Marketing": {
+                "Subscribers": "20,000",
+                "Marketing Emails": "100,000/mo",
+                "SMS Promotions": "100,000/mo",
+                "Landing Pages": "Unlimited",
+                "Discounts": "Unlimited",
+                "Store Optimization (SEO)": "Yes",
+                "YouTube Uploader": "Yes"
+            },
+            "ProdBy Payments": {
+                "Accept All Major Credit Cards": "Yes",
+                "Accept PayPal Express Checkout": "Yes",
+                "Collaborator Revenue Splits": "Yes"
+            }
+        }
+    ],
+    "description": {
+        "Ways To Sell": {
+            "Online Stores": "",
+            "Custom Store URL": "",
+            "Custom Domain Name": "Not only will we let you use a custom domain, if you do not already have one you can register one with Prodby Domains and immediately integrate it with your online store(s), landing pages, marketing message and more",
+            "Social selling (Instagram, Facebook)": "",
+            "Fast, secure checkout": ""
+        },
+        "Store Management": {
+            "Tracks": "With Prodby Tracks you are able to host .mp3, .wav and .zip files, and seamlessly stream your tracks in your online store, on your landing pages and even in your marketing messages",
+            "Sound Kits": "Want to be able to easily upload, manage and sell your sound kits? Now you can with Prodby Kits",
+            "Beat Packs": "",
+            "Links": "",
+            "Videos": "Monetize your YouTube content right from your Prodby store",
+            "Pro Licensing Agreements": "",
+            "Performance Analytics": "",
+            "Financial Reports": ""
+        },
+        "Marketing": {
+            "Subscribers": "Manage and market to your own list of email subscribers and seemlessly integrate your beats and kits into each promotion or message.",
+            "Marketing Emails": "",
+            "SMS Promotions": "",
+            "Landing Pages": "Create high-converting landing pages to capture leads and sell beats, kits and more, and publish them anywhere!",
+            "Discounts": "Create unique links and codes at the same time with our handy Discounts tool, run promotional offers, seasonal sales and more",
+            "Store Optimization (SEO)": "",
+            "YouTube Uploader": ""
+        },
+        "ProdBy Payments": {
+            "Accept All Major Credit Cards": "Make sales, accept online payments, and deliver digital files from any profile page, track page, kit page, landing page or email/SMS with Prodby Checkouts powered by Stripe.",
+            "Accept PayPal Express Checkout": "",
+            "Collaborator Revenue Splits": ""
+        }
+    }
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
 
                 <!-- EXAMPLE 
