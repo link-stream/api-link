@@ -5362,6 +5362,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     ?>
                 </p>
 
+                <hr>
+                <h3>Store Page - Add Subscriber:</h3>
+                <code>POST <?= base_url() ?>v1/profiles/subscriber</code>
+                <h3>Parameters:</h3>
+                <ul>
+                    <li>user_id</li>
+                    <li>email</li>
+                    <li>phone</li>
+                    <li>name(optional)</li>
+                </ul>
+                <h3>Response Example:</h3>
+                <p>
+                    <?php
+                    echo '<pre>';
+                    print_r('{
+    "status": "success",
+    "env": "dev",
+    "message": "The subscriber has been created successfully."
+}');
+                    echo '</pre>';
+                    ?>
+                </p>
+
 
 
                 <!-- EXAMPLE 

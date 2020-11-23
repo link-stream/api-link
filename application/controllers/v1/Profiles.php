@@ -1831,4 +1831,30 @@ class Profiles extends RestController {
         }
     }
 
+    public function subscriber_post() {
+        //$landing_page_id = (!empty($this->input->post('landing_page_id'))) ? $this->input->post('landing_page_id') : '';
+        $user_id = (!empty($this->input->post('user_id'))) ? $this->input->post('user_id') : '';
+        $email = (!empty($this->input->post('email'))) ? $this->input->post('email') : '';
+        $phone = (!empty($this->input->post('phone'))) ? $this->input->post('phone') : '';
+        $name = (!empty($this->input->post('name'))) ? $this->input->post('name') : '';
+        if (!empty($user_id) && (!empty($email) || !empty($phone))) {
+            $data = [
+                'user_id' => $user_id,
+                'created_in' => 'Store',
+                //'ref_id' => $landing_page_id,
+                'email' => $email,
+                'phone' => $phone,
+                'name' => $name,
+                'email_status' => (!empty($email)) ? 'subscribed' : 'unsubscribed',
+                'sms_status' => (!empty($phone)) ? 'subscribed' : 'unsubscribed',
+            ];
+            $this->Marketing_model->insert_subscriber($data);
+            //$this->Marketing_model->update_landing_page_click_action($landing_page_id);
+            $this->response(array('status' => 'success', 'env' => ENV, 'message' => 'The subscriber has been created successfully.'), RestController::HTTP_OK);
+        } else {
+            $this->error = 'Provide User ID and Email or Phone';
+            $this->response(array('status' => 'false', 'env' => ENV, 'error' => $this->error), RestController::HTTP_BAD_REQUEST);
+        }
+    }
+
 }
